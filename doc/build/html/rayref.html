@@ -1,0 +1,263 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>planar.Ray – Infinite Semi-Lines &mdash; Planar v0.4 documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Planar v0.4 documentation" href="index.html" />
+    <link rel="next" title="planar.LineSegment – Line Segments" href="segmentref.html" />
+    <link rel="prev" title="planar.Line – Infinite Lines" href="lineref.html" />
+        <link rel="stylesheet" href="_static/planar.css" type="text/css" />
+
+  </head>
+  <body>
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<img src="_static/planar.png" alt="Planar logo" />
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="segmentref.html" title="planar.LineSegment – Line Segments"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="lineref.html" title="planar.Line – Infinite Lines"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Planar v0.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="lineref.html"
+                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">planar.Line</span></tt> &#8211; Infinite Lines</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="segmentref.html"
+                        title="next chapter"><tt class="docutils literal docutils literal"><span class="pre">planar.LineSegment</span></tt> &#8211; Line Segments</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/rayref.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="planar-ray-infinite-semi-lines">
+<h1><a class="reference internal" href="#planar.Ray" title="planar.Ray"><tt class="xref py py-class docutils literal"><span class="pre">planar.Ray</span></tt></a> &#8211; Infinite Semi-Lines<a class="headerlink" href="#planar-ray-infinite-semi-lines" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="index-0"></span><dl class="class">
+<dt id="planar.Ray">
+<em class="property">class </em><tt class="descclassname">planar.</tt><tt class="descname">Ray</tt><big>(</big><em>anchor</em>, <em>direction</em><big>)</big><a class="headerlink" href="#planar.Ray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Directed ray anchored by a single point.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>anchor</strong> (<em>Vec2</em>) &#8211; The anchor, or starting point of the ray.</li>
+<li><strong>direction</strong> (<em>Vec2</em>) &#8211; The direction of the ray as a vector, must not
+be null. Does not need to be unit-length.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="planar.Ray.almost_equals">
+<tt class="descname">almost_equals</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#planar.Ray.almost_equals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if this ray is approximately equal to
+another ray, within precision limits.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="planar.Ray.contains_point">
+<tt class="descname">contains_point</tt><big>(</big><em>point</em><big>)</big><a class="headerlink" href="#planar.Ray.contains_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the specified point is on the ray.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="planar.Ray.distance_to">
+<tt class="descname">distance_to</tt><big>(</big><em>point</em><big>)</big><a class="headerlink" href="#planar.Ray.distance_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the distance between the given point and the ray.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="planar.Ray.from_points">
+<em class="property">classmethod </em><tt class="descname">from_points</tt><big>(</big><em>points</em><big>)</big><a class="headerlink" href="#planar.Ray.from_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a ray from two or more collinear points.  The direction of
+the ray is derived from the first two distinct points, with the first
+point assumed to be the anchor. The order of the remaining points is
+unimportant, however they must all be on the ray.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>points</strong> &#8211; Iterable of at least 2 distinct points.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="planar.Ray.point_behind">
+<tt class="descname">point_behind</tt><big>(</big><em>point</em><big>)</big><a class="headerlink" href="#planar.Ray.point_behind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the specified point is behind the anchor point with
+respect to the direction of the ray.  In other words, the angle
+between the ray direction and the vector pointing from the ray&#8217;s
+anchor to the given point is greater than 90 degrees.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="planar.Ray.point_left">
+<tt class="descname">point_left</tt><big>(</big><em>point</em><big>)</big><a class="headerlink" href="#planar.Ray.point_left" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the specified point is in the space
+to the left of, but not behind the ray.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="planar.Ray.point_right">
+<tt class="descname">point_right</tt><big>(</big><em>point</em><big>)</big><a class="headerlink" href="#planar.Ray.point_right" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the specified point is in the space
+to the right of, but not behind the ray.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="planar.Ray.project">
+<tt class="descname">project</tt><big>(</big><em>point</em><big>)</big><a class="headerlink" href="#planar.Ray.project" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the projection of a point onto the ray. This
+is the closest point on the ray to the specified point.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>point</strong> (<em>Vec2</em>) &#8211; The point to project.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="planar.Ray.anchor">
+<tt class="descname">anchor</tt><a class="headerlink" href="#planar.Ray.anchor" title="Permalink to this definition">¶</a></dt>
+<dd><p>The anchor, or starting point of the ray.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="planar.Ray.direction">
+<tt class="descname">direction</tt><a class="headerlink" href="#planar.Ray.direction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Direction of the line as a unit vector. You may set this
+attribute to any non-null vector, however it will be normalized
+to unit-length.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="planar.Ray.line">
+<tt class="descname">line</tt><a class="headerlink" href="#planar.Ray.line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a line collinear with this ray.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="planar.Ray.normal">
+<tt class="descname">normal</tt><a class="headerlink" href="#planar.Ray.normal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normal unit vector perpendicular to the line. You may set this
+attribute to any non-null vector, however it will be normalized
+to unit-length. Modifying this will also affect the direction
+vector accordingly.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="planar.Ray.points">
+<tt class="descname">points</tt><a class="headerlink" href="#planar.Ray.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return two distinct points along the ray, such that
+<tt class="docutils literal"><span class="pre">ray.from_points(ray.points)</span></tt> will construct an equivalent ray.
+The first point returned is always the anchor point.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="planar.Ray.start">
+<tt class="descname">start</tt><a class="headerlink" href="#planar.Ray.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>The starting point of the ray. Alias for <tt class="docutils literal"><span class="pre">anchor</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="segmentref.html" title="planar.LineSegment – Line Segments"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="lineref.html" title="planar.Line – Infinite Lines"
+             >previous</a> |</li>
+        <li><a href="index.html">Planar v0.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, Casey Duncan.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,252 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Planar Overview &mdash; Planar v0.4 documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Planar v0.4 documentation" href="index.html" />
+    <link rel="next" title="Usage Guide" href="usage.html" />
+    <link rel="prev" title="Planar Documentation Contents" href="index.html" />
+        <link rel="stylesheet" href="_static/planar.css" type="text/css" />
+
+  </head>
+  <body>
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<img src="_static/planar.png" alt="Planar logo" />
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="usage.html" title="Usage Guide"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Planar Documentation Contents"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Planar v0.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Planar Overview</a><ul>
+<li><a class="reference internal" href="#project-goals">Project Goals</a></li>
+<li><a class="reference internal" href="#license">License</a></li>
+<li><a class="reference internal" href="#acknowledgements">Acknowledgements</a></li>
+<li><a class="reference internal" href="#requirements">Requirements</a></li>
+<li><a class="reference internal" href="#downloading-planar">Downloading Planar</a></li>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#tests">Tests</a></li>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
+<li><a class="reference internal" href="#contributing-and-getting-support">Contributing and Getting Support</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Planar Documentation Contents</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="usage.html"
+                        title="next chapter">Usage Guide</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/overview.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="planar-overview">
+<h1>Planar Overview<a class="headerlink" href="#planar-overview" title="Permalink to this headline">¶</a></h1>
+<p>Planar is a 2D geometry library for Python. It is intended for use by games
+and interactive real-time applications, but is designed to be useful for
+most any program that needs a convenient, high-performance geometry API.</p>
+<p>Planar is being developed as part of the larger Grease game framework.
+However, it is a standalone library and has no external dependencies besides
+Python, and optionally a C compiler.</p>
+<p>Planar is purely a math library, presentation, graphical or otherwise is
+left up to the application.</p>
+<div class="section" id="project-goals">
+<h2>Project Goals<a class="headerlink" href="#project-goals" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Do one thing, 2D geometry, and do it well.</li>
+<li>Provide a high-level, clean, Pythonic API.</li>
+<li>All APIs have both a Python reference implementation and a high performance
+implementation in C with the same interface.</li>
+<li>Compatibility with Python 2.6+, and Python 3.1+</li>
+<li>100% test coverage.</li>
+<li>Full narrative and API reference documentation.</li>
+<li>Platform-independent.</li>
+<li>Release early and often.</li>
+<li>Be responsive to community input.</li>
+<li>Don&#8217;t take ourselves too seriously.</li>
+</ul>
+</div>
+<div class="section" id="license">
+<h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
+<p>Planar is distributed under the terms of the new BSD license. You are free to
+use it for commercial or non-commercial projects with little or no
+restriction, all we ask is that:</p>
+<ul class="simple">
+<li>Redistributions of the code, in whole or part, retain the original
+copyright notice and license text.</li>
+<li>You do not claim our endorsement of any derived product.</li>
+</ul>
+<p>For a complete text of the license see the <tt class="docutils literal"><span class="pre">LICENSE.txt</span></tt> file in the source
+distrbution.</p>
+</div>
+<div class="section" id="acknowledgements">
+<h2>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this headline">¶</a></h2>
+<p>The API for planar, and some of the code is derived from the excellent
+work done by the Super Effective Team, thanks guys!</p>
+<ul class="simple">
+<li><a class="reference external" href="http://www.supereffective.org/pages/Vector-2d-Vector-Library">http://www.supereffective.org/pages/Vector-2d-Vector-Library</a></li>
+</ul>
+</div>
+<div class="section" id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<p>Planar requires Python 2.6, 2.7, 3.1, or better.</p>
+<p>To experience the exhilaration of native-code performance, a C compiler is
+required. If someone volunteers, binary releases for platforms where this
+is not common (you know who you are) will be happily made available.</p>
+</div>
+<div class="section" id="downloading-planar">
+<h2>Downloading Planar<a class="headerlink" href="#downloading-planar" title="Permalink to this headline">¶</a></h2>
+<p>Planar releases can be downloaded from the python package index (pypi):</p>
+<ul class="simple">
+<li><a class="reference external" href="http://pypi.python.org/pypi/planar/">http://pypi.python.org/pypi/planar/</a></li>
+</ul>
+<p>You can get the latest code in development from the planar mercurial
+repository on bitbucket:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://bitbucket.org/caseman/planar/">http://bitbucket.org/caseman/planar/</a></li>
+</ul>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>To build and install Planar from the source distribution or repository use:</p>
+<div class="highlight-python"><pre>python setup.py install</pre>
+</div>
+<p>To install only the pure-Python modules without compiling, use:</p>
+<div class="highlight-python"><pre>python setup.py build_py install --skip-build</pre>
+</div>
+<p>Only performance is sacrificed without the C extensions, all functionality is
+still available when using only the pure-Python modules.</p>
+</div>
+<div class="section" id="tests">
+<h2>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h2>
+<p>Planar requires nose for testing. You can install it for Python 2.x
+using easy_install:</p>
+<div class="highlight-python"><pre>easy_install nose</pre>
+</div>
+<p>For Python 3.x, you can download and install distribute from here:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://pypi.python.org/pypi/distribute">http://pypi.python.org/pypi/distribute</a></li>
+</ul>
+<p>For now, you can get a copy of nose3 for Python 3.x, patched to install
+properly on Python 3.1 here:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://bitbucket.org/caseman/nose3-caseman-fix/get/7c9181ad403d.zip">http://bitbucket.org/caseman/nose3-caseman-fix/get/7c9181ad403d.zip</a></li>
+</ul>
+<p>Once nose is installed you can run the tests from the source directory
+using <tt class="docutils literal"><span class="pre">nosetests</span></tt>, first building the C extensions, like so (on Unix):</p>
+<div class="highlight-python"><pre>python setup.py build &amp;&amp; nosetests -d -w build/lib.*/planar/</pre>
+</div>
+<p>This runs the tests inside the <tt class="docutils literal"><span class="pre">build</span></tt> directory so that the C extensions
+can be tested. You can put a <tt class="docutils literal"><span class="pre">3</span></tt> suffix on the <tt class="docutils literal"><span class="pre">python</span></tt> and <tt class="docutils literal"><span class="pre">nosetests</span></tt>
+commands above for Python 3.x.</p>
+</div>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<p>You can browse the documentation online here:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://pygamesf.org/~casey/planar/doc/">http://pygamesf.org/~casey/planar/doc/</a></li>
+</ul>
+<p>The same documentation is also available for offline browsing in the
+<tt class="docutils literal"><span class="pre">doc/build/html</span></tt> subdirectory of the source distribution.</p>
+</div>
+<div class="section" id="contributing-and-getting-support">
+<h2>Contributing and Getting Support<a class="headerlink" href="#contributing-and-getting-support" title="Permalink to this headline">¶</a></h2>
+<p>Come visit us at the Grease users google group to get help, moral support,
+lavish praise, complain bitterly, report a bug, or contribute ideas:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://groups.google.com/group/grease-users">http://groups.google.com/group/grease-users</a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="usage.html" title="Usage Guide"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Planar Documentation Contents"
+             >previous</a> |</li>
+        <li><a href="index.html">Planar v0.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, Casey Duncan.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>

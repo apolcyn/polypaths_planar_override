@@ -1,0 +1,296 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>planar.Vec2Array – 2D Vector Arrays &mdash; Planar v0.4 documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Planar v0.4 documentation" href="index.html" />
+    <link rel="next" title="planar.Affine – 2D Affine Transforms" href="affineref.html" />
+    <link rel="prev" title="planar.Vec2 – 2D Vectors" href="vectorref.html" />
+        <link rel="stylesheet" href="_static/planar.css" type="text/css" />
+
+  </head>
+  <body>
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<img src="_static/planar.png" alt="Planar logo" />
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="affineref.html" title="planar.Affine – 2D Affine Transforms"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="vectorref.html" title="planar.Vec2 – 2D Vectors"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Planar v0.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="vectorref.html"
+                        title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">planar.Vec2</span></tt> &#8211; 2D Vectors</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="affineref.html"
+                        title="next chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">planar.Affine</span></tt> &#8211; 2D Affine Transforms</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/vec2arrayref.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="planar-vec2array-2d-vector-arrays">
+<h1><a class="reference internal" href="#planar.Vec2Array" title="planar.Vec2Array"><tt class="xref py py-class docutils literal"><span class="pre">planar.Vec2Array</span></tt></a> &#8211; 2D Vector Arrays<a class="headerlink" href="#planar-vec2array-2d-vector-arrays" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="index-0"></span><dl class="class">
+<dt id="planar.Vec2Array">
+<em class="property">class </em><tt class="descclassname">planar.</tt><tt class="descname">Vec2Array</tt><big>(</big><em>vectors=()</em><big>)</big><a class="headerlink" href="#planar.Vec2Array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sequence of 2D vectors for batch operations</p>
+<dl class="method">
+<dt id="planar.Vec2Array.almost_equals">
+<tt class="descname">almost_equals</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#planar.Vec2Array.almost_equals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare for approximate equality.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="planar.Vec2Array.append">
+<tt class="descname">append</tt><big>(</big><em>vector</em><big>)</big><a class="headerlink" href="#planar.Vec2Array.append" title="Permalink to this definition">¶</a></dt>
+<dd><p>Append a vector to the end of the array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>vector</strong> (<em>Vec2 or 2-number sequence.</em>) &#8211; Vector to append.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="planar.Vec2Array.clamp">
+<tt class="descname">clamp</tt><big>(</big><em>min_length=None</em>, <em>max_length=None</em><big>)</big><a class="headerlink" href="#planar.Vec2Array.clamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clamp the length of the vectors in this array in place between
+<tt class="docutils literal"><span class="pre">min_length</span></tt> and <tt class="docutils literal"><span class="pre">max_length</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>min_length</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Minimum length of computed vectors.</li>
+<li><strong>max_length</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Maximum length of computed vectors. Must
+be &gt;= <tt class="docutils literal"><span class="pre">min_length</span></tt>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="planar.Vec2Array.clamped">
+<tt class="descname">clamped</tt><big>(</big><em>min_length=None</em>, <em>max_length=None</em><big>)</big><a class="headerlink" href="#planar.Vec2Array.clamped" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new array of vectors with lengths clamped between
+<tt class="docutils literal"><span class="pre">min_length</span></tt> and <tt class="docutils literal"><span class="pre">max_length</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>min_length</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Minimum length of computed vectors.</li>
+<li><strong>max_length</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Maximum length of computed vectors. Must
+be &gt;= <tt class="docutils literal"><span class="pre">min_length</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Vec2Array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="planar.Vec2Array.extend">
+<tt class="descname">extend</tt><big>(</big><em>iterable</em><big>)</big><a class="headerlink" href="#planar.Vec2Array.extend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Append all vectors in iterable to the end of the array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>iterable</strong> &#8211; Iterable object containing vectors.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="planar.Vec2Array.from_points">
+<em class="property">classmethod </em><tt class="descname">from_points</tt><big>(</big><em>points</em><big>)</big><a class="headerlink" href="#planar.Vec2Array.from_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new 2D sequence from an iterable of points</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="planar.Vec2Array.insert">
+<tt class="descname">insert</tt><big>(</big><em>index</em>, <em>vector</em><big>)</big><a class="headerlink" href="#planar.Vec2Array.insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert a vector at the specified index.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>index</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Position before-which the vector is inserted.</li>
+<li><strong>vector</strong> (<em>Vec2 or 2-number sequence.</em>) &#8211; Vector to insert.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="planar.Vec2Array.longest">
+<tt class="descname">longest</tt><big>(</big><big>)</big><a class="headerlink" href="#planar.Vec2Array.longest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the vector in the array with the maximum length.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="planar.Vec2Array.normalize">
+<tt class="descname">normalize</tt><big>(</big><big>)</big><a class="headerlink" href="#planar.Vec2Array.normalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize the vectors in the array in place.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="planar.Vec2Array.normalized">
+<tt class="descname">normalized</tt><big>(</big><big>)</big><a class="headerlink" href="#planar.Vec2Array.normalized" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new array containing normalized vectors calculated
+from this array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">Vec2Array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="planar.Vec2Array.shortest">
+<tt class="descname">shortest</tt><big>(</big><big>)</big><a class="headerlink" href="#planar.Vec2Array.shortest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the vector in the array with the minimum length.</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="index-1"></span><dl class="class">
+<dt id="planar.Seq2">
+<em class="property">class </em><tt class="descclassname">planar.</tt><tt class="descname">Seq2</tt><big>(</big><em>vectors</em><big>)</big><a class="headerlink" href="#planar.Seq2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fixed length 2D point/vector sequence</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>vectors</strong> &#8211; A sequence of <a class="reference internal" href="vectorref.html#planar.Vec2" title="planar.Vec2"><tt class="xref py py-class docutils literal"><span class="pre">Vec2</span></tt></a> objects.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="planar.Seq2.almost_equals">
+<tt class="descname">almost_equals</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#planar.Seq2.almost_equals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare for approximate equality.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="planar.Seq2.from_points">
+<em class="property">classmethod </em><tt class="descname">from_points</tt><big>(</big><em>points</em><big>)</big><a class="headerlink" href="#planar.Seq2.from_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new 2D sequence from an iterable of points</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="affineref.html" title="planar.Affine – 2D Affine Transforms"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="vectorref.html" title="planar.Vec2 – 2D Vectors"
+             >previous</a> |</li>
+        <li><a href="index.html">Planar v0.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, Casey Duncan.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>

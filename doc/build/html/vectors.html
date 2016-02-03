@@ -1,0 +1,348 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Vector Objects &mdash; Planar v0.4 documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Planar v0.4 documentation" href="index.html" />
+    <link rel="next" title="Transform Objects" href="transforms.html" />
+    <link rel="prev" title="Usage Guide" href="usage.html" />
+        <link rel="stylesheet" href="_static/planar.css" type="text/css" />
+
+  </head>
+  <body>
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<img src="_static/planar.png" alt="Planar logo" />
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="transforms.html" title="Transform Objects"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="usage.html" title="Usage Guide"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Planar v0.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Vector Objects</a><ul>
+<li><a class="reference internal" href="#vector-sequences">Vector Sequences</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="usage.html"
+                        title="previous chapter">Usage Guide</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="transforms.html"
+                        title="next chapter">Transform Objects</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/vectors.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="vector-objects">
+<h1>Vector Objects<a class="headerlink" href="#vector-objects" title="Permalink to this headline">¶</a></h1>
+<p>Vectors are the foundational <tt class="docutils literal"><span class="pre">planar</span></tt> objects. They are used to
+represent 2D vectors and geometric points.</p>
+<p><a class="reference internal" href="vectorref.html#planar.Vec2" title="planar.Vec2"><tt class="xref py py-class docutils literal"><span class="pre">planar.Vec2</span></tt></a> objects are two dimensional, double precision
+floating-point vectors. They can be initialized from either cartesian
+or polar coordinates:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">planar</span> <span class="kn">import</span> <span class="n">Vec2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">Vec2</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="mf">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">x</span>
+<span class="go">0.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">y</span>
+<span class="go">1.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Vec2</span><span class="o">.</span><span class="n">polar</span><span class="p">(</span><span class="n">angle</span><span class="o">=</span><span class="mf">45</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mf">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">angle</span>
+<span class="go">45.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">length</span>
+<span class="go">10.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span>
+<span class="go">Vec2(7.07107, 7.07107)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">All angles in planar are represented in degrees
+where <tt class="docutils literal"><span class="pre">0</span></tt> is parallel to the ascending x-axis, and
+<tt class="docutils literal"><span class="pre">90</span></tt> is parallel to the ascending y-axis.</p>
+</div>
+<p>Internally, vectors are represented as cartesian coordinates, which
+are accessible via their <tt class="docutils literal"><span class="pre">x</span></tt> and <tt class="docutils literal"><span class="pre">y</span></tt> attributes, as above, or as
+a sequence with length 2:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">planar</span> <span class="kn">import</span> <span class="n">Vec2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">Vec2</span><span class="p">(</span><span class="mf">13</span><span class="p">,</span> <span class="mf">42</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span>
+<span class="go">13.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="p">[</span><span class="mf">1</span><span class="p">]</span>
+<span class="go">42.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">v</span>
+</pre></div>
+</div>
+<p>Regardless of how the vector is created, you can always access it
+in terms of polar or cartesian coordinates:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">planar</span> <span class="kn">import</span> <span class="n">Vec2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">Vec2</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="mf">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">angle</span>
+<span class="go">90.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">length</span>
+<span class="go">5.0</span>
+</pre></div>
+</div>
+<p>If you omit the <tt class="docutils literal"><span class="pre">length</span></tt> parameter when using the <tt class="xref py py-meth docutils literal"><span class="pre">polar()</span></tt>
+method, you get a unit vector in the specified direction. This
+is also a handy way to compute the sine and cosine of an angle
+in a single call:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">math</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">planar</span> <span class="kn">import</span> <span class="n">Vec2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cosine</span><span class="p">,</span> <span class="n">sine</span> <span class="o">=</span> <span class="n">Vec2</span><span class="o">.</span><span class="n">polar</span><span class="p">(</span><span class="mf">60</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">cosine</span> <span class="o">==</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mf">60</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">sine</span> <span class="o">==</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mf">60</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Vector objects are immutable, like tuples or complex numbers.  To modify a
+vector, you can perform arithmetic on it. This always generates a new vector
+object:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">planar</span> <span class="kn">import</span> <span class="n">Vec2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Vec2</span><span class="p">(</span><span class="mf">2</span><span class="p">,</span> <span class="mf">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">Vec2</span><span class="p">(</span><span class="mf">3</span><span class="p">,</span> <span class="mf">5</span><span class="p">)</span>
+<span class="go">Vec2(5, 6)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Vec2</span><span class="p">(</span><span class="mf">1</span><span class="p">,</span> <span class="mf">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">Vec2</span><span class="p">(</span><span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">)</span>
+<span class="go">Vec2(0, -1)</span>
+</pre></div>
+</div>
+<p>You can multiply or divide a vector by a scalar to scale it:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">planar</span> <span class="kn">import</span> <span class="n">Vec2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Vec2</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">4</span><span class="p">)</span> <span class="o">*</span> <span class="mf">2</span>
+<span class="go">Vec2(3, 8)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Vec2</span><span class="p">(</span><span class="mf">9</span><span class="p">,</span> <span class="mf">3</span><span class="p">)</span> <span class="o">/</span> <span class="mf">3</span>
+<span class="go">Vec2(3, 1)</span>
+</pre></div>
+</div>
+<p>You can multiply a vector by another vector to scale it
+component-wise. This skews the vector:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">planar</span> <span class="kn">import</span> <span class="n">Vec2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Vec2</span><span class="p">(</span><span class="mf">2</span><span class="p">,</span> <span class="mf">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">Vec2</span><span class="p">(</span><span class="mf">5</span><span class="p">,</span> <span class="mf">3</span><span class="p">)</span>
+<span class="go">Vec2(10, 9)</span>
+</pre></div>
+</div>
+<p>There are special methods for performing the dot product
+and cross products of two vectors explicitly. These return
+scalar values:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">planar</span> <span class="kn">import</span> <span class="n">Vec2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Vec2</span><span class="p">(</span><span class="mf">4</span><span class="p">,</span> <span class="mf">4</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Vec2</span><span class="p">(</span><span class="o">-</span><span class="mf">4</span><span class="p">,</span> <span class="mf">4</span><span class="p">))</span> <span class="c"># perpendicular</span>
+<span class="go">0.0</span>
+</pre></div>
+</div>
+<p>Vectors can be compared to each other or directly to
+two element number sequences, such as tuples and lists.
+A vector is considered &#8220;greater&#8221; than another vector
+if it has a larger length:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">planar</span> <span class="kn">import</span> <span class="n">Vec2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Vec2</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Vec2</span><span class="p">(</span><span class="mf">10</span><span class="p">,</span> <span class="mf">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">Vec2</span><span class="p">(</span><span class="o">-</span><span class="mf">5</span><span class="p">,</span> <span class="mf">5</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Vec2</span><span class="p">(</span><span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">Vec2</span><span class="p">(</span><span class="mf">1</span><span class="p">,</span> <span class="o">-</span><span class="mf">1</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Since vectors are immutable, they can be members of sets
+or used as dictionary keys:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">planar</span> <span class="kn">import</span> <span class="n">Vec2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">set</span><span class="p">([</span><span class="n">Vec2</span><span class="p">(</span><span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">),</span> <span class="n">Vec2</span><span class="p">(</span><span class="o">-</span><span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">),</span> <span class="n">Vec2</span><span class="p">(</span><span class="o">-</span><span class="mf">1</span><span class="p">,</span> <span class="o">-</span><span class="mf">1</span><span class="p">),</span> <span class="n">Vec2</span><span class="p">(</span><span class="mf">1</span><span class="p">,</span> <span class="o">-</span><span class="mf">2</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Vec2</span><span class="p">(</span><span class="o">-</span><span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">)</span> <span class="ow">in</span> <span class="n">s</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Vec2</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="mf">1</span><span class="p">)</span> <span class="ow">in</span> <span class="n">s</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<p>Vectors support many other operations in addition to the above. See the
+<a class="reference internal" href="vectorref.html#planar.Vec2" title="planar.Vec2"><tt class="xref py py-class docutils literal"><span class="pre">planar.Vec2</span></tt></a> class reference for complete details.</p>
+<div class="section" id="vector-sequences">
+<h2>Vector Sequences<a class="headerlink" href="#vector-sequences" title="Permalink to this headline">¶</a></h2>
+<p>Planar provides two classes for working efficiently with batches of vectors:
+<a class="reference internal" href="vec2arrayref.html#planar.Seq2" title="planar.Seq2"><tt class="xref py py-class docutils literal"><span class="pre">Seq2</span></tt></a> and <a class="reference internal" href="vec2arrayref.html#planar.Vec2Array" title="planar.Vec2Array"><tt class="xref py py-class docutils literal"><span class="pre">Vec2Array</span></tt></a>.</p>
+<p><a class="reference internal" href="vec2arrayref.html#planar.Seq2" title="planar.Seq2"><tt class="xref py py-class docutils literal"><span class="pre">Seq2</span></tt></a> is a mutable, but fixed-length, sequence of vectors.  It
+is intended to be used as a base-class for objects and shapes that consist of
+multiple vectors or points. Although you can instantiate <a class="reference internal" href="vec2arrayref.html#planar.Seq2" title="planar.Seq2"><tt class="xref py py-class docutils literal"><span class="pre">Seq2</span></tt></a>
+objects, there is probably no real reason to do so. Its main use is as a base
+class that provides efficient vector storage.  <a class="reference internal" href="vec2arrayref.html#planar.Seq2" title="planar.Seq2"><tt class="xref py py-class docutils literal"><span class="pre">Seq2</span></tt></a> has no
+built-in functionality other than the basic Python sequence API.</p>
+<p><a class="reference internal" href="vec2arrayref.html#planar.Vec2Array" title="planar.Vec2Array"><tt class="xref py py-class docutils literal"><span class="pre">Vec2Array</span></tt></a> is a full-featured vector sequence which provides
+efficient storage and batch-operations for arbitrarily large collections of
+<a class="reference internal" href="vectorref.html#planar.Vec2" title="planar.Vec2"><tt class="xref py py-class docutils literal"><span class="pre">Vec2</span></tt></a> objects. It is a subclass of <a class="reference internal" href="vec2arrayref.html#planar.Seq2" title="planar.Seq2"><tt class="xref py py-class docutils literal"><span class="pre">Seq2</span></tt></a>.
+From the application&#8217;s point of view, a <a class="reference internal" href="vec2arrayref.html#planar.Vec2Array" title="planar.Vec2Array"><tt class="xref py py-class docutils literal"><span class="pre">Vec2Array</span></tt></a> looks and
+behaves just like a Python list, but with additional methods that can operate
+on the entire collection of vectors efficiently. <a class="reference internal" href="vec2arrayref.html#planar.Vec2Array" title="planar.Vec2Array"><tt class="xref py py-class docutils literal"><span class="pre">Vec2Array</span></tt></a>
+objects are different from Python lists, however, in the following
+important ways:</p>
+<ul class="simple">
+<li>Vector arrays can contain only <a class="reference internal" href="vectorref.html#planar.Vec2" title="planar.Vec2"><tt class="xref py py-class docutils literal"><span class="pre">Vec2</span></tt></a> objects.</li>
+<li>Vectors in the arrays are stored in contiguous memory, by value, rather
+than storing references to separate objects as a list does. This means
+that vector arrays use memory more efficiently and are CPU cache-friendly
+for greater performance.</li>
+<li>Arithmetic operations on vector arrays operate as batch operations on
+all vectors in the array.</li>
+</ul>
+<p>Vector arrays can be instantiated empty, by calling the class with no arguments.
+To instantiate an array pre-populated with vectors, you can pass in any
+iterable of 2 number sequences, such as a list of 2-tuples, or
+<a class="reference internal" href="vectorref.html#planar.Vec2" title="planar.Vec2"><tt class="xref py py-class docutils literal"><span class="pre">Vec2</span></tt></a> objects:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">planar</span> <span class="kn">import</span> <span class="n">Vec2Array</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Vec2Array</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Vec2Array</span><span class="p">([(</span><span class="o">-</span><span class="mf">1</span><span class="p">,</span><span class="mf">0</span><span class="p">),</span> <span class="p">(</span><span class="mf">4</span><span class="p">,</span><span class="mf">2</span><span class="p">),</span> <span class="p">(</span><span class="mf">5</span><span class="p">,</span><span class="o">-</span><span class="mf">2</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+<p>Vector arrays support the typical list operations you are already familiar with
+such as <tt class="xref py py-meth docutils literal"><span class="pre">append()</span></tt>, <tt class="xref py py-meth docutils literal"><span class="pre">insert()</span></tt>, and <tt class="xref py py-meth docutils literal"><span class="pre">extend()</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">planar</span> <span class="kn">import</span> <span class="n">Vec2Array</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Vec2Array</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mf">4</span><span class="p">,</span> <span class="mf">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="p">(</span><span class="mf">5</span><span class="p">,</span> <span class="mf">5</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">extend</span><span class="p">([(</span><span class="mf">9</span><span class="p">,</span> <span class="o">-</span><span class="mf">2</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">3</span><span class="p">,</span> <span class="o">-</span><span class="mf">3</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">Vec2Array([(5, 5), (4, 3), (9, -2), (-3, -3)])</span>
+</pre></div>
+</div>
+<p>Item access and a full complement of slicing operations are also supported:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">planar</span> <span class="kn">import</span> <span class="n">Vec2Array</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Vec2Array</span><span class="p">([(</span><span class="mf">0</span><span class="p">,</span><span class="mf">0</span><span class="p">),</span> <span class="p">(</span><span class="mf">1</span><span class="p">,</span><span class="mf">1</span><span class="p">),</span> <span class="p">(</span><span class="mf">2</span><span class="p">,</span><span class="mf">2</span><span class="p">),</span> <span class="p">(</span><span class="mf">3</span><span class="p">,</span><span class="mf">3</span><span class="p">),</span> <span class="p">(</span><span class="mf">4</span><span class="p">,</span><span class="mf">4</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">[</span><span class="o">-</span><span class="mf">1</span><span class="p">]</span>
+<span class="go">Vec2(4, 4)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">[</span><span class="mf">1</span><span class="p">:</span><span class="o">-</span><span class="mf">1</span><span class="p">]</span>
+<span class="go">Vec2Array([(1, 1), (2, 2), (3, 3)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">[::</span><span class="mf">2</span><span class="p">]</span>
+<span class="go">Vec2Array([(0, 0), (2, 2), (4, 4)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">[</span><span class="mf">4</span><span class="p">:</span><span class="mf">1</span><span class="p">:</span><span class="o">-</span><span class="mf">1</span><span class="p">]</span>
+<span class="go">Vec2Array([(4, 4), (3, 3), (2, 2)])</span>
+</pre></div>
+</div>
+<p>Vector arrays are designed to provide efficient batch arithmetic on vectors.
+You can perform arithmetic between vector arrays and scalars, single vectors,
+other arrays, and <a class="reference internal" href="affineref.html#planar.Affine" title="planar.Affine"><tt class="xref py py-class docutils literal"><span class="pre">Affine</span></tt></a> transforms. Multiplying an array
+scales all of its constituent vectors:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">planar</span> <span class="kn">import</span> <span class="n">Vec2Array</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Vec2Array</span><span class="p">([(</span><span class="mf">2</span><span class="p">,</span> <span class="mf">1</span><span class="p">),</span> <span class="p">(</span><span class="mf">4</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">),</span> <span class="p">(</span><span class="mf">3</span><span class="p">,</span> <span class="o">-</span><span class="mf">1</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">*</span> <span class="mf">3</span>
+<span class="go">Vec2Array([(6, 3), (12, 7.5), (9, -3)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="mf">4</span><span class="p">,</span> <span class="mf">2</span><span class="p">)</span>
+<span class="go">Vec2Array([(8, 2), (16, 5), (12, -2)])</span>
+</pre></div>
+</div>
+<p>Division operates similarly. Addition and subtraction operate componentwise as
+in single <a class="reference internal" href="vectorref.html#planar.Vec2" title="planar.Vec2"><tt class="xref py py-class docutils literal"><span class="pre">Vec2</span></tt></a> objects. You can also perform arithmetic
+between vector arrays with the same length. This simply performs the operation
+between each element of both arrays in turn:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">planar</span> <span class="kn">import</span> <span class="n">Vec2Array</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Vec2Array</span><span class="p">([(</span><span class="o">-</span><span class="mf">1</span><span class="p">,</span><span class="mf">0</span><span class="p">),</span> <span class="p">(</span><span class="mf">1</span><span class="p">,</span><span class="mf">2</span><span class="p">),</span> <span class="p">(</span><span class="mf">3</span><span class="p">,</span><span class="mf">4</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">Vec2Array</span><span class="p">([(</span><span class="mf">3</span><span class="p">,</span><span class="mf">2</span><span class="p">),</span> <span class="p">(</span><span class="mf">2</span><span class="p">,</span><span class="mf">1</span><span class="p">),</span> <span class="p">(</span><span class="mf">1</span><span class="p">,</span><span class="mf">0</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+<span class="go">Vec2Array([(2, 2), (3, 3), (4, 4)])</span>
+</pre></div>
+</div>
+<p>Arrays can be multiplied by transforms, which transforms each vector
+therein:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">planar</span> <span class="kn">import</span> <span class="n">Vec2Array</span><span class="p">,</span> <span class="n">Affine</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Vec2Array</span><span class="p">([(</span><span class="o">-</span><span class="mf">1</span><span class="p">,</span> <span class="mf">0</span><span class="p">),</span> <span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="mf">1</span><span class="p">),</span> <span class="p">(</span><span class="mf">1</span><span class="p">,</span> <span class="mf">0</span><span class="p">),</span> <span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Affine</span><span class="o">.</span><span class="n">rotation</span><span class="p">(</span><span class="mf">90</span><span class="p">)</span> <span class="o">*</span> <span class="n">Affine</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="mf">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">*</span> <span class="n">t</span>
+<span class="go">Vec2Array([(0, -2), (-2, 0), (0, 2), (2, 0)])</span>
+</pre></div>
+</div>
+<p>Vector arrays also have methods to retrieve the longest and shortest
+member vectors, normalize, or clamp vectors en masse. See the
+<a class="reference internal" href="vec2arrayref.html#planar.Vec2Array" title="planar.Vec2Array"><tt class="xref py py-class docutils literal"><span class="pre">Vec2Array</span></tt></a> class reference for details.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="transforms.html" title="Transform Objects"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="usage.html" title="Usage Guide"
+             >previous</a> |</li>
+        <li><a href="index.html">Planar v0.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, Casey Duncan.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>

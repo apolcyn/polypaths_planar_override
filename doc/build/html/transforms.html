@@ -1,0 +1,433 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Transform Objects &mdash; Planar v0.4 documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Planar v0.4 documentation" href="index.html" />
+    <link rel="next" title="BoundingBox Objects" href="bbox.html" />
+    <link rel="prev" title="Vector Objects" href="vectors.html" />
+        <link rel="stylesheet" href="_static/planar.css" type="text/css" />
+
+  </head>
+  <body>
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<img src="_static/planar.png" alt="Planar logo" />
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="bbox.html" title="BoundingBox Objects"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="vectors.html" title="Vector Objects"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Planar v0.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Transform Objects</a><ul>
+<li><a class="reference internal" href="#affine-transforms">Affine Transforms</a><ul>
+<li><a class="reference internal" href="#matrix-multiplication">Matrix Multiplication</a></li>
+<li><a class="reference internal" href="#inspecting-transforms">Inspecting Transforms</a></li>
+<li><a class="reference internal" href="#other-operations">Other Operations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="vectors.html"
+                        title="previous chapter">Vector Objects</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="bbox.html"
+                        title="next chapter">BoundingBox Objects</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/transforms.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="transform-objects">
+<h1>Transform Objects<a class="headerlink" href="#transform-objects" title="Permalink to this headline">¶</a></h1>
+<p>Transform objects are a mathematical mapping from one coordinate system
+to another. The coordinate systems can differ in terms of position (i.e.,
+location of the origin), scale, axis direction and relative axis orientation.
+Transform objects can be applied to other transforms, vectors, or
+shape objects to map them between coordinate systems.</p>
+<p>Transforming between coordinate systems may not, at first glance, appear to
+have a lot of practical value.  The value is in realizing that mapping an
+object to another coordinate system represented by a transform is equivalent
+to transforming the object itself within the same coordinate system.
+Typically, it is the object itself we are interested in modifying, and not the
+coordinate frame, and linear transforms provide a concise construct for
+representing a myriad of possible mutations.</p>
+<p>Planar transforms are represented as linear transformation matrices. However,
+their interface provides abstractions so that common transformation operations
+can be conveniently created and used, without having to worry about the
+underlying matrix math.</p>
+<div class="section" id="affine-transforms">
+<h2>Affine Transforms<a class="headerlink" href="#affine-transforms" title="Permalink to this headline">¶</a></h2>
+<p>Affine transforms in <tt class="docutils literal"><span class="pre">planar</span></tt> can represent a variety of linear
+transformations in 2D space. Specifically, an affine transform can represent
+a combination of translation, scale, rotation and shear operations.</p>
+<img alt="_images/transforms.png" src="_images/transforms.png" />
+<p>Mathematically, an affine transform is one which
+preserves parallel aspects when applied. That is, if a shape is transformed by
+an affine transformation, points in the shape that define parallel lines in
+the original shape, will <em>always</em> still define parallel lines in the
+transformed shape.</p>
+<p>The affine transform&#8217;s preservation of parallel lines may seem arcane, but it
+implies some important limitations, and benefits. Practically speaking it
+means that you cannot use an affine transform to create a perspective
+projection of a 2D shape. It also means that you cannot use them to twist or
+bend the shape like a pretzel. It also means that the implementation can be
+more efficient in terms of memory and CPU than a general linear
+transformation.</p>
+<p>A 2D affine transform is represented by a 3 X 3 transformation matrix.
+However, the last row of all affine transformation matrices is the fixed
+sequence <tt class="docutils literal"><span class="pre">|</span> <span class="pre">0</span> <span class="pre">0</span> <span class="pre">1</span> <span class="pre">|</span></tt>. Therefore only the first two rows are actually
+significant, and need to be stored. Because of this, <a class="reference internal" href="affineref.html#planar.Affine" title="planar.Affine"><tt class="xref py py-class docutils literal"><span class="pre">Affine</span></tt></a>
+objects are stored internally as an array of 6 double-precision floating point
+values. Like <a class="reference internal" href="vectorref.html#planar.Vec2" title="planar.Vec2"><tt class="xref py py-class docutils literal"><span class="pre">Vec2</span></tt></a> objects, <a class="reference internal" href="affineref.html#planar.Affine" title="planar.Affine"><tt class="xref py py-class docutils literal"><span class="pre">Affine</span></tt></a> objects
+are immutable.  Operations that modify a transform always return a new
+transform object.</p>
+<p>There are a variety of constructors available for <a class="reference internal" href="affineref.html#planar.Affine" title="planar.Affine"><tt class="xref py py-class docutils literal"><span class="pre">Affine</span></tt></a> objects.
+It is typical to use an alternate constructor to create affine transforms,
+rather that the default constructor. For example, it is trivial to create the
+simplest <a class="reference internal" href="affineref.html#planar.Affine" title="planar.Affine"><tt class="xref py py-class docutils literal"><span class="pre">Affine</span></tt></a> transform, the identity transform:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">planar</span> <span class="kn">import</span> <span class="n">Affine</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ident</span> <span class="o">=</span> <span class="n">Affine</span><span class="o">.</span><span class="n">identity</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">ident</span><span class="p">)</span>
+<span class="go">| 1.00, 0.00, 0.00|</span>
+<span class="go">| 0.00, 1.00, 0.00|</span>
+<span class="go">| 0.00, 0.00, 1.00|</span>
+</pre></div>
+</div>
+<p>The identity transform always leaves an object unchanged when it is applied.
+Printing the <a class="reference internal" href="affineref.html#planar.Affine" title="planar.Affine"><tt class="xref py py-class docutils literal"><span class="pre">Affine</span></tt></a> instance shows the values in a
+conventional matrix grid notation. Since the bottom row is always the same for
+all <a class="reference internal" href="affineref.html#planar.Affine" title="planar.Affine"><tt class="xref py py-class docutils literal"><span class="pre">Affine</span></tt></a> transforms, you can effectively ignore it, but you
+can see the obvious diagonal unity values in the identity transform. The first
+column can be read as the scale and orientation vector for the X-axis, the
+second column as the same vector for the Y-axis, and the third column as the
+offset of the origin. Since these vectors are <tt class="docutils literal"><span class="pre">(1,</span> <span class="pre">0)</span></tt>, <tt class="docutils literal"><span class="pre">(0,</span> <span class="pre">1)</span></tt> and <tt class="docutils literal"><span class="pre">(0,</span>
+<span class="pre">0)</span></tt> respectively, in the above, it is easy to see why applying this transform
+has no effect.</p>
+<p>Another basic transform is a simple translation:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">planar</span> <span class="kn">import</span> <span class="n">Affine</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">offset</span> <span class="o">=</span> <span class="n">Affine</span><span class="o">.</span><span class="n">translation</span><span class="p">((</span><span class="mf">5</span><span class="p">,</span> <span class="o">-</span><span class="mf">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
+<span class="go">| 1.00, 0.00, 5.00|</span>
+<span class="go">| 0.00, 1.00,-1.00|</span>
+<span class="go">| 0.00, 0.00, 1.00|</span>
+</pre></div>
+</div>
+<p>You can see you this is basically the same as the identity transform, except
+that the offset of the origin in the third column is now non-zero.</p>
+<p>Another simple transform is a scale:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">planar</span> <span class="kn">import</span> <span class="n">Affine</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scale</span> <span class="o">=</span> <span class="n">Affine</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="mf">2.5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">scale</span><span class="p">)</span>
+<span class="go">| 2.50, 0.00, 0.00|</span>
+<span class="go">| 0.00, 2.50, 0.00|</span>
+<span class="go">| 0.00, 0.00, 1.00|</span>
+</pre></div>
+</div>
+<p>The example above applies a scale of 2.5 symmetrically to both axes. If desired,
+a different scale can be specified for each axis:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">planar</span> <span class="kn">import</span> <span class="n">Affine</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scale</span> <span class="o">=</span> <span class="n">Affine</span><span class="o">.</span><span class="n">scale</span><span class="p">((</span><span class="mf">0.75</span><span class="p">,</span> <span class="mf">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">scale</span><span class="p">)</span>
+<span class="go">| 0.75, 0.00, 0.00|</span>
+<span class="go">| 0.00, 2.00, 0.00|</span>
+<span class="go">| 0.00, 0.00, 1.00|</span>
+</pre></div>
+</div>
+<p>When applied, this transform will scale an object to 75% of its original size
+in the X-axis and double its size along the Y-axis.</p>
+<p>It is also possible to flip an object along an axis by supplying a negative
+scaling factor:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">planar</span> <span class="kn">import</span> <span class="n">Affine</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">flip_x</span> <span class="o">=</span> <span class="n">Affine</span><span class="o">.</span><span class="n">scale</span><span class="p">((</span><span class="o">-</span><span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">flip_x</span><span class="p">)</span>
+<span class="go">|-1.00, 0.00, 0.00|</span>
+<span class="go">| 0.00, 1.00, 0.00|</span>
+<span class="go">| 0.00, 0.00, 1.00|</span>
+</pre></div>
+</div>
+<p>As you have probably guessed, applying the transform above will flip
+an object along the X-axis, mirroring it across the origin.</p>
+<p>More sophisticated transforms can modify coordinates in more complex
+ways, such as applying rotation:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">planar</span> <span class="kn">import</span> <span class="n">Affine</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rot90</span> <span class="o">=</span> <span class="n">Affine</span><span class="o">.</span><span class="n">rotation</span><span class="p">(</span><span class="mf">90</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">rot90</span><span class="p">)</span>
+<span class="go">| 0.00, 1.00, 0.00|</span>
+<span class="go">|-1.00, 0.00, 0.00|</span>
+<span class="go">| 0.00, 0.00, 1.00|</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rot45</span> <span class="o">=</span> <span class="n">Affine</span><span class="o">.</span><span class="n">rotation</span><span class="p">(</span><span class="mf">45</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">rot45</span><span class="p">)</span>
+<span class="go">| 0.71, 0.71, 0.00|</span>
+<span class="go">|-0.71, 0.71, 0.00|</span>
+<span class="go">| 0.00, 0.00, 1.00|</span>
+</pre></div>
+</div>
+<p>Notice how the 90 degree rotation simply maps the original X coordinates
+directly to the Y-axis, and vice versa for Y as you would intuitively
+calculate such a rotation yourself. The 45 degree rotation, being halfway
+between 0 and 90, mixes the coordinate values from each axis equally. Note the
+precision is limited to 2 places in the string representation of a matrix for
+easy reading.  The <tt class="docutils literal"><span class="pre">repr()</span></tt> of a transform instance provides greater
+precision, at the cost of some readability.</p>
+<p>By default, rotation transforms are performed about the origin. You can
+specify another point to rotate around using the optional <tt class="docutils literal"><span class="pre">pivot</span></tt>
+argument:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">planar</span> <span class="kn">import</span> <span class="n">Affine</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rot</span> <span class="o">=</span> <span class="n">Affine</span><span class="o">.</span><span class="n">rotation</span><span class="p">(</span><span class="mf">45</span><span class="p">,</span> <span class="n">pivot</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">3</span><span class="p">,</span> <span class="mf">8</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">rot</span><span class="p">)</span>
+<span class="go">| 0.71, 0.71, 4.78|</span>
+<span class="go">|-0.71, 0.71, 4.46|</span>
+<span class="go">| 0.00, 0.00, 1.00|</span>
+</pre></div>
+</div>
+<p>You can see that this includes a translation in the matrix values. You can
+use the pivot to rotate an object about its center, or rotate an object
+about another object.</p>
+<p>The last <a class="reference internal" href="affineref.html#planar.Affine" title="planar.Affine"><tt class="xref py py-class docutils literal"><span class="pre">Affine</span></tt></a> constructor allows the creation of shear
+transforms.  Shears can alter the angle of the X and Y axes relative to one
+another:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">planar</span> <span class="kn">import</span> <span class="n">Affine</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">shear</span> <span class="o">=</span> <span class="n">Affine</span><span class="o">.</span><span class="n">shear</span><span class="p">(</span><span class="mf">30</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">shear</span><span class="p">)</span>
+<span class="go">| 1.00, 0.00, 0.00|</span>
+<span class="go">| 0.58, 1.00, 0.00|</span>
+<span class="go">| 0.00, 0.00, 1.00|</span>
+</pre></div>
+</div>
+<p>The above applies a 30 degree shear to the X-axis, and leaves the Y-axis
+unchanged. We can also create a shear for both axes:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">planar</span> <span class="kn">import</span> <span class="n">Affine</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">shear</span> <span class="o">=</span> <span class="n">Affine</span><span class="o">.</span><span class="n">shear</span><span class="p">(</span><span class="o">-</span><span class="mf">45</span><span class="p">,</span> <span class="mf">15</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">shear</span><span class="p">)</span>
+<span class="go">| 1.00, 0.27, 0.00|</span>
+<span class="go">|-1.00, 1.00, 0.00|</span>
+<span class="go">| 0.00, 0.00, 1.00|</span>
+</pre></div>
+</div>
+<p>A shear transform can alter the shape of an object. For example, shearing a
+rectangle results in a parallelogram; shearing a circle results in an
+ellipse.</p>
+<p>The final way to construct an <a class="reference internal" href="affineref.html#planar.Affine" title="planar.Affine"><tt class="xref py py-class docutils literal"><span class="pre">Affine</span></tt></a> instance is to use the
+default constructor.  This accepts 6 floating point arguments that are
+assigned row-wise to the top 2 rows of the transformation matrix. This is
+probably only useful if you have a fixed, pre-calculated set of matrix values
+that you want to use:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">planar</span> <span class="kn">import</span> <span class="n">Affine</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">affine</span> <span class="o">=</span> <span class="n">Affine</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">affine</span><span class="p">)</span>
+<span class="go">| 0.20, 0.30, 0.40|</span>
+<span class="go">| 0.50, 0.60, 0.70|</span>
+<span class="go">| 0.00, 0.00, 1.00|</span>
+</pre></div>
+</div>
+<p>Regardless of how you instantiate <a class="reference internal" href="affineref.html#planar.Affine" title="planar.Affine"><tt class="xref py py-class docutils literal"><span class="pre">Affine</span></tt></a>, you can access the
+values in the matrix as elements of a row-wise sequence:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">affine</span><span class="p">)</span>
+<span class="go">9</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">affine</span><span class="p">[</span><span class="mf">3</span><span class="p">]</span>
+<span class="go">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">affine</span><span class="p">[</span><span class="o">-</span><span class="mf">1</span><span class="p">]</span>
+<span class="go">1.0</span>
+</pre></div>
+</div>
+<p>Of course, since affine transforms are immutable, you cannot assign directly
+to matrix elements to modify them.</p>
+<div class="section" id="matrix-multiplication">
+<h3>Matrix Multiplication<a class="headerlink" href="#matrix-multiplication" title="Permalink to this headline">¶</a></h3>
+<p>Affine transforms can be combined and applied to objects via matrix
+multiplication. Combining transforms is powerful, because it allows you
+literally combine the effects of multiple different transformations into one.
+For example, suppose you have two transforms, a rotation and a scale:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">planar</span> <span class="kn">import</span> <span class="n">Affine</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rot</span> <span class="o">=</span> <span class="n">Affine</span><span class="o">.</span><span class="n">rotation</span><span class="p">(</span><span class="mf">30</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scale</span> <span class="o">=</span> <span class="n">Affine</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="mf">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can combine these two transforms into a single one that does both
+operations at once by multiplying them:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">rot_and_scale</span> <span class="o">=</span> <span class="n">rot</span> <span class="o">*</span> <span class="n">scale</span>
+</pre></div>
+</div>
+<p>Multiplying the two transforms performs a matrix multiplication of the
+transformation matrices and creates a new affine instance from the resulting
+matrix. Note that multiplying two affine transforms always results in an
+affine transform, with its parallel-preserving properties.</p>
+<p>It&#8217;s important to understand that matrix multiplication is not always
+commutative, and thus is order-dependant. For example, rotating an object
+first and then translating it will return a different result than
+performing the translation first and then the rotation.</p>
+</div>
+<div class="section" id="inspecting-transforms">
+<h3>Inspecting Transforms<a class="headerlink" href="#inspecting-transforms" title="Permalink to this headline">¶</a></h3>
+<p>Often when working with transforms, it is useful to inspect them in
+terms of certain high-level mathematical properties. These properties
+can expose important facts, and limitations of a specific transform.</p>
+<p>Boolean properties of <a class="reference internal" href="affineref.html#planar.Affine" title="planar.Affine"><tt class="xref py py-class docutils literal"><span class="pre">Affine</span></tt></a> instances are exposed in several
+<tt class="docutils literal"><span class="pre">is_*</span></tt> attributes. All of these properties can be determined by examining
+the transform matrix values directly yourself, but using the built-in property
+attributes is more convenient and efficient.</p>
+<p><tt class="docutils literal"><span class="pre">is_identity</span></tt> &#8211; True if the transform is effectively the identity
+transform. Identity transforms may be created directly, of course, but
+may also be the result of combining inverse transforms, such as a
+scale of <tt class="docutils literal"><span class="pre">2.0</span></tt>, and a scale of <tt class="docutils literal"><span class="pre">0.5</span></tt>.</p>
+<p><tt class="docutils literal"><span class="pre">is_rectilinear</span></tt> &#8211; True if applying the transform would preserve the
+axis-alignment of an object. That is, points in a shape that make lines
+parallel to the X or Y axis before being transformed, would still make lines
+parallel to an axis after being transformed.  Note, that they may not
+be parallel to the same axis as before.  Examples of rectilinear transforms
+include translation, scale, and rotation in multiples of 90 degrees.</p>
+<p><tt class="docutils literal"><span class="pre">is_conformal</span></tt> &#8211; True if the angles between points within an object
+would not change as a result of the transform being applied. This
+means that the transform effectively has zero shear.</p>
+<p><tt class="docutils literal"><span class="pre">is_orthonormal</span></tt> &#8211; If True, applying the transform to a shape
+would result in a congruent shape with no effective scaling or shear.
+Such a transform is also called a &#8220;rigid motion&#8221; since it does
+not squash or stretch the shape. All orthonormal transforms are
+conformal, and have a determinant of 1. Thus, they are never degenerate.</p>
+<p><tt class="docutils literal"><span class="pre">is_degenerate</span></tt> &#8211; True if applying the transform to a shape would
+reduce its area to zero. This means that the scaling factor of the
+transform (i.e., the determinant) is effectively zero. Degenerate transforms
+cannot be inverted, because they are &#8220;lossy&#8221; by completely removing
+information in one or both dimensions.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">All boolean properties of transforms operate within
+the rounding limits specified by <a class="reference internal" href="planarref.html#planar.EPSILON" title="planar.EPSILON"><tt class="xref py py-attr docutils literal"><span class="pre">planar.EPSILON</span></tt></a>. This allows
+them to operate intuitively in the face of floating point
+precision limits.</p>
+</div>
+<p>Two other attributes are available for affine transforms:</p>
+<p><tt class="docutils literal"><span class="pre">determinant</span></tt> &#8211; A scalar floating-point value derived from the transform
+that is equal to the overall scaling factor of the transform when applied
+to a shape. Mathematically:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">new_area</span> <span class="o">=</span> <span class="n">old_area</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">determinant</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that a determinant will be negative if scaling along one dimension
+is negative, usually indicating a flip across an axis. Shear transforms
+along both axes will also affect the area of an object, resulting in
+a non-unity determinant. Rotation and translation never affect the area
+of objects, thus such transforms will always have a determinant of <tt class="docutils literal"><span class="pre">1.0</span></tt>.</p>
+<p>If a transform has a determinant of zero, it is considered degenerate.
+This means that it effectively &#8220;collapses&#8221; an object to zero area, losing
+information along one or both dimensions as a result. Because of this,
+such transforms cannot be inverted.</p>
+<p><tt class="docutils literal"><span class="pre">column_vectors</span></tt> &#8211; A 3-tuple containing the 2D column vectors from
+the transformation vector. Since the bottom row of every affine transform
+is fixed, the column vectors contain only the top 2 rows. The vectors
+define the X-axis, Y-axis, and origin respectively of the transform&#8217;s
+coordinate system.</p>
+</div>
+<div class="section" id="other-operations">
+<h3>Other Operations<a class="headerlink" href="#other-operations" title="Permalink to this headline">¶</a></h3>
+<p>As you might expect, <a class="reference internal" href="affineref.html#planar.Affine" title="planar.Affine"><tt class="xref py py-class docutils literal"><span class="pre">Affine</span></tt></a> instances support equality
+comparisons.  These simply compare the transformation matrix values directly.
+Affine transforms also support an <a class="reference internal" href="affineref.html#planar.Affine.almost_equals" title="planar.Affine.almost_equals"><tt class="xref py py-meth docutils literal"><span class="pre">Affine.almost_equals()</span></tt></a> method for
+approximate comparison, which is useful to compensate for floating point
+precision limits.</p>
+<p>Other comparison operations, such as greater or less than are not supported.</p>
+<p>The only arithmetic operation supported for <a class="reference internal" href="affineref.html#planar.Affine" title="planar.Affine"><tt class="xref py py-class docutils literal"><span class="pre">Affine</span></tt></a> transforms is
+multiplication. This is because it is the only operation that can guarantee
+that the result is also an affine transform.</p>
+<p>If a transform is not degenerate, it can be inverted using the unary <tt class="docutils literal"><span class="pre">~</span></tt>
+operator (tilde). An inverse transform performs the exact opposite transform
+as the original. Multiplying a transform by its inverse, results in the
+identity transform:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">T</span> <span class="o">*</span> <span class="o">~</span><span class="n">T</span> <span class="o">==</span> <span class="n">Affine</span><span class="o">.</span><span class="n">identity</span><span class="p">()</span> <span class="c"># if not T.is_degenerate</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="bbox.html" title="BoundingBox Objects"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="vectors.html" title="Vector Objects"
+             >previous</a> |</li>
+        <li><a href="index.html">Planar v0.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, Casey Duncan.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>

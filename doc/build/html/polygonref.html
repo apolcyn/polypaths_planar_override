@@ -1,0 +1,377 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>planar.Polygon – Polygonal Shapes &mdash; Planar v0.4 documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Planar v0.4 documentation" href="index.html" />
+    <link rel="next" title="Release 0.3 (2/26/2011)" href="changes.html" />
+    <link rel="prev" title="planar.BoundingBox – Bounding Boxes" href="bboxref.html" />
+        <link rel="stylesheet" href="_static/planar.css" type="text/css" />
+
+  </head>
+  <body>
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<img src="_static/planar.png" alt="Planar logo" />
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="changes.html" title="Release 0.3 (2/26/2011)"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="bboxref.html" title="planar.BoundingBox – Bounding Boxes"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Planar v0.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="bboxref.html"
+                        title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">planar.BoundingBox</span></tt> &#8211; Bounding Boxes</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="changes.html"
+                        title="next chapter">Release 0.3 (2/26/2011)</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/polygonref.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="planar-polygon-polygonal-shapes">
+<h1><a class="reference internal" href="#planar.Polygon" title="planar.Polygon"><tt class="xref py py-class docutils literal"><span class="pre">planar.Polygon</span></tt></a> &#8211; Polygonal Shapes<a class="headerlink" href="#planar-polygon-polygonal-shapes" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="index-0"></span><dl class="class">
+<dt id="planar.Polygon">
+<em class="property">class </em><tt class="descclassname">planar.</tt><tt class="descname">Polygon</tt><big>(</big><em>vertices</em>, <em>is_convex=None</em>, <em>is_simple=None</em><big>)</big><a class="headerlink" href="#planar.Polygon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Arbitrary polygon represented as a list of vertices.</p>
+<p>The individual vertices of a polygon are mutable, but the number
+of vertices is fixed at construction.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>vertices</strong> &#8211; Iterable containing three or more <a class="reference internal" href="vectorref.html#planar.Vec2" title="planar.Vec2"><tt class="xref py py-class docutils literal"><span class="pre">Vec2</span></tt></a> 
+objects.</li>
+<li><strong>is_convex</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Optionally allows the polygon to be declared convex
+or non-convex at construction time, thus saving additional time spent
+checking the vertices to calculate this property later. Only specify
+this value if you are certain of the convexity of the vertices
+provided, as no additional checking will be performed. The results are
+undefined if a non-convex polygon is declared convex or vice-versa.
+Note that triangles are always considered convex, regardless of this
+value.</li>
+<li><strong>is_simple</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Optionally allows the polygon to be declared simple
+(i.e., not self-intersecting) or non-simple at construction time,
+which can save time calculating this property later. As with
+<tt class="docutils literal"><span class="pre">is_convex</span></tt> above, only specify this value if you are certain of
+this value for the vertices provided, or the results are undefined.
+Note that convex polygons are always considered simple, regardless of
+this value.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Several operations on polygons, such as checking for containment, or
+intersection, rely on knowing the convexity to select the appropriate
+algorithm. So, it may be beneficial to specify these values in the
+constructor, even if your application does not access the <tt class="docutils literal"><span class="pre">is_convex</span></tt>,
+or <tt class="docutils literal"><span class="pre">is_simple</span></tt> properties itself later. However, be cautious when 
+specifying these values here, as incorrect values will likely
+result in incorrect results when operating on the polygon.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If the polygon is mutated, the cached values of <tt class="docutils literal"><span class="pre">is_convex</span></tt> and 
+<tt class="docutils literal"><span class="pre">is_simple</span></tt> will be invalidated.</p>
+</div>
+<dl class="method">
+<dt id="planar.Polygon.almost_equals">
+<tt class="descname">almost_equals</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#planar.Polygon.almost_equals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare for approximate equality.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="planar.Polygon.contains_point">
+<tt class="descname">contains_point</tt><big>(</big><em>point</em><big>)</big><a class="headerlink" href="#planar.Polygon.contains_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the specified point is inside the polygon.</p>
+<p>This test can use various strategies depending on the
+classification of the polygon, i.e., triangular, radial, 
+y-monotone, convex, or other.</p>
+<p>The runtime complexity will depend on the polygon:</p>
+<p>Triangle or best-case radial: O(1)
+y-monotone, convex: O(log n)
+other: O(n)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>point</strong> (<a class="reference internal" href="vectorref.html#planar.Vec2" title="planar.Vec2"><tt class="xref py py-class docutils literal"><span class="pre">Vec2</span></tt></a>) &#8211; A point vector.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="planar.Polygon.convex_hull">
+<em class="property">classmethod </em><tt class="descname">convex_hull</tt><big>(</big><em>points</em><big>)</big><a class="headerlink" href="#planar.Polygon.convex_hull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new polygon that is the convex hull of the supplied
+sequence of points.</p>
+<p>If points is a polygon known to be convex, a copy of the 
+polygon is returned.</p>
+<p>The hull is computed using an adaptive quick-hull algorithm.  The
+expected runtime complexity of this algorithm is O(n log h) (where h
+is the size of the hull), the worst case is O(n log n) when the
+supplied points are already nearly convex. This algorithm is
+especially fast when many of the supplied points are inside the
+resulting hull.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>points</strong> &#8211; A sequence of points.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Polygon</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="planar.Polygon.from_points">
+<em class="property">classmethod </em><tt class="descname">from_points</tt><big>(</big><em>points</em><big>)</big><a class="headerlink" href="#planar.Polygon.from_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a polygon from a sequence of points</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="planar.Polygon.regular">
+<em class="property">classmethod </em><tt class="descname">regular</tt><big>(</big><em>vertex_count</em>, <em>radius</em>, <em>center=(0</em>, <em>0)</em>, <em>angle=0</em><big>)</big><a class="headerlink" href="#planar.Polygon.regular" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a regular polygon with the specified number of vertices
+radius distance from the center point. Regular polygons are
+always convex.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>vertex_count</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; The number of vertices in the polygon.
+Must be &gt;= 3.</li>
+<li><strong>radius</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; distance from vertices to center point.</li>
+<li><strong>center</strong> (<em>Vec2</em>) &#8211; The center point of the polygon. If omitted,
+the polygon will be centered on the origin.</li>
+<li><strong>angle</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; The starting angle for the vertices, in degrees.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="planar.Polygon.star">
+<em class="property">classmethod </em><tt class="descname">star</tt><big>(</big><em>peak_count</em>, <em>radius1</em>, <em>radius2</em>, <em>center=(0</em>, <em>0)</em>, <em>angle=0</em><big>)</big><a class="headerlink" href="#planar.Polygon.star" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a radial pointed star polygon with the specified number
+of peaks.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>peak_count</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; The number of peaks. The resulting polygon will
+have twice this number of vertices. Must be &gt;= 2.</li>
+<li><strong>radius1</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; The peak or valley vertex radius. A vertex
+is aligned on <tt class="docutils literal"><span class="pre">angle</span></tt> with this radius.</li>
+<li><strong>radius2</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; The alternating vertex radius.</li>
+<li><strong>center</strong> (<em>Vec2</em>) &#8211; The center point of the polygon. If omitted,
+the polygon will be centered on the origin.</li>
+<li><strong>angle</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; The starting angle for the vertices, in degrees.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="planar.Polygon.tangents_to_point">
+<tt class="descname">tangents_to_point</tt><big>(</big><em>point</em><big>)</big><a class="headerlink" href="#planar.Polygon.tangents_to_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a point <strong>exterior</strong> to the polygon, return the pair of
+vertex points from the polygon that define the tangent lines with the
+specified point.</p>
+<p>Runtime Complexity: O(log n) convex, O(n) other</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>point</strong> (<a class="reference internal" href="vectorref.html#planar.Vec2" title="planar.Vec2"><tt class="xref py py-class docutils literal"><span class="pre">Vec2</span></tt></a>) &#8211; A point outside the polygon. If the point specified is
+inside, the result is undefined.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A tuple containing the left and right tangent points.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">tuple of <a class="reference internal" href="vectorref.html#planar.Vec2" title="planar.Vec2"><tt class="xref py py-class docutils literal"><span class="pre">Vec2</span></tt></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="planar.Polygon.bounding_box">
+<tt class="descname">bounding_box</tt><a class="headerlink" href="#planar.Polygon.bounding_box" title="Permalink to this definition">¶</a></dt>
+<dd><p>The bounding box of the polygon</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="planar.Polygon.centroid">
+<tt class="descname">centroid</tt><a class="headerlink" href="#planar.Polygon.centroid" title="Permalink to this definition">¶</a></dt>
+<dd><p>The geometric center point of the polygon. This point only exists 
+for simple polygons. For non-simple polygons it is <tt class="xref docutils literal"><span class="pre">None</span></tt>. Note
+in concave polygons, this point may lie outside of the polygon itself.</p>
+<p>If the centroid is unknown, it is calculated from the vertices and
+cached. If the polygon is known to be simple, this takes O(n) time. If
+not, then the simple polygon check is also performed, which has an
+expected complexity of O(n log n).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="planar.Polygon.is_centroid_known">
+<tt class="descname">is_centroid_known</tt><a class="headerlink" href="#planar.Polygon.is_centroid_known" title="Permalink to this definition">¶</a></dt>
+<dd><p>True if the polygon&#8217;s centroid has been pre-calculated and cached.</p>
+<p>Mutating the polygon will invalidate the cached value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="planar.Polygon.is_convex">
+<tt class="descname">is_convex</tt><a class="headerlink" href="#planar.Polygon.is_convex" title="Permalink to this definition">¶</a></dt>
+<dd><p>True if the polygon is convex.</p>
+<p>If this is unknown then it is calculated from the vertices
+of the polygon and cached. Runtime complexity: O(n)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="planar.Polygon.is_convex_known">
+<tt class="descname">is_convex_known</tt><a class="headerlink" href="#planar.Polygon.is_convex_known" title="Permalink to this definition">¶</a></dt>
+<dd><p>True if the polygon is already known to be convex or not.</p>
+<p>If this value is True, then the value of <tt class="docutils literal"><span class="pre">is_convex</span></tt> is 
+cached and does not require additional calculation to access.
+Mutating the polygon will invalidate the cached value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="planar.Polygon.is_simple">
+<tt class="descname">is_simple</tt><a class="headerlink" href="#planar.Polygon.is_simple" title="Permalink to this definition">¶</a></dt>
+<dd><p>True if the polygon is simple, i.e., it has no self-intersections.</p>
+<p>If this is unknown then it is calculated from the vertices
+of the polygon and cached. 
+Runtime complexity: O(n) convex,
+O(n log n) expected for most non-convex cases, 
+O(n^2) worst case non-convex</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="planar.Polygon.is_simple_known">
+<tt class="descname">is_simple_known</tt><a class="headerlink" href="#planar.Polygon.is_simple_known" title="Permalink to this definition">¶</a></dt>
+<dd><p>True if the polygon is already known to be simple or not.</p>
+<p>If this value is True, then the value of <tt class="docutils literal"><span class="pre">is_simple</span></tt> is 
+cached and does not require additional calculation to access.
+Mutating the polygon will invalidate the cached value.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="changes.html" title="Release 0.3 (2/26/2011)"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="bboxref.html" title="planar.BoundingBox – Bounding Boxes"
+             >previous</a> |</li>
+        <li><a href="index.html">Planar v0.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, Casey Duncan.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>

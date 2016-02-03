@@ -1,0 +1,167 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>planar – Global Definitions &mdash; Planar v0.4 documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Planar v0.4 documentation" href="index.html" />
+    <link rel="next" title="planar.Vec2 – 2D Vectors" href="vectorref.html" />
+    <link rel="prev" title="Polygon Objects" href="polygon.html" />
+        <link rel="stylesheet" href="_static/planar.css" type="text/css" />
+
+  </head>
+  <body>
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<img src="_static/planar.png" alt="Planar logo" />
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="vectorref.html" title="planar.Vec2 – 2D Vectors"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="polygon.html" title="Polygon Objects"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Planar v0.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="polygon.html"
+                        title="previous chapter">Polygon Objects</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="vectorref.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">planar.Vec2</span></tt> &#8211; 2D Vectors</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/planarref.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-planar">
+<span id="planar-global-definitions"></span><h1><a class="reference internal" href="#module-planar" title="planar: Global Definitions"><tt class="xref py py-mod docutils literal"><span class="pre">planar</span></tt></a> &#8211; Global Definitions<a class="headerlink" href="#module-planar" title="Permalink to this headline">¶</a></h1>
+<dl class="data">
+<dt id="planar.__versioninfo__">
+<tt class="descclassname">planar.</tt><tt class="descname">__versioninfo__</tt><a class="headerlink" href="#planar.__versioninfo__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Package version as a tuple of three integers:
+<tt class="docutils literal"><span class="pre">(major_version,</span> <span class="pre">minor_version,</span> <span class="pre">bugfix_version)</span></tt>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="planar.__version__">
+<tt class="descclassname">planar.</tt><tt class="descname">__version__</tt><a class="headerlink" href="#planar.__version__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Package version as a string:
+<tt class="docutils literal"><span class="pre">&quot;major_version.minor_version.bugfix_version&quot;</span></tt>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="planar.EPSILON">
+<tt class="descclassname">planar.</tt><tt class="descname">EPSILON</tt><a class="headerlink" href="#planar.EPSILON" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allowed absolute error value for approximate floating point comparison
+operations.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="planar.EPSILON2">
+<tt class="descclassname">planar.</tt><tt class="descname">EPSILON2</tt><a class="headerlink" href="#planar.EPSILON2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Squared absolute error value, always <tt class="docutils literal"><span class="pre">EPSILON**2</span></tt>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="planar.set_epsilon">
+<tt class="descclassname">planar.</tt><tt class="descname">set_epsilon</tt><big>(</big><em>epsilon</em><big>)</big><a class="headerlink" href="#planar.set_epsilon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the global absolute error value and rounding limit for approximate
+floating point comparison operations. This value is accessible via the
+<a class="reference internal" href="#planar.EPSILON" title="planar.EPSILON"><tt class="xref py py-attr docutils literal"><span class="pre">planar.EPSILON</span></tt></a> global variable.</p>
+<p>The default value of <tt class="docutils literal"><span class="pre">0.00001</span></tt> is suitable for values
+that are in the &#8220;countable range&#8221;. You may need a larger
+epsilon when using large absolute values, and a smaller value
+for very small values close to zero. Otherwise approximate
+comparison operations will not behave as expected.</p>
+</dd></dl>
+
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">You should only change the <tt class="docutils literal"><span class="pre">EPSILON</span></tt> value via the <a class="reference internal" href="#planar.set_epsilon" title="planar.set_epsilon"><tt class="xref py py-func docutils literal"><span class="pre">set_epsilon()</span></tt></a>
+function. Assigning a value to the variable directly will not work
+correctly, and may result in undefined behavior.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="vectorref.html" title="planar.Vec2 – 2D Vectors"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="polygon.html" title="Polygon Objects"
+             >previous</a> |</li>
+        <li><a href="index.html">Planar v0.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, Casey Duncan.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>

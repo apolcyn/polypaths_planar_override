@@ -1,0 +1,478 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>planar.Vec2 – 2D Vectors &mdash; Planar v0.4 documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Planar v0.4 documentation" href="index.html" />
+    <link rel="next" title="planar.Vec2Array – 2D Vector Arrays" href="vec2arrayref.html" />
+    <link rel="prev" title="planar – Global Definitions" href="planarref.html" />
+        <link rel="stylesheet" href="_static/planar.css" type="text/css" />
+
+  </head>
+  <body>
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<img src="_static/planar.png" alt="Planar logo" />
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="vec2arrayref.html" title="planar.Vec2Array – 2D Vector Arrays"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="planarref.html" title="planar – Global Definitions"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Planar v0.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="planarref.html"
+                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">planar</span></tt> &#8211; Global Definitions</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="vec2arrayref.html"
+                        title="next chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">planar.Vec2Array</span></tt> &#8211; 2D Vector Arrays</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/vectorref.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="planar-vec2-2d-vectors">
+<h1><a class="reference internal" href="#planar.Vec2" title="planar.Vec2"><tt class="xref py py-class docutils literal"><span class="pre">planar.Vec2</span></tt></a> &#8211; 2D Vectors<a class="headerlink" href="#planar-vec2-2d-vectors" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="index-0"></span><dl class="class">
+<dt id="planar.Vec2">
+<em class="property">class </em><tt class="descclassname">planar.</tt><tt class="descname">Vec2</tt><a class="headerlink" href="#planar.Vec2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Two dimensional immutable vector.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; x coordinate.</li>
+<li><strong>y</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; y coordinate.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="planar.Vec2.almost_equals">
+<tt class="descname">almost_equals</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#planar.Vec2.almost_equals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare vectors for approximate equality.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>other</strong> (<em>Vec2</em>) &#8211; Vector being compared.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">True if distance between the vectors &lt; <tt class="docutils literal"><span class="pre">EPSILON</span></tt>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="planar.Vec2.angle_to">
+<tt class="descname">angle_to</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#planar.Vec2.angle_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the smallest angle from this vector to another.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>other</strong> (<em>Vec2</em>) &#8211; Vector to compute the angle to.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Angle in degrees in the range <tt class="docutils literal"><span class="pre">(-180,</span> <span class="pre">180]</span></tt>.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="planar.Vec2.clamped">
+<tt class="descname">clamped</tt><big>(</big><em>min_length=None</em>, <em>max_length=None</em><big>)</big><a class="headerlink" href="#planar.Vec2.clamped" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute a vector in the same direction with a bounded
+length. If <tt class="docutils literal"><span class="pre">min_length</span></tt> &lt;= <tt class="docutils literal"><span class="pre">self.length</span></tt> &lt;= <tt class="docutils literal"><span class="pre">max_length</span></tt>
+then the original vector is returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>min_length</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Minimum length of computed vector. Note if 
+the input vector is null, the null vector is always returned.</li>
+<li><strong>max_length</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Maximum length of computed vector. Must
+be &gt;= <tt class="docutils literal"><span class="pre">min_length</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Vec2</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="planar.Vec2.cross">
+<tt class="descname">cross</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#planar.Vec2.cross" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the cross product with another vector.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>other</strong> (<em>Vec2</em>) &#8211; The vector with which to compute the cross product.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The length of the cross-product vector</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="planar.Vec2.distance_to">
+<tt class="descname">distance_to</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#planar.Vec2.distance_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the distance to another point vector.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>other</strong> (<em>Vec2</em>) &#8211; The point vector to which to compute the distance.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="planar.Vec2.dot">
+<tt class="descname">dot</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#planar.Vec2.dot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the dot product with another vector.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>other</strong> (<em>Vec2</em>) &#8211; The vector with which to compute the dot product.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="planar.Vec2.lerp">
+<tt class="descname">lerp</tt><big>(</big><em>other</em>, <em>bias</em><big>)</big><a class="headerlink" href="#planar.Vec2.lerp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute a vector by linear interpolation between
+this vector and another.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>other</strong> (<em>Vec2</em>) &#8211; The vector to interpolate to. its value
+is returned when <tt class="docutils literal"><span class="pre">bias</span> <span class="pre">==</span> <span class="pre">1.0</span></tt>.</li>
+<li><strong>bias</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Interpolation value when in the range [0, 1]. Becomes 
+an extrapolation value outside this range.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Vec2</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="planar.Vec2.normalized">
+<tt class="descname">normalized</tt><big>(</big><big>)</big><a class="headerlink" href="#planar.Vec2.normalized" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the vector scaled to unit length. If the vector
+is null, the null vector is returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">Vec2</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="planar.Vec2.perpendicular">
+<tt class="descname">perpendicular</tt><big>(</big><big>)</big><a class="headerlink" href="#planar.Vec2.perpendicular" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the perpendicular vector.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">Vec2</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="planar.Vec2.polar">
+<em class="property">classmethod </em><tt class="descname">polar</tt><big>(</big><em>angle</em>, <em>length=1.0</em><big>)</big><a class="headerlink" href="#planar.Vec2.polar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a vector from polar coordinates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>angle</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Vector angle in degrees from the positive x-axis.</li>
+<li><strong>length</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; The length of the vector.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Vec2</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="planar.Vec2.project">
+<tt class="descname">project</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#planar.Vec2.project" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the projection of another vector onto this one.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>other</strong> (<em>Vec2</em>) &#8211; The vector to project.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Vec2</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="planar.Vec2.reflect">
+<tt class="descname">reflect</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#planar.Vec2.reflect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the reflection of this vector against another.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>other</strong> (<em>Vec2</em>) &#8211; The vector to reflect against.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Vec2</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="planar.Vec2.rotated">
+<tt class="descname">rotated</tt><big>(</big><em>angle</em><big>)</big><a class="headerlink" href="#planar.Vec2.rotated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the vector rotated by an angle.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>angle</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; The angle to rotate by, in degrees.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Vec2</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="planar.Vec2.scaled_to">
+<tt class="descname">scaled_to</tt><big>(</big><em>length</em><big>)</big><a class="headerlink" href="#planar.Vec2.scaled_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the vector scaled to a given length. If the
+vector is null, the null vector is returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>length</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; The length of the vector returned, unless
+the vector is null.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Vec2</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="planar.Vec2.angle">
+<tt class="descname">angle</tt><a class="headerlink" href="#planar.Vec2.angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>The angle the vector makes to the positive x axis in the range
+<tt class="docutils literal"><span class="pre">(-180,</span> <span class="pre">180]</span></tt>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="planar.Vec2.is_null">
+<tt class="descname">is_null</tt><a class="headerlink" href="#planar.Vec2.is_null" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flag indicating if the vector is effectively zero-length.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">True if the vector length &lt; EPSILON.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="planar.Vec2.length">
+<tt class="descname">length</tt><a class="headerlink" href="#planar.Vec2.length" title="Permalink to this definition">¶</a></dt>
+<dd><p>The length or scalar magnitude of the vector.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="planar.Vec2.length2">
+<tt class="descname">length2</tt><a class="headerlink" href="#planar.Vec2.length2" title="Permalink to this definition">¶</a></dt>
+<dd><p>The square of the length of the vector.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="planar.Vec2.x">
+<tt class="descname">x</tt><a class="headerlink" href="#planar.Vec2.x" title="Permalink to this definition">¶</a></dt>
+<dd><p>The horizontal coordinate.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="planar.Vec2.y">
+<tt class="descname">y</tt><a class="headerlink" href="#planar.Vec2.y" title="Permalink to this definition">¶</a></dt>
+<dd><p>The vertical coordinate.</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="index-1"></span><dl class="class">
+<dt id="planar.Point">
+<em class="property">class </em><tt class="descclassname">planar.</tt><tt class="descname">Point</tt><a class="headerlink" href="#planar.Point" title="Permalink to this definition">¶</a></dt>
+<dd><p>An alias for <a class="reference internal" href="#planar.Vec2" title="planar.Vec2"><tt class="xref py py-class docutils literal"><span class="pre">Vec2</span></tt></a>. Useful for
+code clarity.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="vec2arrayref.html" title="planar.Vec2Array – 2D Vector Arrays"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="planarref.html" title="planar – Global Definitions"
+             >previous</a> |</li>
+        <li><a href="index.html">Planar v0.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, Casey Duncan.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>
