@@ -32,14 +32,14 @@ if 'SETUP_PY_CFLAGS' in os.environ:
 	extra_compile_args.append(os.environ['SETUP_PY_CFLAGS'])
 
 setup(
-    name='planar',
-    version='0.4', # *** REMEMBER TO UPDATE __init__.py ***
-    description='2D planar geometry library for Python.',
+    name='polypaths_planar_override',
+    version='0.1', # *** REMEMBER TO UPDATE __init__.py ***
+    description='tweaked version of planar for use in app',
     long_description=read('README.txt'),
     provides=['planar'],
-    author='Casey Duncan',
-    author_email='casey.duncan@gmail.com',
-    url='http://bitbucket.org/caseman/planar/',
+    author='AP',
+    author_email='alexpolcyn65@gmail.com',
+    url='https://github.com/apolcyn/polypaths_planar_override.git',
     license='BSD',
     classifiers = [
         'Development Status :: 3 - Alpha',
