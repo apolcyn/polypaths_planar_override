@@ -11,14 +11,14 @@
 #include "Python.h"
 #include <float.h>
 #include <string.h>
-#include "planar.h"
+#include "polypaths_planar_override.h"
 
-static PlanarPolygonObject *
+static polypaths_planar_overridePolygonObject *
 Poly_create_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
 {
 	PyObject *verts_arg, *is_convex_arg = NULL, *is_simple_arg = NULL;
 	PyObject *verts_seq = NULL;
-	PlanarPolygonObject *poly = NULL;
+	polypaths_planar_overridePolygonObject *poly = NULL;
 	Py_ssize_t size, i;
 
     static char *kwlist[] = {"vertices", "is_convex", "is_simple", NULL};
@@ -51,14 +51,14 @@ Poly_create_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
 		poly->flags = POLY_SIMPLE_FLAG | POLY_SIMPLE_KNOWN_FLAG;
 	}
 
-    if (PlanarSeq2_Check(verts_arg)) {
+    if (polypaths_planar_overrideSeq2_Check(verts_arg)) {
 		/* Copy existing Seq2 (optimized) */
-		memcpy(poly->vert, ((PlanarSeq2Object *)verts_arg)->vec, 
-			sizeof(planar_vec2_t) * size);
+		memcpy(poly->vert, ((polypaths_planar_overrideSeq2Object *)verts_arg)->vec, 
+			sizeof(polypaths_planar_override_vec2_t) * size);
     } else {
 		/* Generic iterable of points */
 		for (i = 0; i < size; ++i) {
-			if (!PlanarVec2_Parse(PySequence_Fast_GET_ITEM(verts_arg, i), 
+			if (!polypaths_planar_overrideVec2_Parse(PySequence_Fast_GET_ITEM(verts_arg, i), 
 				&poly->vert[i].x, &poly->vert[i].y)) {
 				PyErr_SetString(PyExc_TypeError,
 					"expected iterable of Vec2 objects");
@@ -76,7 +76,7 @@ error:
 }
 
 static void
-Poly_dealloc(PlanarPolygonObject *self) {
+Poly_dealloc(polypaths_planar_overridePolygonObject *self) {
 	Py_XDECREF(self->bbox);
 	self->bbox = NULL;
 	if (self->lt_y_poly != NULL) {
@@ -88,32 +88,32 @@ Poly_dealloc(PlanarPolygonObject *self) {
 }
 
 static PyObject *
-Poly_copy(PlanarPolygonObject *self, PyObject *args)
+Poly_copy(polypaths_planar_overridePolygonObject *self, PyObject *args)
 {
 	PyObject *result;
-    PlanarPolygonObject *poly;
+    polypaths_planar_overridePolygonObject *poly;
     
-    assert(PlanarPolygon_Check(self));
+    assert(polypaths_planar_overridePolygon_Check(self));
     poly = Poly_new(Py_TYPE(self), Py_SIZE(self));
     if (poly == NULL) {
 		return NULL;
     }
-    memcpy(poly->vert, self->vert, sizeof(planar_vec2_t) * Py_SIZE(self));
-	if (PlanarPolygon_CheckExact(self)) {
+    memcpy(poly->vert, self->vert, sizeof(polypaths_planar_override_vec2_t) * Py_SIZE(self));
+	if (polypaths_planar_overridePolygon_CheckExact(self)) {
 		poly->flags = self->flags;
 		poly->centroid.x = self->centroid.x;
 		poly->centroid.y = self->centroid.y;
 		poly->min_r2 = self->min_r2;
 		poly->max_r2 = self->max_r2;
 		if (self->lt_y_poly != NULL) {
-			poly->lt_y_poly = (planar_vec2_t *)PyMem_Malloc(
-				sizeof(planar_vec2_t) * (Py_SIZE(self) + 2));
+			poly->lt_y_poly = (polypaths_planar_override_vec2_t *)PyMem_Malloc(
+				sizeof(polypaths_planar_override_vec2_t) * (Py_SIZE(self) + 2));
 			if (poly == NULL) {
 				Py_DECREF(poly);
 				return PyErr_NoMemory();
 			}
 			memcpy(poly->lt_y_poly, self->lt_y_poly, 
-				sizeof(planar_vec2_t) * (Py_SIZE(self) + 2));
+				sizeof(polypaths_planar_override_vec2_t) * (Py_SIZE(self) + 2));
 			poly->rt_y_poly = poly->lt_y_poly + (
 				self->rt_y_poly - self->lt_y_poly);
 		}
@@ -125,24 +125,24 @@ Poly_copy(PlanarPolygonObject *self, PyObject *args)
 	}
 }
 
-static PlanarPolygonObject *
+static polypaths_planar_overridePolygonObject *
 Poly_create_new_from_points(PyTypeObject *type, PyObject *points)
 {
-	PlanarPolygonObject *poly;
+	polypaths_planar_overridePolygonObject *poly;
     Py_ssize_t size;
     Py_ssize_t i;
 
-	if (PlanarPolygon_CheckExact(points)) {
-		poly = (PlanarPolygonObject *)Poly_copy(
-			(PlanarPolygonObject *)points, NULL);
-	} else if (PlanarSeq2_Check(points)) {
+	if (polypaths_planar_overridePolygon_CheckExact(points)) {
+		poly = (polypaths_planar_overridePolygonObject *)Poly_copy(
+			(polypaths_planar_overridePolygonObject *)points, NULL);
+	} else if (polypaths_planar_overrideSeq2_Check(points)) {
 		/* Copy existing Seq2 (optimized) */
 		poly = Poly_new(type, Py_SIZE(points));
 		if (poly == NULL) {
 			return NULL;
 		}
-		memcpy(poly->vert, ((PlanarSeq2Object *)points)->vec, 
-			sizeof(planar_vec2_t) * Py_SIZE(points));
+		memcpy(poly->vert, ((polypaths_planar_overrideSeq2Object *)points)->vec, 
+			sizeof(polypaths_planar_override_vec2_t) * Py_SIZE(points));
     } else {
 		/* Generic iterable of points */
 		points = PySequence_Fast(points, "expected iterable of Vec2 objects");
@@ -156,7 +156,7 @@ Poly_create_new_from_points(PyTypeObject *type, PyObject *points)
 			return NULL;
 		}
 		for (i = 0; i < size; ++i) {
-			if (!PlanarVec2_Parse(PySequence_Fast_GET_ITEM(points, i), 
+			if (!polypaths_planar_overrideVec2_Parse(PySequence_Fast_GET_ITEM(points, i), 
 				&poly->vert[i].x, &poly->vert[i].y)) {
 				PyErr_SetString(PyExc_TypeError,
 					"expected iterable of Vec2 objects");
@@ -170,7 +170,7 @@ Poly_create_new_from_points(PyTypeObject *type, PyObject *points)
     return poly;
 }
 
-static PlanarPolygonObject *
+static polypaths_planar_overridePolygonObject *
 Poly_create_new_regular(PyTypeObject *type, PyObject *args, PyObject *kwargs)
 {
 	Py_ssize_t vert_count, i;
@@ -178,8 +178,8 @@ Poly_create_new_regular(PyTypeObject *type, PyObject *args, PyObject *kwargs)
 	PyObject *center_arg = NULL;
 	double center_x = 0.0, center_y = 0.0;
 	double angle = 0.0;
-	planar_vec2_t *vert;
-	PlanarPolygonObject *poly;
+	polypaths_planar_override_vec2_t *vert;
+	polypaths_planar_overridePolygonObject *poly;
 
     static char *kwlist[] = {
 		"vertex_count", "radius", "center", "angle", NULL};
@@ -190,7 +190,7 @@ Poly_create_new_regular(PyTypeObject *type, PyObject *args, PyObject *kwargs)
         return NULL;
     }
 	if (center_arg != NULL) {
-		if (!PlanarVec2_Parse(center_arg, &center_x, &center_y)) {
+		if (!polypaths_planar_overrideVec2_Parse(center_arg, &center_x, &center_y)) {
 			PyErr_SetString(PyExc_TypeError,
 				"Polygon.regular(): "
 				"expected Vec2 object for argument center");
@@ -224,7 +224,7 @@ Poly_create_new_regular(PyTypeObject *type, PyObject *args, PyObject *kwargs)
 	return poly;
 }
 
-static PlanarPolygonObject *
+static polypaths_planar_overridePolygonObject *
 Poly_create_new_star(PyTypeObject *type, PyObject *args, PyObject *kwargs)
 {
 	Py_ssize_t peak_count, i;
@@ -232,8 +232,8 @@ Poly_create_new_star(PyTypeObject *type, PyObject *args, PyObject *kwargs)
 	PyObject *center_arg = NULL;
 	double center_x = 0.0, center_y = 0.0;
 	double angle = 0.0;
-	planar_vec2_t *vert;
-	PlanarPolygonObject *poly;
+	polypaths_planar_override_vec2_t *vert;
+	polypaths_planar_overridePolygonObject *poly;
 
     static char *kwlist[] = {
 		"peak_count", "radius1", "radius2", "center", "angle", NULL};
@@ -249,7 +249,7 @@ Poly_create_new_star(PyTypeObject *type, PyObject *args, PyObject *kwargs)
 		return NULL;
 	}
 	if (center_arg != NULL) {
-		if (!PlanarVec2_Parse(center_arg, &center_x, &center_y)) {
+		if (!polypaths_planar_overrideVec2_Parse(center_arg, &center_x, &center_y)) {
 			PyErr_SetString(PyExc_TypeError,
 				"Polygon.star(): "
 				"expected Vec2 object for argument center");
@@ -321,8 +321,8 @@ Poly_create_new_star(PyTypeObject *type, PyObject *args, PyObject *kwargs)
 static int
 compare_vec_triples(const void *a, const void *b)
 {
-	const planar_vec2_t *va = *(planar_vec2_t **)a;
-	const planar_vec2_t *vb = *(planar_vec2_t **)b;
+	const polypaths_planar_override_vec2_t *va = *(polypaths_planar_override_vec2_t **)a;
+	const polypaths_planar_override_vec2_t *vb = *(polypaths_planar_override_vec2_t **)b;
 	int result, i;
 
 	for (i = -1, result = 0; !result && i <= 1; ++i) {
@@ -336,8 +336,8 @@ compare_vec_triples(const void *a, const void *b)
 static int
 compare_vec_triples_reverse(const void *a, const void *b)
 {
-	const planar_vec2_t *va = *(planar_vec2_t **)a;
-	const planar_vec2_t *vb = *(planar_vec2_t **)b;
+	const polypaths_planar_override_vec2_t *va = *(polypaths_planar_override_vec2_t **)a;
+	const polypaths_planar_override_vec2_t *vb = *(polypaths_planar_override_vec2_t **)b;
 	int result, i;
 
 	for (i = -1, result = 0; !result && i <= 1; ++i) {
@@ -349,11 +349,11 @@ compare_vec_triples_reverse(const void *a, const void *b)
 }
 
 static int
-Poly_compare_eq(PlanarPolygonObject *a, PlanarPolygonObject *b) {
+Poly_compare_eq(polypaths_planar_overridePolygonObject *a, polypaths_planar_overridePolygonObject *b) {
 	Py_ssize_t i;
-	planar_vec2_t *a_vert, *b_vert;
-	planar_vec2_t **a_triples = NULL, **b_triples = NULL;
-	const planar_vec2_t *a_end = a->vert + Py_SIZE(a);
+	polypaths_planar_override_vec2_t *a_vert, *b_vert;
+	polypaths_planar_override_vec2_t **a_triples = NULL, **b_triples = NULL;
+	const polypaths_planar_override_vec2_t *a_end = a->vert + Py_SIZE(a);
 	int is_equal;
 
 	if (a == b) {
@@ -382,8 +382,8 @@ Poly_compare_eq(PlanarPolygonObject *a, PlanarPolygonObject *b) {
 	DUP_FIRST_VERT(b);
 	DUP_LAST_VERT(a);
 	DUP_LAST_VERT(b);
-	a_triples = (planar_vec2_t **)PyMem_Malloc(
-		sizeof(planar_vec2_t *) * Py_SIZE(a) * 2);
+	a_triples = (polypaths_planar_override_vec2_t **)PyMem_Malloc(
+		sizeof(polypaths_planar_override_vec2_t *) * Py_SIZE(a) * 2);
 	if (a_triples == NULL) {
 		return -1;
 	}
@@ -392,8 +392,8 @@ Poly_compare_eq(PlanarPolygonObject *a, PlanarPolygonObject *b) {
 		a_triples[i] = a_vert++;
 		b_triples[i] = b_vert++;
 	}
-	qsort(a_triples, Py_SIZE(a), sizeof(planar_vec2_t *), compare_vec_triples);	
-	qsort(b_triples, Py_SIZE(a), sizeof(planar_vec2_t *), compare_vec_triples);	
+	qsort(a_triples, Py_SIZE(a), sizeof(polypaths_planar_override_vec2_t *), compare_vec_triples);	
+	qsort(b_triples, Py_SIZE(a), sizeof(polypaths_planar_override_vec2_t *), compare_vec_triples);	
 	is_equal = 1;
 	for (i = 0; i < Py_SIZE(a); ++i) {
 		if (VEC_NEQ(a_triples[i]-1, b_triples[i]-1)
@@ -409,7 +409,7 @@ Poly_compare_eq(PlanarPolygonObject *a, PlanarPolygonObject *b) {
 	}
 	
 	/* Try comparing with reverse winding */
-	qsort(b_triples, Py_SIZE(a), sizeof(planar_vec2_t *), 
+	qsort(b_triples, Py_SIZE(a), sizeof(polypaths_planar_override_vec2_t *), 
 		compare_vec_triples_reverse);	
 	is_equal = 1;
 	for (i = 0; i < Py_SIZE(a); ++i) {
@@ -427,14 +427,14 @@ Poly_compare_eq(PlanarPolygonObject *a, PlanarPolygonObject *b) {
 static PyObject *
 Poly_compare(PyObject *a, PyObject *b, int op)
 {
-	if (PlanarPolygon_Check(a) && PlanarPolygon_Check(b)) {
+	if (polypaths_planar_overridePolygon_Check(a) && polypaths_planar_overridePolygon_Check(b)) {
 		switch (op) {
 			case Py_EQ:
 				return Py_BOOL(Poly_compare_eq(
-					(PlanarPolygonObject *)a, (PlanarPolygonObject *)b));
+					(polypaths_planar_overridePolygonObject *)a, (polypaths_planar_overridePolygonObject *)b));
 			case Py_NE:
 				return Py_BOOL(!Poly_compare_eq(
-					(PlanarPolygonObject *)a, (PlanarPolygonObject *)b));
+					(polypaths_planar_overridePolygonObject *)a, (polypaths_planar_overridePolygonObject *)b));
 			default:
 				/* Only == and != are defined */
 				RETURN_NOT_IMPLEMENTED;
@@ -458,14 +458,14 @@ Poly_compare(PyObject *a, PyObject *b, int op)
  * detecting and handling degenerate cases.
  */
 static void
-Poly_classify(PlanarPolygonObject *self) 
+Poly_classify(polypaths_planar_overridePolygonObject *self) 
 {
 	int dir_changes = 0;
 	Py_ssize_t count = 0;
 	int same_turns = 1;
 	Py_ssize_t i;
 	const Py_ssize_t size = Py_SIZE(self);
-	const planar_vec2_t *vert = self->vert;
+	const polypaths_planar_override_vec2_t *vert = self->vert;
 	double last_dx = vert[0].x - vert[size - 1].x;
 	double last_dy = vert[0].y - vert[size - 1].y;
 	double dx, dy;
@@ -524,17 +524,17 @@ Poly_classify(PlanarPolygonObject *self)
 
 /* Check the polygon for self-intersection */
 static int
-Poly_check_is_simple(PlanarPolygonObject *self)
+Poly_check_is_simple(polypaths_planar_overridePolygonObject *self)
 {
-	planar_vec2_t **points, **p, *v;
-	planar_vec2_t **open = NULL;
-	planar_vec2_t **o, **next_open;
+	polypaths_planar_override_vec2_t **points, **p, *v;
+	polypaths_planar_override_vec2_t **open = NULL;
+	polypaths_planar_override_vec2_t **o, **next_open;
 	const Py_ssize_t size = Py_SIZE(self);
 	const Py_ssize_t last_index = size - 1;
 	int result = 1;
 
-	points = (planar_vec2_t **)PyMem_Malloc(
-		sizeof(planar_vec2_t *) * size);
+	points = (polypaths_planar_override_vec2_t **)PyMem_Malloc(
+		sizeof(polypaths_planar_override_vec2_t *) * size);
 	if (points == NULL) {
 		PyErr_NoMemory();
 		result = 0;
@@ -545,9 +545,9 @@ Poly_check_is_simple(PlanarPolygonObject *self)
 	for (v = self->vert; v < self->vert + size; ++v) {
 		*(p++) = v;
 	}
-	qsort(points, size, sizeof(planar_vec2_t *), compare_vec_lexi);	
-	open = (planar_vec2_t **)PyMem_Malloc(
-		sizeof(planar_vec2_t *) * (size + 1));
+	qsort(points, size, sizeof(polypaths_planar_override_vec2_t *), compare_vec_lexi);	
+	open = (polypaths_planar_override_vec2_t **)PyMem_Malloc(
+		sizeof(polypaths_planar_override_vec2_t *) * (size + 1));
 	if (open == NULL) {
 		PyErr_NoMemory();
 		result = 0;
@@ -586,12 +586,12 @@ finish:
 }
 
 static PyObject *
-Poly_get_is_convex_known(PlanarPolygonObject *self) {
+Poly_get_is_convex_known(polypaths_planar_overridePolygonObject *self) {
 	return Py_BOOL(self->flags & POLY_CONVEX_KNOWN_FLAG);
 }
 
 static int
-poly_is_convex(PlanarPolygonObject *self)
+poly_is_convex(polypaths_planar_overridePolygonObject *self)
 {
 	if (!(self->flags & POLY_CONVEX_KNOWN_FLAG)) {
 		Poly_classify(self);
@@ -600,19 +600,19 @@ poly_is_convex(PlanarPolygonObject *self)
 }
 
 static PyObject *
-Poly_get_is_convex(PlanarPolygonObject *self)
+Poly_get_is_convex(polypaths_planar_overridePolygonObject *self)
 {
 	return Py_BOOL(poly_is_convex(self));
 }
 
 static PyObject *
-Poly_get_is_simple_known(PlanarPolygonObject *self) {
+Poly_get_is_simple_known(polypaths_planar_overridePolygonObject *self) {
 	return Py_BOOL(self->flags & POLY_SIMPLE_KNOWN_FLAG);
 }
 
 
 static PyObject *
-Poly_get_is_simple(PlanarPolygonObject *self)
+Poly_get_is_simple(polypaths_planar_overridePolygonObject *self)
 {
 	if (!(self->flags & POLY_SIMPLE_KNOWN_FLAG)) {
 		if (!(self->flags & POLY_CONVEX_KNOWN_FLAG)) {
@@ -628,16 +628,16 @@ Poly_get_is_simple(PlanarPolygonObject *self)
 }
 
 static PyObject *
-Poly_get_is_centroid_known(PlanarPolygonObject *self) {
+Poly_get_is_centroid_known(polypaths_planar_overridePolygonObject *self) {
 	return Py_BOOL(self->flags & POLY_CENTROID_KNOWN_FLAG);
 }
 
 static PyObject *
-Poly_get_centroid(PlanarPolygonObject *self)
+Poly_get_centroid(polypaths_planar_overridePolygonObject *self)
 {
 	Py_ssize_t i;
 	double area, total_area;
-	planar_vec2_t *a, *b, *c;
+	polypaths_planar_override_vec2_t *a, *b, *c;
 
 	if (!(self->flags & POLY_CENTROID_KNOWN_FLAG) 
 		|| !(self->flags & POLY_SIMPLE_KNOWN_FLAG)) {
@@ -670,17 +670,17 @@ Poly_get_centroid(PlanarPolygonObject *self)
 		self->flags |= POLY_CENTROID_KNOWN_FLAG;
 	}
 	if (self->flags & POLY_SIMPLE_FLAG) {
-		return (PyObject *)PlanarVec2_FromStruct(&self->centroid);
+		return (PyObject *)polypaths_planar_overrideVec2_FromStruct(&self->centroid);
 	} else {
 		/* No centroid for non-simple polygon */
 		Py_RETURN_NONE;
 	}
 }
 
-static PlanarBBoxObject *
-Poly_get_bbox(PlanarPolygonObject *self) {
+static polypaths_planar_overrideBBoxObject *
+Poly_get_bbox(polypaths_planar_overridePolygonObject *self) {
 	if (self->bbox == NULL) {
-		self->bbox = PlanarBBox_fromSeq2((PlanarSeq2Object *)self);
+		self->bbox = polypaths_planar_overrideBBox_fromSeq2((polypaths_planar_overrideSeq2Object *)self);
 		if (self->bbox == NULL) {
 			return NULL;
 		}
@@ -714,18 +714,18 @@ static PyGetSetDef Poly_getset[] = {
 /* Sequence Methods */
 
 static PyObject *
-Poly_getitem(PlanarPolygonObject *self, Py_ssize_t index)
+Poly_getitem(polypaths_planar_overridePolygonObject *self, Py_ssize_t index)
 {
     Py_ssize_t size = Py_SIZE(self);
     if (index >= 0 && index < size) {
-        return (PyObject *)PlanarVec2_FromStruct(self->vert + index);
+        return (PyObject *)polypaths_planar_overrideVec2_FromStruct(self->vert + index);
     }
     PyErr_Format(PyExc_IndexError, "index %d out of range", (int)index);
     return NULL;
 }
 
 static void
-clear_cached_properties(PlanarPolygonObject *self)
+clear_cached_properties(polypaths_planar_overridePolygonObject *self)
 {
 	self->flags = 0;
 	Py_XDECREF(self->bbox);
@@ -738,12 +738,12 @@ clear_cached_properties(PlanarPolygonObject *self)
 }
 
 static int
-Poly_assitem(PlanarPolygonObject *self, Py_ssize_t index, PyObject *v)
+Poly_assitem(polypaths_planar_overridePolygonObject *self, Py_ssize_t index, PyObject *v)
 {
     double x, y;
     Py_ssize_t size = Py_SIZE(self);
     if (index >= 0 && index < size) {
-		if (!PlanarVec2_Parse(v, &x, &y)) {
+		if (!polypaths_planar_overrideVec2_Parse(v, &x, &y)) {
 			if (!PyErr_Occurred()) {
 			PyErr_Format(PyExc_TypeError, 
 				"Cannot assign %.200s into %.200s",
@@ -762,7 +762,7 @@ Poly_assitem(PlanarPolygonObject *self, Py_ssize_t index, PyObject *v)
 }
 
 static Py_ssize_t
-Poly_length(PlanarPolygonObject *self)
+Poly_length(polypaths_planar_overridePolygonObject *self)
 {
     return Py_SIZE(self);
 }
@@ -778,10 +778,10 @@ static PySequenceMethods Poly_as_sequence = {
 
 /* Methods */
 
-static planar_vec2_t *
-Poly_left_tan_convex(PlanarPolygonObject *self, planar_vec2_t *pt)
+static polypaths_planar_override_vec2_t *
+Poly_left_tan_convex(polypaths_planar_overridePolygonObject *self, polypaths_planar_override_vec2_t *pt)
 {
-	planar_vec2_t *a, *b, *c;
+	polypaths_planar_override_vec2_t *a, *b, *c;
 	long down_c;
 	DUP_FIRST_VERT(self);
 	DUP_LAST_VERT(self);
@@ -816,10 +816,10 @@ Poly_left_tan_convex(PlanarPolygonObject *self, planar_vec2_t *pt)
 	return a; /* probably got an interior point */
 }
 
-static planar_vec2_t *
-Poly_right_tan_convex(PlanarPolygonObject *self, planar_vec2_t *pt)
+static polypaths_planar_override_vec2_t *
+Poly_right_tan_convex(polypaths_planar_overridePolygonObject *self, polypaths_planar_override_vec2_t *pt)
 {
-	planar_vec2_t *a, *b, *c;
+	polypaths_planar_override_vec2_t *a, *b, *c;
 	long down_c;
 	DUP_FIRST_VERT(self);
 	DUP_LAST_VERT(self);
@@ -855,17 +855,17 @@ Poly_right_tan_convex(PlanarPolygonObject *self, planar_vec2_t *pt)
 }
 
 static PyObject *
-Poly_pt_tangents(PlanarPolygonObject *self, PyObject *point)
+Poly_pt_tangents(polypaths_planar_overridePolygonObject *self, PyObject *point)
 {
-	planar_vec2_t pt;
-	planar_vec2_t *left_tan = self->vert;
-	planar_vec2_t *right_tan = self->vert;
-	planar_vec2_t *v0 = self->vert + Py_SIZE(self) - 2;
-	planar_vec2_t *v1 = v0 + 1;
-	planar_vec2_t *v_end;
+	polypaths_planar_override_vec2_t pt;
+	polypaths_planar_override_vec2_t *left_tan = self->vert;
+	polypaths_planar_override_vec2_t *right_tan = self->vert;
+	polypaths_planar_override_vec2_t *v0 = self->vert + Py_SIZE(self) - 2;
+	polypaths_planar_override_vec2_t *v1 = v0 + 1;
+	polypaths_planar_override_vec2_t *v_end;
 	double prev_turn, next_turn;
 
-	if (!PlanarVec2_Parse(point, &pt.x, &pt.y)) {
+	if (!polypaths_planar_overrideVec2_Parse(point, &pt.x, &pt.y)) {
 		PyErr_SetString(PyExc_TypeError,
 			"Polygon.tangents_to_point(): "
 			"expected Vec2 object for argument");
@@ -893,17 +893,17 @@ Poly_pt_tangents(PlanarPolygonObject *self, PyObject *point)
 		}
 	}
 	return PyTuple_Pack(2, 
-		PlanarVec2_FromStruct(left_tan), 
-		PlanarVec2_FromStruct(right_tan));
+		polypaths_planar_overrideVec2_FromStruct(left_tan), 
+		polypaths_planar_overrideVec2_FromStruct(right_tan));
 }
 
 static int
-pnp_winding_test(PlanarPolygonObject *self, planar_vec2_t *pt)
+pnp_winding_test(polypaths_planar_overridePolygonObject *self, polypaths_planar_override_vec2_t *pt)
 {
 	int winding_no = 0;
-	planar_vec2_t *v0 = self->vert + Py_SIZE(self) - 1;
-	planar_vec2_t *v_end = v0;
-	planar_vec2_t *v1;
+	polypaths_planar_override_vec2_t *v0 = self->vert + Py_SIZE(self) - 1;
+	polypaths_planar_override_vec2_t *v_end = v0;
+	polypaths_planar_override_vec2_t *v1;
 	int v1_above;
 	int v0_above = (v0->y >= pt->y);
 	for (v1 = self->vert; v1 <= v_end; ++v1) {
@@ -922,14 +922,14 @@ pnp_winding_test(PlanarPolygonObject *self, planar_vec2_t *pt)
 }
 
 static int 
-split_y_polylines(PlanarPolygonObject *self) 
+split_y_polylines(polypaths_planar_overridePolygonObject *self) 
 {
 	double min_x, max_x, min_y, max_y;	
-	planar_vec2_t *v, *v_end, *p, *pl1, *pl2;
-	planar_vec2_t *min, *max, *left, *right;
+	polypaths_planar_override_vec2_t *v, *v_end, *p, *pl1, *pl2;
+	polypaths_planar_override_vec2_t *min, *max, *left, *right;
 
-	self->lt_y_poly = (planar_vec2_t *)PyMem_Malloc(
-		sizeof(planar_vec2_t) * (Py_SIZE(self) + 2));
+	self->lt_y_poly = (polypaths_planar_override_vec2_t *)PyMem_Malloc(
+		sizeof(polypaths_planar_override_vec2_t) * (Py_SIZE(self) + 2));
 	if (self->lt_y_poly == NULL) {
 		return -1;
 	}
@@ -999,9 +999,9 @@ split_y_polylines(PlanarPolygonObject *self)
 	return 0;
 }
 
-static int pnp_y_monotone_test(PlanarPolygonObject *self, planar_vec2_t *pt)
+static int pnp_y_monotone_test(polypaths_planar_overridePolygonObject *self, polypaths_planar_override_vec2_t *pt)
 {
-	planar_vec2_t *v, *lo, *hi;
+	polypaths_planar_override_vec2_t *v, *lo, *hi;
 	double pt_y = pt->y;
 
 	if (self->lt_y_poly == NULL) {
@@ -1040,14 +1040,14 @@ static int pnp_y_monotone_test(PlanarPolygonObject *self, planar_vec2_t *pt)
 }
 
 static PyObject *
-Poly_contains_point(PlanarPolygonObject *self, PyObject *point)
+Poly_contains_point(polypaths_planar_overridePolygonObject *self, PyObject *point)
 {
-	planar_vec2_t pt;
+	polypaths_planar_override_vec2_t pt;
 	int result = 0;
 	double d2;
-	PlanarBBoxObject *bbox;
+	polypaths_planar_overrideBBoxObject *bbox;
 	
-	if (!PlanarVec2_Parse(point, &pt.x, &pt.y)) {
+	if (!polypaths_planar_overrideVec2_Parse(point, &pt.x, &pt.y)) {
 		PyErr_SetString(PyExc_TypeError,
 			"Polygon.contains_point(): "
 			"expected Vec2 object for argument");
@@ -1068,7 +1068,7 @@ Poly_contains_point(PlanarPolygonObject *self, PyObject *point)
 			if (bbox == NULL) {
 				return NULL;
 			}
-			if (!PlanarBBox_contains_point(bbox, &pt)) {
+			if (!polypaths_planar_overrideBBox_contains_point(bbox, &pt)) {
 				Py_DECREF(bbox);
 				return Py_BOOL(0);
 			}
@@ -1084,12 +1084,12 @@ Poly_contains_point(PlanarPolygonObject *self, PyObject *point)
 }
 
 static PyObject *
-Poly_pnp_y_monotone_test(PlanarPolygonObject *self, PyObject *point)
+Poly_pnp_y_monotone_test(polypaths_planar_overridePolygonObject *self, PyObject *point)
 {
-	planar_vec2_t pt;
+	polypaths_planar_override_vec2_t pt;
 	int result;
 	
-	if (!PlanarVec2_Parse(point, &pt.x, &pt.y)) {
+	if (!polypaths_planar_overrideVec2_Parse(point, &pt.x, &pt.y)) {
 		PyErr_SetString(PyExc_TypeError,
 			"Polygon.contains_point(): "
 			"expected Vec2 object for argument");
@@ -1104,12 +1104,12 @@ Poly_pnp_y_monotone_test(PlanarPolygonObject *self, PyObject *point)
 }
 
 static PyObject *
-Poly_pnp_winding_test(PlanarPolygonObject *self, PyObject *point)
+Poly_pnp_winding_test(polypaths_planar_overridePolygonObject *self, PyObject *point)
 {
-	planar_vec2_t pt;
+	polypaths_planar_override_vec2_t pt;
 	int result;
 	
-	if (!PlanarVec2_Parse(point, &pt.x, &pt.y)) {
+	if (!polypaths_planar_overrideVec2_Parse(point, &pt.x, &pt.y)) {
 		PyErr_SetString(PyExc_TypeError,
 			"Polygon.contains_point(): "
 			"expected Vec2 object for argument");
@@ -1124,7 +1124,7 @@ Poly_pnp_winding_test(PlanarPolygonObject *self, PyObject *point)
 }
 
 static PyObject *
-Poly__repr__(PlanarPolygonObject *self)
+Poly__repr__(polypaths_planar_overridePolygonObject *self)
 {
 	char props[256];
 	
@@ -1140,17 +1140,17 @@ Poly__repr__(PlanarPolygonObject *self)
 				self->flags & POLY_CONVEX_FLAG ? "True" : "False");
 		}
 	}
-	return Seq2__repr__((PlanarSeq2Object *)self, "Polygon", props);
+	return Seq2__repr__((polypaths_planar_overrideSeq2Object *)self, "Polygon", props);
 }
 
 static void
-ahull_partition_points(planar_vec2_t **hull, planar_vec2_t **pts, 
-	Py_ssize_t size, planar_vec2_t *p0, planar_vec2_t *p1)
+ahull_partition_points(polypaths_planar_override_vec2_t **hull, polypaths_planar_override_vec2_t **pts, 
+	Py_ssize_t size, polypaths_planar_override_vec2_t *p0, polypaths_planar_override_vec2_t *p1)
 {
 	double dist, furthest = -1.0;
-	planar_vec2_t *partition_pt, **p, *tmp;
-	planar_vec2_t **left_pts, **right_pts;
-	planar_vec2_t v0, v1, v2;
+	polypaths_planar_override_vec2_t *partition_pt, **p, *tmp;
+	polypaths_planar_override_vec2_t **left_pts, **right_pts;
+	polypaths_planar_override_vec2_t v0, v1, v2;
 	double u, v, dot00, dot01, dot11, dot02, dot12;
 	double denom, inv_denom;
 	Py_ssize_t left_count, right_count, max_partition;
@@ -1247,13 +1247,13 @@ ahull_partition_points(planar_vec2_t **hull, planar_vec2_t **pts,
 	}
 }
 
-static planar_vec2_t *
-adaptive_quick_hull(planar_vec2_t *pts, Py_ssize_t *size)
+static polypaths_planar_override_vec2_t *
+adaptive_quick_hull(polypaths_planar_override_vec2_t *pts, Py_ssize_t *size)
 {
-	planar_vec2_t *v, *v_end, *leftmost, *rightmost;
-	planar_vec2_t *hull_pt, *hull = NULL;
-	planar_vec2_t **pt_sets = NULL;
-	planar_vec2_t **upper_pts, **lower_pts;
+	polypaths_planar_override_vec2_t *v, *v_end, *leftmost, *rightmost;
+	polypaths_planar_override_vec2_t *hull_pt, *hull = NULL;
+	polypaths_planar_override_vec2_t **pt_sets = NULL;
+	polypaths_planar_override_vec2_t **upper_pts, **lower_pts;
 
 	leftmost = rightmost = pts;
 	v_end = pts + *size - 1;
@@ -1266,9 +1266,9 @@ adaptive_quick_hull(planar_vec2_t *pts, Py_ssize_t *size)
 		}
 	}
 
-	pt_sets = (planar_vec2_t **)PyMem_Malloc(
-		sizeof(planar_vec2_t *) * (*size));
-	hull = (planar_vec2_t *)PyMem_Malloc(sizeof(planar_vec2_t) * (*size));
+	pt_sets = (polypaths_planar_override_vec2_t **)PyMem_Malloc(
+		sizeof(polypaths_planar_override_vec2_t *) * (*size));
+	hull = (polypaths_planar_override_vec2_t *)PyMem_Malloc(sizeof(polypaths_planar_override_vec2_t) * (*size));
 	if (pt_sets == NULL || hull == NULL) {
 		PyErr_NoMemory();
 		goto error;
@@ -1315,32 +1315,32 @@ error:
 	return NULL;
 }
 
-static PlanarPolygonObject *
+static polypaths_planar_overridePolygonObject *
 Poly_convex_hull(PyTypeObject *type, PyObject *points) 
 {
-	planar_vec2_t *pts;
-	planar_vec2_t *hull_pts = NULL;
+	polypaths_planar_override_vec2_t *pts;
+	polypaths_planar_override_vec2_t *hull_pts = NULL;
 	PyObject *pts_alloc = NULL;
 	Py_ssize_t size;
-	PlanarPolygonObject *hull_poly = NULL;
+	polypaths_planar_overridePolygonObject *hull_poly = NULL;
 
-	if (PlanarPolygon_CheckExact(points) && 
-		((PlanarPolygonObject *)points)->flags & POLY_CONVEX_FLAG) {
-		return (PlanarPolygonObject *)Poly_copy(
-			(PlanarPolygonObject *)points, NULL);
+	if (polypaths_planar_overridePolygon_CheckExact(points) && 
+		((polypaths_planar_overridePolygonObject *)points)->flags & POLY_CONVEX_FLAG) {
+		return (polypaths_planar_overridePolygonObject *)Poly_copy(
+			(polypaths_planar_overridePolygonObject *)points, NULL);
 	}
-	if (!PlanarSeq2_Check(points)) {
+	if (!polypaths_planar_overrideSeq2_Check(points)) {
 		points = pts_alloc = call_from_points((PyObject *)type, points);
 		if (points == NULL) goto error;
-		pts = ((PlanarPolygonObject *)points)->vert;
+		pts = ((polypaths_planar_overridePolygonObject *)points)->vert;
 	} else {
-		pts = ((PlanarSeq2Object *)points)->vec;
+		pts = ((polypaths_planar_overrideSeq2Object *)points)->vec;
 	}
 	size = Py_SIZE(points);
 	hull_pts = adaptive_quick_hull(pts, &size);
 	hull_poly = Poly_new(type, size);
 	if (hull_pts == NULL || hull_poly == NULL) goto error;
-	memcpy(hull_poly->vert, hull_pts, sizeof(planar_vec2_t) * size);
+	memcpy(hull_poly->vert, hull_pts, sizeof(polypaths_planar_override_vec2_t) * size);
 	PyMem_Free(hull_pts);
 	Py_XDECREF(pts_alloc);
 	hull_poly->flags = (POLY_CONVEX_KNOWN_FLAG | POLY_CONVEX_FLAG
@@ -1388,11 +1388,11 @@ PyDoc_STRVAR(Polygon__doc__,
     "The individual vertices of a polygon are mutable, but the number "
     "of vertices is fixed at construction.");
 
-PyTypeObject PlanarPolygonType = {
+PyTypeObject polypaths_planar_overridePolygonType = {
     PyVarObject_HEAD_INIT(NULL, 0)
 	"Polygon",		/*tp_name*/
-	sizeof(PlanarPolygonObject),	/*tp_basicsize*/
-	sizeof(planar_vec2_t),		/*tp_itemsize*/
+	sizeof(polypaths_planar_overridePolygonObject),	/*tp_basicsize*/
+	sizeof(polypaths_planar_override_vec2_t),		/*tp_itemsize*/
 	/* methods */
 	(destructor)Poly_dealloc, /*tp_dealloc*/
 	0,			       /*tp_print*/
@@ -1420,7 +1420,7 @@ PyTypeObject PlanarPolygonType = {
 	Poly_methods,           /*tp_methods*/
 	0,                      /*tp_members*/
 	Poly_getset,            /*tp_getset*/
-	&PlanarSeq2Type,        /*tp_base*/
+	&polypaths_planar_overrideSeq2Type,        /*tp_base*/
 	0,                      /*tp_dict*/
 	0,                      /*tp_descr_get*/
 	0,                      /*tp_descr_set*/

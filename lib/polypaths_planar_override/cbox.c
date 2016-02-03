@@ -11,26 +11,26 @@
 #include "Python.h"
 #include <float.h>
 #include <string.h>
-#include "planar.h"
+#include "polypaths_planar_override.h"
 
 #define BBOX_FREE_MAX 200
 static PyObject *bbox_free_list = NULL;
 static int bbox_free_size = 0;
 
 static int
-BBox_init_from_points(PlanarBBoxObject *self, PyObject *points) 
+BBox_init_from_points(polypaths_planar_overrideBBoxObject *self, PyObject *points) 
 {
-    planar_vec2_t *vec;
+    polypaths_planar_override_vec2_t *vec;
     Py_ssize_t size;
     int i;
     double x, y;
 
-    if (PlanarSeq2_Check(points)) {
+    if (polypaths_planar_overrideSeq2_Check(points)) {
         /* Optimized code path for Seq2 objects */
         if (Py_SIZE(points) < 1) {
             goto tooShort;
         }
-        vec = ((PlanarSeq2Object *)points)->vec;
+        vec = ((polypaths_planar_overrideSeq2Object *)points)->vec;
         self->max.x = self->min.x = vec->x;
         self->max.y = self->min.y = vec->y;
         for (i = 1; i < Py_SIZE(points); ++i) {
@@ -56,14 +56,14 @@ BBox_init_from_points(PlanarBBoxObject *self, PyObject *points)
             Py_DECREF(points);
             goto tooShort;
         }
-        if (!PlanarVec2_Parse(PySequence_Fast_GET_ITEM(points, 0), &x, &y)) {
+        if (!polypaths_planar_overrideVec2_Parse(PySequence_Fast_GET_ITEM(points, 0), &x, &y)) {
             Py_DECREF(points);
             goto wrongType;
         }
         self->max.x = self->min.x = x;
         self->max.y = self->min.y = y;
         for (i = 1; i < size; ++i) {
-			if (!PlanarVec2_Parse(PySequence_Fast_GET_ITEM(points, i), 
+			if (!polypaths_planar_overrideVec2_Parse(PySequence_Fast_GET_ITEM(points, i), 
 				&x, &y)) {
                 Py_DECREF(points);
                 goto wrongType;
@@ -93,9 +93,9 @@ tooShort:
 }
 
 static int
-BBox_init(PlanarBBoxObject *self, PyObject *args)
+BBox_init(polypaths_planar_overrideBBoxObject *self, PyObject *args)
 {
-    assert(PlanarBBox_Check(self));
+    assert(polypaths_planar_overrideBBox_Check(self));
     if (PyTuple_GET_SIZE(args) != 1) {
         PyErr_SetString(PyExc_TypeError, 
             "BoundingBox: wrong number of arguments");
@@ -107,11 +107,11 @@ BBox_init(PlanarBBoxObject *self, PyObject *args)
 static PyObject *
 BBox_alloc(PyTypeObject *type, Py_ssize_t nitems)
 {
-    PlanarBBoxObject *box;
+    polypaths_planar_overrideBBoxObject *box;
 
-    assert(PyType_IsSubtype(type, &PlanarBBoxType));
+    assert(PyType_IsSubtype(type, &polypaths_planar_overrideBBoxType));
     if (bbox_free_list != NULL) {
-        box = (PlanarBBoxObject *)bbox_free_list;
+        box = (polypaths_planar_overrideBBoxObject *)bbox_free_list;
         Py_INCREF(box);
         bbox_free_list = box->next_free;
         --bbox_free_size;
@@ -122,9 +122,9 @@ BBox_alloc(PyTypeObject *type, Py_ssize_t nitems)
 }
 
 static void
-BBox_dealloc(PlanarBBoxObject *self)
+BBox_dealloc(polypaths_planar_overrideBBoxObject *self)
 {
-    if (PlanarBBox_CheckExact(self) && bbox_free_size < BBOX_FREE_MAX) {
+    if (polypaths_planar_overrideBBox_CheckExact(self) && bbox_free_size < BBOX_FREE_MAX) {
         self->next_free = bbox_free_list;
         bbox_free_list = (PyObject *)self;
         ++bbox_free_size;
@@ -135,7 +135,7 @@ BBox_dealloc(PlanarBBoxObject *self)
 
 
 static PyObject *
-BBox_repr(PlanarBBoxObject *self)
+BBox_repr(polypaths_planar_overrideBBoxObject *self)
 {
     char buf[255];
     buf[0] = 0; /* paranoid */
@@ -147,35 +147,35 @@ BBox_repr(PlanarBBoxObject *self)
 
 /* Property descriptors */
 
-static PlanarVec2Object *
-BBox_get_max_point(PlanarBBoxObject *self) {
-    return PlanarVec2_FromStruct(&self->max);
+static polypaths_planar_overrideVec2Object *
+BBox_get_max_point(polypaths_planar_overrideBBoxObject *self) {
+    return polypaths_planar_overrideVec2_FromStruct(&self->max);
 }
 
-static PlanarVec2Object *
-BBox_get_min_point(PlanarBBoxObject *self) {
-    return PlanarVec2_FromStruct(&self->min);
+static polypaths_planar_overrideVec2Object *
+BBox_get_min_point(polypaths_planar_overrideBBoxObject *self) {
+    return polypaths_planar_overrideVec2_FromStruct(&self->min);
 }
 
-static PlanarVec2Object *
-BBox_get_center(PlanarBBoxObject *self) {
-    return PlanarVec2_FromDoubles(
+static polypaths_planar_overrideVec2Object *
+BBox_get_center(polypaths_planar_overrideBBoxObject *self) {
+    return polypaths_planar_overrideVec2_FromDoubles(
         (self->min.x + self->max.x) * 0.5,
         (self->min.y + self->max.y) * 0.5);
 }
 
 static PyObject *
-BBox_get_width(PlanarBBoxObject *self) {
+BBox_get_width(polypaths_planar_overrideBBoxObject *self) {
     return PyFloat_FromDouble(self->max.x - self->min.x);    
 }
 
 static PyObject *
-BBox_get_height(PlanarBBoxObject *self) {
+BBox_get_height(polypaths_planar_overrideBBoxObject *self) {
     return PyFloat_FromDouble(self->max.y - self->min.y);    
 }
 
 static PyObject *
-BBox_get_is_empty(PlanarBBoxObject *self) {
+BBox_get_is_empty(polypaths_planar_overrideBBoxObject *self) {
     PyObject *r;
 
     if (self->max.x == self->min.x || self->max.y == self->min.y) {
@@ -187,8 +187,8 @@ BBox_get_is_empty(PlanarBBoxObject *self) {
     return r;
 }
 
-static PlanarBBoxObject *
-BBox_get_bounding_box(PlanarBBoxObject *self) {
+static polypaths_planar_overrideBBoxObject *
+BBox_get_bounding_box(polypaths_planar_overrideBBoxObject *self) {
     Py_INCREF(self);
     return self;
 }
@@ -216,13 +216,13 @@ static PyGetSetDef BBox_getset[] = {
 
 /* Methods */
 
-static PlanarBBoxObject *
+static polypaths_planar_overrideBBoxObject *
 BBox_new_from_points(PyTypeObject *type, PyObject *points) 
 {
-    PlanarBBoxObject *box;
+    polypaths_planar_overrideBBoxObject *box;
 
-    assert(PyType_IsSubtype(type, &PlanarBBoxType));
-    box = (PlanarBBoxObject *)type->tp_alloc(type, 0);
+    assert(PyType_IsSubtype(type, &polypaths_planar_overrideBBoxType));
+    box = (polypaths_planar_overrideBBoxObject *)type->tp_alloc(type, 0);
     if (box != NULL && BBox_init_from_points(box, points) == 0) {
         return box;
     } else {
@@ -233,11 +233,11 @@ BBox_new_from_points(PyTypeObject *type, PyObject *points)
 static PyObject *
 BBox_compare(PyObject *a, PyObject *b, int op)
 {
-    PlanarBBoxObject *box1, *box2;
+    polypaths_planar_overrideBBoxObject *box1, *box2;
 
-	if (PlanarBBox_Check(a) && PlanarBBox_Check(b)) {
-        box1 = (PlanarBBoxObject *)a;
-        box2 = (PlanarBBoxObject *)b;
+	if (polypaths_planar_overrideBBox_Check(a) && polypaths_planar_overrideBBox_Check(b)) {
+        box1 = (polypaths_planar_overrideBBoxObject *)a;
+        box2 = (polypaths_planar_overrideBBoxObject *)b;
 		switch (op) {
 			case Py_EQ:
                 return Py_BOOL(
@@ -269,10 +269,10 @@ BBox_compare(PyObject *a, PyObject *b, int op)
 }
 
 static PyObject *
-BBox_almost_equals(PlanarBBoxObject *self, PlanarBBoxObject *other)
+BBox_almost_equals(polypaths_planar_overrideBBoxObject *self, polypaths_planar_overrideBBoxObject *other)
 {
 	return Py_BOOL(
-		PlanarBBox_Check(self) && PlanarBBox_Check(other) &&
+		polypaths_planar_overrideBBox_Check(self) && polypaths_planar_overrideBBox_Check(other) &&
 		almost_eq(self->min.x, other->min.x) &&
 		almost_eq(self->min.y, other->min.y) &&
 		almost_eq(self->max.x, other->max.x) &&
@@ -280,10 +280,10 @@ BBox_almost_equals(PlanarBBoxObject *self, PlanarBBoxObject *other)
 }
 
 
-static PlanarBBoxObject *
+static polypaths_planar_overrideBBoxObject *
 get_bounding_box(PyObject *shape)
 {
-    PlanarBBoxObject *bbox;
+    polypaths_planar_overrideBBoxObject *bbox;
 
     static PyObject *bounding_box_str = NULL;
     if (bounding_box_str == NULL) {
@@ -292,8 +292,8 @@ get_bounding_box(PyObject *shape)
 			return NULL;
 		}
 	}
-    bbox = (PlanarBBoxObject *)PyObject_GetAttr(shape, bounding_box_str);
-    if (bbox != NULL && !PlanarBBox_Check(bbox)) {
+    bbox = (polypaths_planar_overrideBBoxObject *)PyObject_GetAttr(shape, bounding_box_str);
+    if (bbox != NULL && !polypaths_planar_overrideBBox_Check(bbox)) {
         PyErr_SetString(PyExc_TypeError,
             "Shape returned incompatible object "
             "for attribute bounding_box.");
@@ -302,15 +302,15 @@ get_bounding_box(PyObject *shape)
     return bbox;
 }
 
-static PlanarBBoxObject *
+static polypaths_planar_overrideBBoxObject *
 BBox_new_from_shapes(PyTypeObject *type, PyObject *shapes) 
 {
-    PlanarBBoxObject *result, *bbox = NULL;
+    polypaths_planar_overrideBBoxObject *result, *bbox = NULL;
     Py_ssize_t size;
     PyObject **item;
 
-    assert(PyType_IsSubtype(type, &PlanarBBoxType));
-    result = (PlanarBBoxObject *)type->tp_alloc(type, 0);
+    assert(PyType_IsSubtype(type, &polypaths_planar_overrideBBoxType));
+    result = (polypaths_planar_overrideBBoxObject *)type->tp_alloc(type, 0);
     shapes = PySequence_Fast(shapes, "expected iterable of bounded shapes");
     if (result == NULL || shapes == NULL) {
         goto error;
@@ -353,28 +353,28 @@ error:
     return NULL;
 }
 
-static PlanarBBoxObject *
+static polypaths_planar_overrideBBoxObject *
 BBox_new_from_center(PyTypeObject *type, PyObject *args, PyObject *kwargs) 
 {
-    PlanarBBoxObject *bbox;
+    polypaths_planar_overrideBBoxObject *bbox;
     PyObject *center_arg;
     double width, height, cx, cy;
     static char *kwlist[] = {"center", "width", "height", NULL};
 
-    assert(PyType_IsSubtype(type, &PlanarBBoxType));
+    assert(PyType_IsSubtype(type, &polypaths_planar_overrideBBoxType));
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, 
         "Odd:BoundingBox.from_center", kwlist, 
         &center_arg, &width, &height)) {
         return NULL;
     }
-    if (!PlanarVec2_Parse(center_arg, &cx, &cy)) {
+    if (!polypaths_planar_overrideVec2_Parse(center_arg, &cx, &cy)) {
         PyErr_SetString(PyExc_TypeError,
             "expected Vec2 for argument center");
         return NULL;
     }
     width = fabs(width) * 0.5;
     height = fabs(height) * 0.5;
-    bbox = (PlanarBBoxObject *)type->tp_alloc(type, 0);
+    bbox = (polypaths_planar_overrideBBoxObject *)type->tp_alloc(type, 0);
     if (bbox == NULL) {
         return NULL;
     }
@@ -385,14 +385,14 @@ BBox_new_from_center(PyTypeObject *type, PyObject *args, PyObject *kwargs)
     return bbox;
 }
 
-static PlanarBBoxObject *
-BBox_inflate(PlanarBBoxObject *self, PyObject *amount)
+static polypaths_planar_overrideBBoxObject *
+BBox_inflate(polypaths_planar_overrideBBoxObject *self, PyObject *amount)
 {
-    PlanarBBoxObject *bbox;
+    polypaths_planar_overrideBBoxObject *bbox;
     double ix, iy;
 
-    assert(PlanarBBox_Check(self));
-    if (!PlanarVec2_Parse(amount, &ix, &iy)) {
+    assert(polypaths_planar_overrideBBox_Check(self));
+    if (!polypaths_planar_overrideVec2_Parse(amount, &ix, &iy)) {
         amount = PyObject_ToFloat(amount);
         if (amount == NULL) {
             PyErr_SetString(PyExc_TypeError,
@@ -405,7 +405,7 @@ BBox_inflate(PlanarBBoxObject *self, PyObject *amount)
     }
     ix *= 0.5;
     iy *= 0.5;
-    bbox = (PlanarBBoxObject *)PlanarBBoxType.tp_alloc(&PlanarBBoxType, 0);
+    bbox = (polypaths_planar_overrideBBoxObject *)polypaths_planar_overrideBBoxType.tp_alloc(&polypaths_planar_overrideBBoxType, 0);
     if (bbox == NULL) {
         return NULL;
     }
@@ -417,14 +417,14 @@ BBox_inflate(PlanarBBoxObject *self, PyObject *amount)
 }
 
 static PyObject *
-BBox_contains_point(PlanarBBoxObject *self, PyObject *other)
+BBox_contains_point(polypaths_planar_overrideBBoxObject *self, PyObject *other)
 {
     double px, py;
     int contains;
     PyObject *r = NULL;
 
-    assert(PlanarBBox_Check(self));
-    if (PlanarVec2_Parse(other, &px, &py)) {
+    assert(polypaths_planar_overrideBBox_Check(self));
+    if (polypaths_planar_overrideVec2_Parse(other, &px, &py)) {
         contains = (px >= self->min.x && px < self->max.x
             && py > self->min.y && py <= self->max.y);
 		r = contains ? Py_True : Py_False;
@@ -434,25 +434,25 @@ BBox_contains_point(PlanarBBoxObject *self, PyObject *other)
 }
 
 static PyObject *
-BBox_fit(PlanarBBoxObject *self, PyObject *shape)
+BBox_fit(polypaths_planar_overrideBBoxObject *self, PyObject *shape)
 {
     double w_ratio, h_ratio, scale, half_width, half_height;
     double ox, oy, cx, cy;
-    PlanarBBoxObject *bbox;
-    PlanarAffineObject *xform;
+    polypaths_planar_overrideBBoxObject *bbox;
+    polypaths_planar_overrideAffineObject *xform;
 
-    assert(PlanarBBox_Check(self));
+    assert(polypaths_planar_overrideBBox_Check(self));
     cx = (self->max.x + self->min.x) * 0.5;
     cy = (self->max.y + self->min.y) * 0.5;
-    if (PlanarBBox_Check(shape)) {
-        bbox = (PlanarBBoxObject *)shape;
+    if (polypaths_planar_overrideBBox_Check(shape)) {
+        bbox = (polypaths_planar_overrideBBoxObject *)shape;
         w_ratio = (self->max.x - self->min.x) / (bbox->max.x - bbox->min.x);
         h_ratio = (self->max.y - self->min.y) / (bbox->max.y - bbox->min.y);
         scale = (w_ratio < h_ratio ? w_ratio : h_ratio) * 0.5;
         half_width = (bbox->max.x - bbox->min.x) * scale;
         half_height = (bbox->max.y - bbox->min.y) * scale;
-        bbox = (PlanarBBoxObject *)PlanarBBoxType.tp_alloc(
-            &PlanarBBoxType, 0);
+        bbox = (polypaths_planar_overrideBBoxObject *)polypaths_planar_overrideBBoxType.tp_alloc(
+            &polypaths_planar_overrideBBoxType, 0);
         if (bbox != NULL) {
             bbox->min.x = cx - half_width;
             bbox->max.x = cx + half_width;
@@ -471,7 +471,7 @@ BBox_fit(PlanarBBoxObject *self, PyObject *shape)
         h_ratio = (self->max.y - self->min.y) / (bbox->max.y - bbox->min.y);
         scale = w_ratio < h_ratio ? w_ratio : h_ratio;
         Py_DECREF(bbox);
-        xform = PlanarAffine_FromDoubles(
+        xform = polypaths_planar_overrideAffine_FromDoubles(
             scale,   0.0,  ox, 
               0.0, scale,  oy);
         if (xform == NULL) {
@@ -483,13 +483,13 @@ BBox_fit(PlanarBBoxObject *self, PyObject *shape)
     }
 }
 
-static PlanarPolygonObject *
-BBox_to_polygon(PlanarBBoxObject *self)
+static polypaths_planar_overridePolygonObject *
+BBox_to_polygon(polypaths_planar_overrideBBoxObject *self)
 {
-	PlanarPolygonObject *poly;
+	polypaths_planar_overridePolygonObject *poly;
 
-    assert(PlanarBBox_Check(self));
-	poly = Poly_new(&PlanarPolygonType, 4);
+    assert(polypaths_planar_overrideBBox_Check(self));
+	poly = Poly_new(&polypaths_planar_overridePolygonType, 4);
 	if (poly != NULL) {
 		poly->vert[0].x = self->min.x;
 		poly->vert[0].y = self->min.y;
@@ -538,19 +538,19 @@ static PyMethodDef BBox_methods[] = {
 static PyObject *
 BBox__mul__(PyObject *a, PyObject *b)
 {
-    PlanarBBoxObject *box;
-    PlanarAffineObject *t;
+    polypaths_planar_overrideBBoxObject *box;
+    polypaths_planar_overrideAffineObject *t;
 	PyObject *p, *p_xform;
 	int rectilinear;
     double ta, tb, tc, td, te, tf;
-	planar_vec2_t p0, p1;
+	polypaths_planar_override_vec2_t p0, p1;
 
-    if (PlanarBBox_Check(a) && PlanarAffine_Check(b)) {
-		box = (PlanarBBoxObject *)a;
-		t = (PlanarAffineObject *)b;
-    } else if (PlanarBBox_Check(b) && PlanarAffine_Check(a)) {
-		box = (PlanarBBoxObject *)b;
-		t = (PlanarAffineObject *)a;
+    if (polypaths_planar_overrideBBox_Check(a) && polypaths_planar_overrideAffine_Check(b)) {
+		box = (polypaths_planar_overrideBBoxObject *)a;
+		t = (polypaths_planar_overrideAffineObject *)b;
+    } else if (polypaths_planar_overrideBBox_Check(b) && polypaths_planar_overrideAffine_Check(a)) {
+		box = (polypaths_planar_overrideBBoxObject *)b;
+		t = (polypaths_planar_overrideAffineObject *)a;
     } else {
 		/* We support only transform operations */
 		Py_INCREF(Py_NotImplemented);
@@ -570,7 +570,7 @@ BBox__mul__(PyObject *a, PyObject *b)
 		p0.y = box->min.x*tb + box->min.y*te + tf;
 		p1.x = box->max.x*ta + box->max.y*td + tc;
 		p1.y = box->max.x*tb + box->max.y*te + tf;
-		box = (PlanarBBoxObject *)BBox_alloc(Py_TYPE(box), 0);
+		box = (polypaths_planar_overrideBBoxObject *)BBox_alloc(Py_TYPE(box), 0);
 		if (box != NULL) {
 			box->min.x = MIN(p0.x, p1.x);
 			box->min.y = MIN(p0.y, p1.y);
@@ -600,10 +600,10 @@ PyDoc_STRVAR(BBox_doc,
     "BoundingBox(points)"
 );
 
-PyTypeObject PlanarBBoxType = {
+PyTypeObject polypaths_planar_overrideBBoxType = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    "planar.BoundingBox",     /* tp_name */
-    sizeof(PlanarBBoxObject), /* tp_basicsize */
+    "polypaths_planar_override.BoundingBox",     /* tp_name */
+    sizeof(polypaths_planar_overrideBBoxObject), /* tp_basicsize */
     0,                    /* tp_itemsize */
     (destructor)BBox_dealloc, /* tp_dealloc */
     0,                    /* tp_print */

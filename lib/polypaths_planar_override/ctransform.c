@@ -10,19 +10,19 @@
 ****************************************************************************/
 #include "Python.h"
 #include <float.h>
-#include "planar.h"
+#include "polypaths_planar_override.h"
 
 #define AFFINE_FREE_MAX 200
 static PyObject *affine_free_list = NULL;
 static int affine_free_size = 0;
 
 static int
-Affine_init(PlanarAffineObject *self, PyObject *args)
+Affine_init(polypaths_planar_overrideAffineObject *self, PyObject *args)
 {
     int i;
     PyObject *f;
 
-    assert(PlanarAffine_Check(self));
+    assert(polypaths_planar_overrideAffine_Check(self));
     if (PyTuple_GET_SIZE(args) != 6) {
         PyErr_SetString(PyExc_TypeError, 
             "Affine: wrong number of arguments");
@@ -44,11 +44,11 @@ static PyObject *
 Affine_alloc(PyTypeObject *type, Py_ssize_t nitems)
 {
     int i;
-    PlanarAffineObject *t;
+    polypaths_planar_overrideAffineObject *t;
 
-    assert(PyType_IsSubtype(type, &PlanarAffineType));
+    assert(PyType_IsSubtype(type, &polypaths_planar_overrideAffineType));
     if (affine_free_list != NULL) {
-        t = (PlanarAffineObject *)affine_free_list;
+        t = (polypaths_planar_overrideAffineObject *)affine_free_list;
         Py_INCREF(t);
         affine_free_list = t->next_free;
         --affine_free_size;
@@ -62,9 +62,9 @@ Affine_alloc(PyTypeObject *type, Py_ssize_t nitems)
 }
 
 static void
-Affine_dealloc(PlanarAffineObject *self)
+Affine_dealloc(polypaths_planar_overrideAffineObject *self)
 {
-    if (PlanarAffine_CheckExact(self) && affine_free_size < AFFINE_FREE_MAX) {
+    if (polypaths_planar_overrideAffine_CheckExact(self) && affine_free_size < AFFINE_FREE_MAX) {
         self->next_free = affine_free_list;
         affine_free_list = (PyObject *)self;
         ++affine_free_size;
@@ -74,11 +74,11 @@ Affine_dealloc(PlanarAffineObject *self)
 }
 
 static PyObject *
-Affine_compare(PlanarAffineObject *a, PlanarAffineObject *b, int op)
+Affine_compare(polypaths_planar_overrideAffineObject *a, polypaths_planar_overrideAffineObject *b, int op)
 {
     int result = 0;
 
-    if (PlanarAffine_Check(a) && PlanarAffine_Check(b)) {
+    if (polypaths_planar_overrideAffine_Check(a) && polypaths_planar_overrideAffine_Check(b)) {
         switch (op) {
             case Py_EQ:
                 result = a->m[0] == b->m[0]
@@ -122,7 +122,7 @@ Affine_compare(PlanarAffineObject *a, PlanarAffineObject *b, int op)
 }
 
 static long
-Affine_hash(PlanarAffineObject *self) 
+Affine_hash(polypaths_planar_overrideAffineObject *self) 
 {
     int i;
     long hash = 0x345678L;
@@ -140,12 +140,12 @@ Affine_hash(PlanarAffineObject *self)
 /* Property descriptors */
 
 static PyObject *
-Affine_get_determinant(PlanarAffineObject *self) {
+Affine_get_determinant(polypaths_planar_overrideAffineObject *self) {
     return PyFloat_FromDouble(self->a*self->e - self->b*self->d);
 }
 
 static PyObject *
-Affine_get_is_identity(PlanarAffineObject *self) 
+Affine_get_is_identity(polypaths_planar_overrideAffineObject *self) 
 {
     PyObject *r;
 
@@ -161,7 +161,7 @@ Affine_get_is_identity(PlanarAffineObject *self)
 }
 
 static PyObject *
-Affine_get_is_rectilinear(PlanarAffineObject *self) 
+Affine_get_is_rectilinear(polypaths_planar_overrideAffineObject *self) 
 {
     PyObject *r;
 
@@ -176,7 +176,7 @@ Affine_get_is_rectilinear(PlanarAffineObject *self)
 }
 
 static PyObject *
-Affine_get_is_conformal(PlanarAffineObject *self) 
+Affine_get_is_conformal(polypaths_planar_overrideAffineObject *self) 
 {
     PyObject *r;
 
@@ -190,7 +190,7 @@ Affine_get_is_conformal(PlanarAffineObject *self)
 }
 
 static PyObject *
-Affine_get_is_orthonormal(PlanarAffineObject *self) 
+Affine_get_is_orthonormal(polypaths_planar_overrideAffineObject *self) 
 {
     PyObject *r;
 
@@ -207,7 +207,7 @@ Affine_get_is_orthonormal(PlanarAffineObject *self)
 }
 
 static PyObject *
-Affine_get_is_degenerate(PlanarAffineObject *self) 
+Affine_get_is_degenerate(polypaths_planar_overrideAffineObject *self) 
 {
     PyObject *r;
 
@@ -221,14 +221,14 @@ Affine_get_is_degenerate(PlanarAffineObject *self)
 }
 
 static PyObject *
-Affine_get_column_vectors(PlanarAffineObject *self) 
+Affine_get_column_vectors(polypaths_planar_overrideAffineObject *self) 
 {
     PyObject *r, *v1, *v2, *v3;
 
 	r = PyTuple_New(3);
-	v1 = (PyObject *)PlanarVec2_FromDoubles(self->a, self->d);
-	v2 = (PyObject *)PlanarVec2_FromDoubles(self->b, self->e);
-	v3 = (PyObject *)PlanarVec2_FromDoubles(self->c, self->f);
+	v1 = (PyObject *)polypaths_planar_overrideVec2_FromDoubles(self->a, self->d);
+	v2 = (PyObject *)polypaths_planar_overrideVec2_FromDoubles(self->b, self->e);
+	v3 = (PyObject *)polypaths_planar_overrideVec2_FromDoubles(self->c, self->f);
 	if (r == NULL || v1 == NULL || v2 == NULL || v3 == NULL) {
 		Py_XDECREF(r);
 		Py_XDECREF(v1);
@@ -277,13 +277,13 @@ static PyGetSetDef Affine_getset[] = {
 
 /* Methods */
 
-static PlanarAffineObject *
+static polypaths_planar_overrideAffineObject *
 Affine_new_identity(PyTypeObject *type)
 {
-    PlanarAffineObject *t;
+    polypaths_planar_overrideAffineObject *t;
 
-    assert(PyType_IsSubtype(type, &PlanarAffineType));
-    t = (PlanarAffineObject *)type->tp_alloc(type, 0);
+    assert(PyType_IsSubtype(type, &polypaths_planar_overrideAffineType));
+    t = (polypaths_planar_overrideAffineObject *)type->tp_alloc(type, 0);
     if (t == NULL) {
         return NULL;
     }
@@ -291,17 +291,17 @@ Affine_new_identity(PyTypeObject *type)
     return t;
 }
 
-static PlanarAffineObject *
+static polypaths_planar_overrideAffineObject *
 Affine_new_translation(PyTypeObject *type, PyObject *offset)
 {
-    PlanarAffineObject *t;
+    polypaths_planar_overrideAffineObject *t;
     double ox, oy;
 
-    assert(PyType_IsSubtype(type, &PlanarAffineType));
-    if (!PlanarVec2_Parse(offset, &ox, &oy)) {
+    assert(PyType_IsSubtype(type, &polypaths_planar_overrideAffineType));
+    if (!polypaths_planar_overrideVec2_Parse(offset, &ox, &oy)) {
         return NULL;
     }
-    t = (PlanarAffineObject *)type->tp_alloc(type, 0);
+    t = (polypaths_planar_overrideAffineObject *)type->tp_alloc(type, 0);
     if (t == NULL) {
         return NULL;
     }
@@ -311,13 +311,13 @@ Affine_new_translation(PyTypeObject *type, PyObject *offset)
     return t;
 }
 
-static PlanarAffineObject *
+static polypaths_planar_overrideAffineObject *
 Affine_new_scale(PyTypeObject *type, PyObject *scaling)
 {
-    PlanarAffineObject *t;
+    polypaths_planar_overrideAffineObject *t;
     double sx, sy;
 
-    if (!PlanarVec2_Parse(scaling, &sx, &sy)) {
+    if (!polypaths_planar_overrideVec2_Parse(scaling, &sx, &sy)) {
         /* scalar arg */
         scaling = PyNumber_Float(scaling);
         if (scaling == NULL) {
@@ -326,7 +326,7 @@ Affine_new_scale(PyTypeObject *type, PyObject *scaling)
         sx = sy = PyFloat_AS_DOUBLE(scaling);
         Py_DECREF(scaling);
     }
-    t = (PlanarAffineObject *)type->tp_alloc(type, 0);
+    t = (polypaths_planar_overrideAffineObject *)type->tp_alloc(type, 0);
     if (t == NULL) {
         return NULL;
     }
@@ -335,10 +335,10 @@ Affine_new_scale(PyTypeObject *type, PyObject *scaling)
     return t;
 }
 
-static PlanarAffineObject *
+static polypaths_planar_overrideAffineObject *
 Affine_new_shear(PyTypeObject *type, PyObject *args, PyObject *kwargs)
 {
-    PlanarAffineObject *t;
+    polypaths_planar_overrideAffineObject *t;
     double sx, sy, ax = 0.0, ay = 0.0;
 
     static char *kwlist[] = {"x_angle", "y_angle", NULL};
@@ -347,7 +347,7 @@ Affine_new_shear(PyTypeObject *type, PyObject *args, PyObject *kwargs)
         args, kwargs, "|dd:Affine.shear", kwlist, &ax, &ay)) {
         return NULL;
     }
-    t = (PlanarAffineObject *)type->tp_alloc(type, 0);
+    t = (polypaths_planar_overrideAffineObject *)type->tp_alloc(type, 0);
     if (t == NULL) {
         return NULL;
     }
@@ -359,11 +359,11 @@ Affine_new_shear(PyTypeObject *type, PyObject *args, PyObject *kwargs)
 	return t;
 }
 
-static PlanarAffineObject *
+static polypaths_planar_overrideAffineObject *
 Affine_new_rotation(PyTypeObject *type, PyObject *args, PyObject *kwargs)
 {
     PyObject *pivot_arg = NULL;
-    PlanarAffineObject *t;
+    polypaths_planar_overrideAffineObject *t;
     double angle, sa, ca, px, py;
 
     static char *kwlist[] = {"angle", "pivot", NULL};
@@ -373,7 +373,7 @@ Affine_new_rotation(PyTypeObject *type, PyObject *args, PyObject *kwargs)
         &angle, &pivot_arg)) {
         return NULL;
     }
-    t = (PlanarAffineObject *)type->tp_alloc(type, 0);
+    t = (polypaths_planar_overrideAffineObject *)type->tp_alloc(type, 0);
     if (t == NULL) {
         return NULL;
     }
@@ -384,7 +384,7 @@ Affine_new_rotation(PyTypeObject *type, PyObject *args, PyObject *kwargs)
     t->e = ca;
 
     if (pivot_arg != NULL) {
-        if (!PlanarVec2_Parse(pivot_arg, &px, &py)) {
+        if (!polypaths_planar_overrideVec2_Parse(pivot_arg, &px, &py)) {
 			PyErr_SetString(PyExc_TypeError,
 				"Expected sequence of two numbers for pivot argument"); 
             Py_DECREF(t);
@@ -397,7 +397,7 @@ Affine_new_rotation(PyTypeObject *type, PyObject *args, PyObject *kwargs)
 }
 
 static PyObject *
-Affine_repr(PlanarAffineObject *self)
+Affine_repr(polypaths_planar_overrideAffineObject *self)
 {
     char buf[255];
     buf[0] = 0; /* paranoid */
@@ -410,7 +410,7 @@ Affine_repr(PlanarAffineObject *self)
 }
 
 static PyObject *
-Affine_str(PlanarAffineObject *self)
+Affine_str(polypaths_planar_overrideAffineObject *self)
 {
     char buf[255];
     buf[0] = 0; /* paranoid */
@@ -424,12 +424,12 @@ Affine_str(PlanarAffineObject *self)
 }
 
 static PyObject *
-Affine_almost_equals(PlanarAffineObject *self, PlanarAffineObject *other)
+Affine_almost_equals(polypaths_planar_overrideAffineObject *self, polypaths_planar_overrideAffineObject *other)
 {
     PyObject *r;
 
-    assert(PlanarAffine_Check(self));
-    if (PlanarAffine_Check(other)) {
+    assert(polypaths_planar_overrideAffine_Check(self));
+    if (polypaths_planar_overrideAffine_Check(other)) {
         if (almost_eq(self->a, other->a) 
          && almost_eq(self->b, other->b)
          && almost_eq(self->c, other->c)
@@ -448,12 +448,12 @@ Affine_almost_equals(PlanarAffineObject *self, PlanarAffineObject *other)
 }
 
 static PyObject *
-Affine_itransform(PlanarAffineObject *self, PyObject *seq)
+Affine_itransform(polypaths_planar_overrideAffineObject *self, PyObject *seq)
 {
     Py_ssize_t i;
     Py_ssize_t len;
     PyObject *point;
-    PlanarSeq2Object *varray;
+    polypaths_planar_overrideSeq2Object *varray;
     double x, y, a, b, c, d, e, f;
 
     a = self->a;
@@ -462,10 +462,10 @@ Affine_itransform(PlanarAffineObject *self, PyObject *seq)
     d = self->d;
     e = self->e;
     f = self->f;
-    assert(PlanarAffine_Check(self));
-    if (PlanarSeq2_Check(seq)) {
+    assert(polypaths_planar_overrideAffine_Check(self));
+    if (polypaths_planar_overrideSeq2_Check(seq)) {
 	/* Optimized code path for Seq2s */
-	varray = (PlanarSeq2Object *)seq;
+	varray = (polypaths_planar_overrideSeq2Object *)seq;
 	for (i = 0; i < Py_SIZE(seq); i++) {
 	    x = varray->vec[i].x;
 	    y = varray->vec[i].y;
@@ -485,7 +485,7 @@ Affine_itransform(PlanarAffineObject *self, PyObject *seq)
 			if (point == NULL) {
 				return NULL;
 			}
-			if (!PlanarVec2_Parse(point, &x, &y)) {
+			if (!polypaths_planar_overrideVec2_Parse(point, &x, &y)) {
 				Py_DECREF(point);
 				PyErr_Format(PyExc_TypeError, 
 					"Affine.itransform(): "
@@ -493,7 +493,7 @@ Affine_itransform(PlanarAffineObject *self, PyObject *seq)
 				return NULL;
 			}
 			Py_DECREF(point);
-			point = (PyObject *)PlanarVec2_FromDoubles(x*a + y*d + c, x*b + y*e + f);
+			point = (PyObject *)polypaths_planar_overrideVec2_FromDoubles(x*a + y*d + c, x*b + y*e + f);
 			if (point == NULL) {
 				return NULL;
 			}
@@ -537,10 +537,10 @@ static PyMethodDef Affine_methods[] = {
 /* Aritmetic operations */
 
 static PyObject *
-affine_mul_vec2(PlanarAffineObject *t, PlanarVec2Object *v)
+affine_mul_vec2(polypaths_planar_overrideAffineObject *t, polypaths_planar_overrideVec2Object *v)
 {
     /* Affine * Vec2 = Vec2 */
-    return (PyObject *)PlanarVec2_FromDoubles(
+    return (PyObject *)polypaths_planar_overrideVec2_FromDoubles(
         v->x * t->a + v->y * t->d + t->c,
         v->x * t->b + v->y * t->e + t->f);
 }
@@ -548,17 +548,17 @@ affine_mul_vec2(PlanarAffineObject *t, PlanarVec2Object *v)
 static PyObject *
 Affine__mul__(PyObject *a, PyObject *b)
 {
-    PlanarAffineObject *ta, *tb, *tr;
+    polypaths_planar_overrideAffineObject *ta, *tb, *tr;
     int a_is_affine, b_is_affine;
 
-    a_is_affine = PlanarAffine_Check(a);
-    b_is_affine = PlanarAffine_Check(b);
+    a_is_affine = polypaths_planar_overrideAffine_Check(a);
+    b_is_affine = polypaths_planar_overrideAffine_Check(b);
 
     if (a_is_affine && b_is_affine) {
         /* Affine * Affine = Affine */
-        ta = (PlanarAffineObject *)a;
-        tb = (PlanarAffineObject *)b;
-        tr = (PlanarAffineObject *)PlanarAffineType.tp_alloc(Py_TYPE(a), 0);
+        ta = (polypaths_planar_overrideAffineObject *)a;
+        tb = (polypaths_planar_overrideAffineObject *)b;
+        tr = (polypaths_planar_overrideAffineObject *)polypaths_planar_overrideAffineType.tp_alloc(Py_TYPE(a), 0);
         if (tr == NULL) {
             return NULL;
         }
@@ -569,12 +569,12 @@ Affine__mul__(PyObject *a, PyObject *b)
         tr->e = ta->d * tb->b + ta->e * tb->e;
         tr->f = ta->d * tb->c + ta->e * tb->f + ta->f;
         return (PyObject *)tr;
-    } else if (a_is_affine && PlanarVec2_Check(b)) {
+    } else if (a_is_affine && polypaths_planar_overrideVec2_Check(b)) {
 		return affine_mul_vec2(
-			(PlanarAffineObject *)a, (PlanarVec2Object *)b);
-    } else if (PlanarVec2_Check(a) && b_is_affine) {
+			(polypaths_planar_overrideAffineObject *)a, (polypaths_planar_overrideVec2Object *)b);
+    } else if (polypaths_planar_overrideVec2_Check(a) && b_is_affine) {
 		return affine_mul_vec2(
-			(PlanarAffineObject *)b, (PlanarVec2Object *)a);
+			(polypaths_planar_overrideAffineObject *)b, (polypaths_planar_overrideVec2Object *)a);
     } else {
         /* Operation not supported */
         Py_INCREF(Py_NotImplemented);
@@ -583,21 +583,21 @@ Affine__mul__(PyObject *a, PyObject *b)
 
 }
 
-static PlanarAffineObject *
-Affine__invert__(PlanarAffineObject *self)
+static polypaths_planar_overrideAffineObject *
+Affine__invert__(polypaths_planar_overrideAffineObject *self)
 {
-    PlanarAffineObject *t;
+    polypaths_planar_overrideAffineObject *t;
     double idet, ra, rb, rd, re;
 
-    assert(PlanarAffine_Check(self));
+    assert(polypaths_planar_overrideAffine_Check(self));
     idet = self->a*self->e - self->b*self->d;
-    if (abs(idet) < PLANAR_EPSILON) {
-        PyErr_SetString(PlanarTransformNotInvertibleError,
+    if (abs(idet) < polypaths_planar_override_EPSILON) {
+        PyErr_SetString(polypaths_planar_overrideTransformNotInvertibleError,
             "Cannot invert degenerate transform");
         return NULL;
     }
     idet = 1.0 / idet;
-    t = (PlanarAffineObject *)PlanarAffineType.tp_alloc(Py_TYPE(self), 0);
+    t = (polypaths_planar_overrideAffineObject *)polypaths_planar_overrideAffineType.tp_alloc(Py_TYPE(self), 0);
     if (t == NULL) {
         return NULL;
     }
@@ -676,11 +676,11 @@ Affine_len(PyObject *self)
 }
 
 static PyObject *
-Affine_getitem(PlanarAffineObject *self, Py_ssize_t i)
+Affine_getitem(polypaths_planar_overrideAffineObject *self, Py_ssize_t i)
 {
     double m;
 
-    assert(PlanarAffine_Check(self));
+    assert(polypaths_planar_overrideAffine_Check(self));
     if (i < 6) {
         m = self->m[i];
     } else if (i < 8) {
@@ -694,12 +694,12 @@ Affine_getitem(PlanarAffineObject *self, Py_ssize_t i)
 }
 
 static PyObject *
-Affine_subscript(PlanarAffineObject *self, PyObject *item)
+Affine_subscript(polypaths_planar_overrideAffineObject *self, PyObject *item)
 {
     Py_ssize_t i;
     PyObject *t, *s;
 
-    assert(PlanarAffine_Check(self));
+    assert(polypaths_planar_overrideAffine_Check(self));
     if (PyIndex_Check(item)) {
         i = PyNumber_AsSsize_t(item, PyExc_IndexError);
         if (i == -1 && PyErr_Occurred()) {
@@ -748,10 +748,10 @@ PyDoc_STRVAR(Affine_doc,
     "Two dimensional immutable affine transform."
 );
 
-PyTypeObject PlanarAffineType = {
+PyTypeObject polypaths_planar_overrideAffineType = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    "planar.Affine",       /* tp_name */
-    sizeof(PlanarAffineObject), /* tp_basicsize */
+    "polypaths_planar_override.Affine",       /* tp_name */
+    sizeof(polypaths_planar_overrideAffineObject), /* tp_basicsize */
     0,                    /* tp_itemsize */
     (destructor)Affine_dealloc, /* tp_dealloc */
     0,                    /* tp_print */

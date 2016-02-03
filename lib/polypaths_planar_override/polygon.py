@@ -32,16 +32,16 @@ import sys
 import math
 import itertools
 import bisect
-import planar
-from planar.util import cached_property, assert_unorderable, cos_sin_deg
+import polypaths_planar_override
+from polypaths_planar_override.util import cached_property, assert_unorderable, cos_sin_deg
 
-class Polygon(planar.Seq2):
+class Polygon(polypaths_planar_override.Seq2):
     """Arbitrary polygon represented as a list of vertices. 
 
     The individual vertices of a polygon are mutable, but the number
     of vertices is fixed at construction.
 
-    :param vertices: Iterable containing three or more :class:`~planar.Vec2` 
+    :param vertices: Iterable containing three or more :class:`~polypaths_planar_override.Vec2` 
         objects.
     :param is_convex: Optionally allows the polygon to be declared convex
         or non-convex at construction time, thus saving additional time spent
@@ -113,7 +113,7 @@ class Polygon(planar.Seq2):
             verts.append((x * radius + cx, y * radius + cy))
             angle += angle_step
         poly = cls(verts, is_convex=True)
-        poly._centroid = planar.Vec2(*center)
+        poly._centroid = polypaths_planar_override.Vec2(*center)
         poly._max_r = radius
         poly._max_r2 = radius * radius
         poly._min_r = min_r = ((poly[0] + poly[1]) * 0.5 - center).length
@@ -157,7 +157,7 @@ class Polygon(planar.Seq2):
         poly = cls(verts, is_convex=(radius1 == radius2), 
             is_simple=is_simple or None)
         if is_simple:
-            poly._centroid = planar.Vec2(*center)
+            poly._centroid = polypaths_planar_override.Vec2(*center)
         poly._max_r = max_r = max(abs(radius1), abs(radius2))
         poly._max_r2 = max_r * max_r
         if (radius1 >= 0.0) == (radius2 >= 0.0):
@@ -201,7 +201,7 @@ class Polygon(planar.Seq2):
     def bounding_box(self):
         """The bounding box of the polygon"""
         if self._bbox is None:
-            self._bbox = planar.BoundingBox(self)
+            self._bbox = polypaths_planar_override.BoundingBox(self)
         return self._bbox
 
     @property
@@ -259,7 +259,7 @@ class Polygon(planar.Seq2):
             dir_changes += (this_dir == -last_dir)
             last_dir = this_dir
             cross = last_delta.cross(delta)
-            if cross > 0.0: # XXX Should this be cross > planar.EPSILON?
+            if cross > 0.0: # XXX Should this be cross > polypaths_planar_override.EPSILON?
                 if angle_sign == -1:
                     self._convex = False
                     break
@@ -415,7 +415,7 @@ class Polygon(planar.Seq2):
                 a = self[0]
                 b = self[1]
                 total_area = 0.0
-                centroid = planar.Vec2(0, 0)
+                centroid = polypaths_planar_override.Vec2(0, 0)
                 for i in range(2, len(self)):
                     c = self[i]
                     area = ((b[0] - a[0]) * (c[1] - a[1]) 
@@ -671,7 +671,7 @@ class Polygon(planar.Seq2):
         other: O(n)
 
         :param point: A point vector.
-        :type point: :class:`~planar.Vec2`
+        :type point: :class:`~polypaths_planar_override.Vec2`
         :rtype: bool
         """
         sides = len(self)
@@ -709,11 +709,11 @@ class Polygon(planar.Seq2):
             if prev_turn <= 0.0 and next_turn > 0.0:
                 if ((v0_x - px)*(right_tan.y - py)
                     - (right_tan.x - px)*(v0_y - py) >= 0.0):
-                    right_tan = planar.Vec2(v0_x, v0_y)
+                    right_tan = polypaths_planar_override.Vec2(v0_x, v0_y)
             elif prev_turn > 0.0 and next_turn <= 0.0:
                 if ((v0_x - px)*(left_tan.y - py)
                     - (left_tan.x - px)*(v0_y - py) <= 0.0):
-                    left_tan = planar.Vec2(v0_x, v0_y)
+                    left_tan = polypaths_planar_override.Vec2(v0_x, v0_y)
             v0_x = v1_x
             v0_y = v1_y
             prev_turn = next_turn
@@ -808,9 +808,9 @@ class Polygon(planar.Seq2):
 
         :param point: A point outside the polygon. If the point specified is
             inside, the result is undefined.
-        :type point: :class:`~planar.Vec2`
+        :type point: :class:`~polypaths_planar_override.Vec2`
         :return: A tuple containing the left and right tangent points.
-        :rtype: tuple of :class:`~planar.Vec2`
+        :rtype: tuple of :class:`~polypaths_planar_override.Vec2`
         """
         if len(self) > 20 and self.is_convex and not self._dupe_verts:
             return (self[self._left_tan_i_convex(point)], 
@@ -901,7 +901,7 @@ def _ahull_partition_points(hull, points, p0, p1):
         if dist > furthest:
             furthest = dist
             partition_point = p
-    partition_point = planar.Vec2(*partition_point)
+    partition_point = polypaths_planar_override.Vec2(*partition_point)
     
     # Compute the triangle partition_point->p0->p1
     # in barycentric coordinates

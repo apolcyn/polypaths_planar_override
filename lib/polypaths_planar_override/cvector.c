@@ -11,19 +11,19 @@
 #include "Python.h"
 #include <float.h>
 #include <string.h>
-#include "planar.h"
+#include "polypaths_planar_override.h"
 
 #define VEC2_FREE_MAX 1000
 static PyObject *vec2_free_list = NULL;
 static int vec2_free_size = 0;
 
-static PlanarVec2Object *
-Vec2_result(PlanarVec2Object *self, double x, double y)
+static polypaths_planar_overrideVec2Object *
+Vec2_result(polypaths_planar_overrideVec2Object *self, double x, double y)
 {
-    PlanarVec2Object *v;
+    polypaths_planar_overrideVec2Object *v;
 
-    assert(PlanarVec2_Check(self));
-    v = (PlanarVec2Object *)PlanarVec2Type.tp_alloc(Py_TYPE(self), 0);
+    assert(polypaths_planar_overrideVec2_Check(self));
+    v = (polypaths_planar_overrideVec2Object *)polypaths_planar_overrideVec2Type.tp_alloc(Py_TYPE(self), 0);
     if (v == NULL) {
         return NULL;
     }
@@ -33,12 +33,12 @@ Vec2_result(PlanarVec2Object *self, double x, double y)
 }
 
 static int
-Vec2_init(PlanarVec2Object *self, PyObject *args)
+Vec2_init(polypaths_planar_overrideVec2Object *self, PyObject *args)
 {
     PyObject *xarg;
     PyObject *yarg;
 
-    assert(PlanarVec2_Check(self));
+    assert(polypaths_planar_overrideVec2_Check(self));
     if (PyTuple_GET_SIZE(args) != 2) {
         PyErr_SetString(PyExc_TypeError, 
             "Vec2: wrong number of arguments");
@@ -62,11 +62,11 @@ Vec2_init(PlanarVec2Object *self, PyObject *args)
 static PyObject *
 Vec2_alloc(PyTypeObject *type, Py_ssize_t nitems)
 {
-    PlanarVec2Object *v;
+    polypaths_planar_overrideVec2Object *v;
 
-    assert(PyType_IsSubtype(type, &PlanarVec2Type));
+    assert(PyType_IsSubtype(type, &polypaths_planar_overrideVec2Type));
     if (vec2_free_list != NULL) {
-        v = (PlanarVec2Object *)vec2_free_list;
+        v = (polypaths_planar_overrideVec2Object *)vec2_free_list;
         Py_INCREF(v);
         vec2_free_list = v->next_free;
         --vec2_free_size;
@@ -79,9 +79,9 @@ Vec2_alloc(PyTypeObject *type, Py_ssize_t nitems)
 }
 
 static void
-Vec2_dealloc(PlanarVec2Object *self)
+Vec2_dealloc(polypaths_planar_overrideVec2Object *self)
 {
-    if (PlanarVec2_CheckExact(self) && vec2_free_size < VEC2_FREE_MAX) {
+    if (polypaths_planar_overrideVec2_CheckExact(self) && vec2_free_size < VEC2_FREE_MAX) {
         self->next_free = vec2_free_list;
         vec2_free_list = (PyObject *)self;
         ++vec2_free_size;
@@ -96,7 +96,7 @@ Vec2_compare(PyObject *a, PyObject *b, int op)
     double ax, bx, ay, by;
     int result = 0;
 
-    if (PlanarVec2_Parse(a, &ax, &ay) && PlanarVec2_Parse(b, &bx, &by)) {
+    if (polypaths_planar_overrideVec2_Parse(a, &ax, &ay) && polypaths_planar_overrideVec2_Parse(b, &bx, &by)) {
         switch (op) {
             case Py_EQ:
                 result = ax == bx && ay == by;
@@ -144,7 +144,7 @@ Vec2_compare(PyObject *a, PyObject *b, int op)
 }
 
 static long
-Vec2_hash(PlanarVec2Object *self) 
+Vec2_hash(polypaths_planar_overrideVec2Object *self) 
 {
     long hash;
 
@@ -155,34 +155,34 @@ Vec2_hash(PlanarVec2Object *self)
 /* Property descriptors */
 
 static PyObject *
-Vec2_get_x(PlanarVec2Object *self) {
+Vec2_get_x(polypaths_planar_overrideVec2Object *self) {
     return PyFloat_FromDouble(self->x);
 }
 
 static PyObject *
-Vec2_get_y(PlanarVec2Object *self) {
+Vec2_get_y(polypaths_planar_overrideVec2Object *self) {
     return PyFloat_FromDouble(self->y);
 }
 
 static PyObject *
-Vec2_get_length(PlanarVec2Object *self) {
+Vec2_get_length(polypaths_planar_overrideVec2Object *self) {
     return PyFloat_FromDouble(sqrt(self->y * self->y + self->x * self->x));
 }
 
 static PyObject *
-Vec2_get_length2(PlanarVec2Object *self) {
+Vec2_get_length2(polypaths_planar_overrideVec2Object *self) {
     return PyFloat_FromDouble(self->y * self->y + self->x * self->x);
 }
 
 static PyObject *
-Vec2_get_angle(PlanarVec2Object *self) {
+Vec2_get_angle(polypaths_planar_overrideVec2Object *self) {
     return PyFloat_FromDouble(degrees(atan2(self->y, self->x)));
 }
 
 static PyObject *
-Vec2_get_is_null(PlanarVec2Object *self)
+Vec2_get_is_null(polypaths_planar_overrideVec2Object *self)
 {
-    if (self->y * self->y + self->x * self->x < PLANAR_EPSILON2) {
+    if (self->y * self->y + self->x * self->x < polypaths_planar_override_EPSILON2) {
         Py_RETURN_TRUE;
     } else {
         Py_RETURN_FALSE;
@@ -211,14 +211,14 @@ Vec2_new_polar(PyTypeObject *type, PyObject *args, PyObject *kwargs)
 {
     PyObject *angle_arg;
     PyObject *length_arg;
-    PlanarVec2Object *v;
+    polypaths_planar_overrideVec2Object *v;
     int arg_count;
     double angle;
     double length = 1.0;
 
     static char *kwlist[] = {"angle", "length", NULL};
 
-    assert(PyType_IsSubtype(type, &PlanarVec2Type));
+    assert(PyType_IsSubtype(type, &polypaths_planar_overrideVec2Type));
     if (kwargs == NULL) {
         /* No kwargs, do fast manual arg handling */
         arg_count = PyTuple_GET_SIZE(args);
@@ -246,7 +246,7 @@ Vec2_new_polar(PyTypeObject *type, PyObject *args, PyObject *kwargs)
         return NULL;
     }
 
-    v = (PlanarVec2Object *)type->tp_alloc(type, 0);
+    v = (polypaths_planar_overrideVec2Object *)type->tp_alloc(type, 0);
     if (v != NULL) {
 		cos_sin_deg(angle, &v->x, &v->y);
         v->x *= length;
@@ -256,7 +256,7 @@ Vec2_new_polar(PyTypeObject *type, PyObject *args, PyObject *kwargs)
 }
 
 static PyObject *
-Vec2_repr(PlanarVec2Object *self)
+Vec2_repr(polypaths_planar_overrideVec2Object *self)
 {
     char buf[255];
     buf[0] = 0; /* paranoid */
@@ -265,7 +265,7 @@ Vec2_repr(PlanarVec2Object *self)
 }
 
 static PyObject *
-Vec2_str(PlanarVec2Object *self)
+Vec2_str(polypaths_planar_overrideVec2Object *self)
 {
     char buf[255];
     buf[0] = 0; /* paranoid */
@@ -274,15 +274,15 @@ Vec2_str(PlanarVec2Object *self)
 }
 
 static PyObject *
-Vec2_almost_equals(PlanarVec2Object *self, PyObject *other)
+Vec2_almost_equals(polypaths_planar_overrideVec2Object *self, PyObject *other)
 {
     double ox, oy, dx, dy;
 
-    assert(PlanarVec2_Check(self));
-    if (PlanarVec2_Parse(other, &ox, &oy)) {
+    assert(polypaths_planar_overrideVec2_Check(self));
+    if (polypaths_planar_overrideVec2_Parse(other, &ox, &oy)) {
         dx = self->x - ox;
         dy = self->y - oy;
-        if (dx*dx + dy*dy <= PLANAR_EPSILON2) {
+        if (dx*dx + dy*dy <= polypaths_planar_override_EPSILON2) {
             Py_RETURN_TRUE;
         } else {
             Py_RETURN_FALSE;
@@ -293,12 +293,12 @@ Vec2_almost_equals(PlanarVec2Object *self, PyObject *other)
 }
 
 static PyObject *
-Vec2_angle_to(PlanarVec2Object *self, PyObject *other)
+Vec2_angle_to(polypaths_planar_overrideVec2Object *self, PyObject *other)
 {
     double ox, oy;
 
-    assert(PlanarVec2_Check(self));
-    if (PlanarVec2_Parse(other, &ox, &oy)) {
+    assert(polypaths_planar_overrideVec2_Check(self));
+    if (polypaths_planar_overrideVec2_Parse(other, &ox, &oy)) {
         return PyFloat_FromDouble(
             degrees(atan2(oy, ox) - atan2(self->y, self->x)));
     } else {
@@ -307,12 +307,12 @@ Vec2_angle_to(PlanarVec2Object *self, PyObject *other)
 }
 
 static PyObject *
-Vec2_distance_to(PlanarVec2Object *self, PyObject *other)
+Vec2_distance_to(polypaths_planar_overrideVec2Object *self, PyObject *other)
 {
     double ox, oy, dx, dy;
 
-    assert(PlanarVec2_Check(self));
-    if (PlanarVec2_Parse(other, &ox, &oy)) {
+    assert(polypaths_planar_overrideVec2_Check(self));
+    if (polypaths_planar_overrideVec2_Parse(other, &ox, &oy)) {
         dx = self->x - ox;
         dy = self->y - oy;
         return PyFloat_FromDouble(sqrt(dx*dx + dy*dy));
@@ -322,12 +322,12 @@ Vec2_distance_to(PlanarVec2Object *self, PyObject *other)
 }
 
 static PyObject *
-Vec2_dot(PlanarVec2Object *self, PyObject *other)
+Vec2_dot(polypaths_planar_overrideVec2Object *self, PyObject *other)
 {
     double ox, oy;
 
-    assert(PlanarVec2_Check(self));
-    if (PlanarVec2_Parse(other, &ox, &oy)) {
+    assert(polypaths_planar_overrideVec2_Check(self));
+    if (polypaths_planar_overrideVec2_Parse(other, &ox, &oy)) {
         return PyFloat_FromDouble(self->x * ox + self->y * oy);
     } else {
         CONVERSION_ERROR();
@@ -335,24 +335,24 @@ Vec2_dot(PlanarVec2Object *self, PyObject *other)
 }
 
 static PyObject *
-Vec2_cross(PlanarVec2Object *self, PyObject *other)
+Vec2_cross(polypaths_planar_overrideVec2Object *self, PyObject *other)
 {
     double ox, oy;
 
-    assert(PlanarVec2_Check(self));
-    if (PlanarVec2_Parse(other, &ox, &oy)) {
+    assert(polypaths_planar_overrideVec2_Check(self));
+    if (polypaths_planar_overrideVec2_Parse(other, &ox, &oy)) {
         return PyFloat_FromDouble(self->x * oy - self->y * ox);
     } else {
         CONVERSION_ERROR();
     }
 }
 
-static PlanarVec2Object *
-Vec2_rotated(PlanarVec2Object *self, PyObject *angle_arg)
+static polypaths_planar_overrideVec2Object *
+Vec2_rotated(polypaths_planar_overrideVec2Object *self, PyObject *angle_arg)
 {
     double sa, ca;
 
-    assert(PlanarVec2_Check(self));
+    assert(polypaths_planar_overrideVec2_Check(self));
     angle_arg = PyObject_ToFloat(angle_arg);
     if (angle_arg == NULL) {
         return NULL;
@@ -362,18 +362,18 @@ Vec2_rotated(PlanarVec2Object *self, PyObject *angle_arg)
         self->x * ca - self->y * sa, self->x * sa + self->y * ca);
 }
 
-static PlanarVec2Object *
-Vec2_scaled_to(PlanarVec2Object *self, PyObject *length)
+static polypaths_planar_overrideVec2Object *
+Vec2_scaled_to(polypaths_planar_overrideVec2Object *self, PyObject *length)
 {
     double L, s;
 
-    assert(PlanarVec2_Check(self));
+    assert(polypaths_planar_overrideVec2_Check(self));
     length = PyObject_ToFloat(length);
     if (length == NULL) {
         return NULL;
     }
     L = self->x * self->x + self->y * self->y;
-    if (L >= PLANAR_EPSILON2) {
+    if (L >= polypaths_planar_override_EPSILON2) {
         s = PyFloat_AS_DOUBLE(length) / sqrt(L);
         Py_DECREF(length);
         return Vec2_result(self, self->x * s, self->y * s);
@@ -382,15 +382,15 @@ Vec2_scaled_to(PlanarVec2Object *self, PyObject *length)
     }
 }
 
-static PlanarVec2Object *
-Vec2_project(PlanarVec2Object *self, PyObject *other)
+static polypaths_planar_overrideVec2Object *
+Vec2_project(polypaths_planar_overrideVec2Object *self, PyObject *other)
 {
     double ox, oy, L, s;
 
-    assert(PlanarVec2_Check(self));
-    if (PlanarVec2_Parse(other, &ox, &oy)) {
+    assert(polypaths_planar_overrideVec2_Check(self));
+    if (polypaths_planar_overrideVec2_Parse(other, &ox, &oy)) {
         L = self->x * self->x + self->y * self->y;
-        if (L >= PLANAR_EPSILON2) {
+        if (L >= polypaths_planar_override_EPSILON2) {
             s = (self->x * ox + self->y * oy) / L;
             return Vec2_result(self, self->x * s, self->y * s);
         } else {
@@ -401,15 +401,15 @@ Vec2_project(PlanarVec2Object *self, PyObject *other)
     }
 }
 
-static PlanarVec2Object *
-Vec2_reflect(PlanarVec2Object *self, PyObject *other)
+static polypaths_planar_overrideVec2Object *
+Vec2_reflect(polypaths_planar_overrideVec2Object *self, PyObject *other)
 {
     double ox, oy, L, s;
 
-    assert(PlanarVec2_Check(self));
-    if (PlanarVec2_Parse(other, &ox, &oy)) {
+    assert(polypaths_planar_overrideVec2_Check(self));
+    if (polypaths_planar_overrideVec2_Parse(other, &ox, &oy)) {
         L = ox * ox + oy * oy;
-        if (L >= PLANAR_EPSILON2) {
+        if (L >= polypaths_planar_override_EPSILON2) {
             s = 2 * (self->x * ox + self->y * oy) / L;
             return Vec2_result(self, ox * s - self->x, oy * s - self->y);
         } else {
@@ -420,8 +420,8 @@ Vec2_reflect(PlanarVec2Object *self, PyObject *other)
     }
 }
 
-static PlanarVec2Object *
-Vec2_clamped(PlanarVec2Object *self, PyObject *args, PyObject *kwargs)
+static polypaths_planar_overrideVec2Object *
+Vec2_clamped(polypaths_planar_overrideVec2Object *self, PyObject *args, PyObject *kwargs)
 {
     double min = 0.0;
     double max = DBL_MAX;
@@ -429,7 +429,7 @@ Vec2_clamped(PlanarVec2Object *self, PyObject *args, PyObject *kwargs)
 
     static char *kwlist[] = {"min_length", "max_length", NULL};
 
-    assert(PlanarVec2_Check(self));
+    assert(polypaths_planar_overrideVec2_Check(self));
     if (!PyArg_ParseTupleAndKeywords(
         args, kwargs, "|dd:Vec2.clamped", kwlist, &min, &max)) {
         return NULL;
@@ -444,7 +444,7 @@ Vec2_clamped(PlanarVec2Object *self, PyObject *args, PyObject *kwargs)
     CL = (L < min) ? min : L;
     CL = (CL > max) ? max : CL;
 
-    if (L > PLANAR_EPSILON) {
+    if (L > polypaths_planar_override_EPSILON) {
         return Vec2_result(self, 
             self->x * (CL / L), self->y * (CL / L));
     } else {
@@ -452,17 +452,17 @@ Vec2_clamped(PlanarVec2Object *self, PyObject *args, PyObject *kwargs)
     }
 }
 
-static PlanarVec2Object *
-Vec2_lerp(PlanarVec2Object *self, PyObject *args)
+static polypaths_planar_overrideVec2Object *
+Vec2_lerp(polypaths_planar_overrideVec2Object *self, PyObject *args)
 {
     PyObject *other;
     double v, ox, oy;
 
-    assert(PlanarVec2_Check(self));
+    assert(polypaths_planar_overrideVec2_Check(self));
     if (!PyArg_ParseTuple(args, "Od", &other, &v)) {
         return NULL;
     }
-    if (!PlanarVec2_Parse(other, &ox, &oy)) {
+    if (!polypaths_planar_overrideVec2_Parse(other, &ox, &oy)) {
         return NULL;
     }
     return Vec2_result(self, 
@@ -470,24 +470,24 @@ Vec2_lerp(PlanarVec2Object *self, PyObject *args)
         self->y * (1.0 - v) + oy * v);
 }
 
-static PlanarVec2Object *
-Vec2_normalized(PlanarVec2Object *self)
+static polypaths_planar_overrideVec2Object *
+Vec2_normalized(polypaths_planar_overrideVec2Object *self)
 {
     double length;
 
-    assert(PlanarVec2_Check(self));
+    assert(polypaths_planar_overrideVec2_Check(self));
     length = sqrt(self->y * self->y + self->x * self->x);
-    if (length > PLANAR_EPSILON) {
+    if (length > polypaths_planar_override_EPSILON) {
         return Vec2_result(self, self->x / length, self->y / length);
     } else {
         return Vec2_result(self, 0.0, 0.0);
     }
 }
 
-static PlanarVec2Object *
-Vec2_perpendicular(PlanarVec2Object *self)
+static polypaths_planar_overrideVec2Object *
+Vec2_perpendicular(polypaths_planar_overrideVec2Object *self)
 {
-    assert(PlanarVec2_Check(self));
+    assert(polypaths_planar_overrideVec2_Check(self));
     return Vec2_result(self, -self->y, self->x);
 }
 
@@ -534,8 +534,8 @@ Vec2__add__(PyObject *a, PyObject *b)
 {
     double ax, ay, bx, by;
 
-    if (PlanarVec2_Parse(a, &ax, &ay) && PlanarVec2_Parse(b, &bx, &by)) {
-        return (PyObject *)PlanarVec2_FromDoubles(ax + bx, ay + by);
+    if (polypaths_planar_overrideVec2_Parse(a, &ax, &ay) && polypaths_planar_overrideVec2_Parse(b, &bx, &by)) {
+        return (PyObject *)polypaths_planar_overrideVec2_FromDoubles(ax + bx, ay + by);
     } else {
         PyErr_Clear();
         Py_INCREF(Py_NotImplemented);
@@ -548,8 +548,8 @@ Vec2__sub__(PyObject *a, PyObject *b)
 {
     double ax, ay, bx, by;
 
-    if (PlanarVec2_Parse(a, &ax, &ay) && PlanarVec2_Parse(b, &bx, &by)) {
-        return (PyObject *)PlanarVec2_FromDoubles(ax - bx, ay - by);
+    if (polypaths_planar_overrideVec2_Parse(a, &ax, &ay) && polypaths_planar_overrideVec2_Parse(b, &bx, &by)) {
+        return (PyObject *)polypaths_planar_overrideVec2_FromDoubles(ax - bx, ay - by);
     } else {
         PyErr_Clear();
         Py_INCREF(Py_NotImplemented);
@@ -563,16 +563,16 @@ Vec2__mul__(PyObject *a, PyObject *b)
     int a_is_vec, b_is_vec;
     double ax, ay, bx, by;
 
-    a_is_vec = PlanarVec2_Parse(a, &ax, &ay);
-    b_is_vec = PlanarVec2_Parse(b, &bx, &by);
+    a_is_vec = polypaths_planar_overrideVec2_Parse(a, &ax, &ay);
+    b_is_vec = polypaths_planar_overrideVec2_Parse(b, &bx, &by);
 
     if (a_is_vec && b_is_vec) {
-        return (PyObject *)PlanarVec2_FromDoubles(ax * bx, ay * by);
+        return (PyObject *)polypaths_planar_overrideVec2_FromDoubles(ax * bx, ay * by);
     } else if (a_is_vec) {
         b = PyObject_ToFloat(b);
         if (b != NULL) {
             bx = PyFloat_AS_DOUBLE(b);
-            a = (PyObject *)PlanarVec2_FromDoubles(ax * bx, ay * bx);
+            a = (PyObject *)polypaths_planar_overrideVec2_FromDoubles(ax * bx, ay * bx);
             Py_DECREF(b);
             PyErr_Clear();
             return a;
@@ -581,7 +581,7 @@ Vec2__mul__(PyObject *a, PyObject *b)
         a = PyObject_ToFloat(a);
         if (a != NULL) {
             ax = PyFloat_AS_DOUBLE(a);
-            b = (PyObject *)PlanarVec2_FromDoubles(bx * ax, by * ax);
+            b = (PyObject *)polypaths_planar_overrideVec2_FromDoubles(bx * ax, by * ax);
             Py_DECREF(a);
             PyErr_Clear();
             return b;
@@ -598,14 +598,14 @@ Vec2__truediv__(PyObject *a, PyObject *b)
     int a_is_vec, b_is_vec;
     double ax, ay, bx, by;
 
-    a_is_vec = PlanarVec2_Parse(a, &ax, &ay);
-    b_is_vec = PlanarVec2_Parse(b, &bx, &by);
+    a_is_vec = polypaths_planar_overrideVec2_Parse(a, &ax, &ay);
+    b_is_vec = polypaths_planar_overrideVec2_Parse(b, &bx, &by);
 
     if (a_is_vec && b_is_vec) {
         if (!bx || !by) {
             goto div_by_zero;
         }
-        return (PyObject *)PlanarVec2_FromDoubles(ax / bx, ay / by);
+        return (PyObject *)polypaths_planar_overrideVec2_FromDoubles(ax / bx, ay / by);
     } else if (a_is_vec) {
         b = PyObject_ToFloat(b);
         if (b != NULL) {
@@ -613,7 +613,7 @@ Vec2__truediv__(PyObject *a, PyObject *b)
             if (!bx) {
                 goto div_by_zero;
             }
-            a = (PyObject *)PlanarVec2_FromDoubles(ax / bx, ay / bx);
+            a = (PyObject *)polypaths_planar_overrideVec2_FromDoubles(ax / bx, ay / bx);
             Py_DECREF(b);
             PyErr_Clear();
             return a;
@@ -625,7 +625,7 @@ Vec2__truediv__(PyObject *a, PyObject *b)
             if (!bx || !by) {
                 goto div_by_zero;
             }
-            b = (PyObject *)PlanarVec2_FromDoubles(ax / bx, ax / by);
+            b = (PyObject *)polypaths_planar_overrideVec2_FromDoubles(ax / bx, ax / by);
             Py_DECREF(a);
             PyErr_Clear();
             return b;
@@ -644,36 +644,36 @@ static PyObject *
 Vec2__floordiv__(PyObject *a, PyObject *b)
 {
     PyObject *q;
-    PlanarVec2Object *v;
+    polypaths_planar_overrideVec2Object *v;
     q = Vec2__truediv__(a, b);
     if (q != NULL && q != Py_NotImplemented) {
         /* Since q is a new vector, not referenced from outside,
            we can modify it here without breaking immutability */
-        v = (PlanarVec2Object *)q;
+        v = (polypaths_planar_overrideVec2Object *)q;
         v->x = floor(v->x);
         v->y = floor(v->y);
     }
     return q;
 }
 
-static PlanarVec2Object *
-Vec2__pos__(PlanarVec2Object *self)
+static polypaths_planar_overrideVec2Object *
+Vec2__pos__(polypaths_planar_overrideVec2Object *self)
 {
     Py_INCREF(self);
     return self;
 }
 
-static PlanarVec2Object *
-Vec2__neg__(PlanarVec2Object *self)
+static polypaths_planar_overrideVec2Object *
+Vec2__neg__(polypaths_planar_overrideVec2Object *self)
 {
-    assert(PlanarVec2_Check(self));
+    assert(polypaths_planar_overrideVec2_Check(self));
     return Vec2_result(self, -self->x, -self->y);
 }
 
 static int
-Vec2__nonzero__(PlanarVec2Object *self)
+Vec2__nonzero__(polypaths_planar_overrideVec2Object *self)
 {
-    assert(PlanarVec2_Check(self));
+    assert(polypaths_planar_overrideVec2_Check(self));
     return self->x != 0.0 || self->y != 0.0;
 }
 
@@ -739,7 +739,7 @@ Vec2_len(PyObject *self)
 }
 
 static PyObject *
-Vec2_getitem(PlanarVec2Object *self, Py_ssize_t i)
+Vec2_getitem(polypaths_planar_overrideVec2Object *self, Py_ssize_t i)
 {
     switch (i) {
         case 0:
@@ -765,10 +765,10 @@ PyDoc_STRVAR(Vec2_doc,
     "Vec2(x, y)"
 );
 
-PyTypeObject PlanarVec2Type = {
+PyTypeObject polypaths_planar_overrideVec2Type = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    "planar.Vec2",       /* tp_name */
-    sizeof(PlanarVec2Object), /* tp_basicsize */
+    "polypaths_planar_override.Vec2",       /* tp_name */
+    sizeof(polypaths_planar_overrideVec2Object), /* tp_basicsize */
     0,                    /* tp_itemsize */
     (destructor)Vec2_dealloc, /* tp_dealloc */
     0,                    /* tp_print */
@@ -809,33 +809,33 @@ PyTypeObject PlanarVec2Type = {
 
 /***************************************************************************/
 
-static PlanarSeq2Object *
+static polypaths_planar_overrideSeq2Object *
 Seq2_new_from_points(PyTypeObject *type, PyObject *points)
 {
-	PlanarSeq2Object *varray;
+	polypaths_planar_overrideSeq2Object *varray;
     Py_ssize_t size;
     Py_ssize_t i;
 
-	assert(PyType_IsSubtype(type, &PlanarSeq2Type));
+	assert(PyType_IsSubtype(type, &polypaths_planar_overrideSeq2Type));
 	/* This check is a bit of a hack to prevent
 	   bugs in user code from crashing the interpreter
 	   by "forcing" this to be called with known
 	   incompatible subclasses
 	*/
-	if (PyType_IsSubtype(type, &PlanarPolygonType)) {
+	if (PyType_IsSubtype(type, &polypaths_planar_overridePolygonType)) {
 		PyErr_Format(PyExc_TypeError,
 			"Cannot call Seq2.from_points() on %.200s class",
 			type->tp_name);
 		return NULL;
 	}
-    if (PlanarSeq2_Check(points)) {
+    if (polypaths_planar_overrideSeq2_Check(points)) {
 		/* Copy existing Seq2 (optimized) */
 		varray = Seq2_New(type, Py_SIZE(points));
 		if (varray == NULL) {
 			return NULL;
 		}
-		memcpy(varray->vec, ((PlanarSeq2Object *)points)->vec, 
-			sizeof(planar_vec2_t) * Py_SIZE(points));
+		memcpy(varray->vec, ((polypaths_planar_overrideSeq2Object *)points)->vec, 
+			sizeof(polypaths_planar_override_vec2_t) * Py_SIZE(points));
     } else {
 		/* Generic iterable of points */
 		points = PySequence_Fast(points, "expected iterable of Vec2 objects");
@@ -849,7 +849,7 @@ Seq2_new_from_points(PyTypeObject *type, PyObject *points)
 			return NULL;
 		}
 		for (i = 0; i < size; ++i) {
-			if (!PlanarVec2_Parse(PySequence_Fast_GET_ITEM(points, i), 
+			if (!polypaths_planar_overrideVec2_Parse(PySequence_Fast_GET_ITEM(points, i), 
 				&varray->vec[i].x, &varray->vec[i].y)) {
 				PyErr_SetString(PyExc_TypeError,
 					"expected iterable of Vec2 objects");
@@ -863,7 +863,7 @@ Seq2_new_from_points(PyTypeObject *type, PyObject *points)
     return varray;
 }
 
-static PlanarSeq2Object *
+static polypaths_planar_overrideSeq2Object *
 Seq2_pynew(PyTypeObject *type, PyObject *args, PyObject *kwargs)
 {
     if (PyTuple_GET_SIZE(args) == 0) {
@@ -874,7 +874,7 @@ Seq2_pynew(PyTypeObject *type, PyObject *args, PyObject *kwargs)
 }
 
 static void
-Seq2_dealloc(PlanarSeq2Object *self)
+Seq2_dealloc(polypaths_planar_overrideSeq2Object *self)
 {
 	if (self->vec != NULL && self->vec != self->data) {
 		/* Free externally allocated vector array */
@@ -888,14 +888,14 @@ static PyObject *
 Seq2_compare(PyObject *a, PyObject *b, int op)
 {
 	Py_ssize_t size, osize;
-	planar_vec2_t *av, *bv;
+	polypaths_planar_override_vec2_t *av, *bv;
 
 	size = PySequence_Size(a);
 	osize = PySequence_Size(b);
 	if (size == osize && size != -1 
-		&& PlanarSeq2_Check(a) && Py_TYPE(a) == Py_TYPE(b)) {
-		av = ((PlanarSeq2Object *)a)->vec;
-		bv = ((PlanarSeq2Object *)b)->vec;
+		&& polypaths_planar_overrideSeq2_Check(a) && Py_TYPE(a) == Py_TYPE(b)) {
+		av = ((polypaths_planar_overrideSeq2Object *)a)->vec;
+		bv = ((polypaths_planar_overrideSeq2Object *)b)->vec;
 		switch (op) {
 			case Py_EQ:
 				while (size--) {
@@ -936,21 +936,21 @@ Seq2_compare(PyObject *a, PyObject *b, int op)
 /* Sequence Methods */
 
 static PyObject *
-Seq2_getitem(PlanarSeq2Object *self, Py_ssize_t index)
+Seq2_getitem(polypaths_planar_overrideSeq2Object *self, Py_ssize_t index)
 {
     Py_ssize_t size = PySequence_Size((PyObject *)self);
     if (size == -1) {
 		return NULL;
     }
     if (index >= 0 && index < size) {
-        return (PyObject *)PlanarVec2_FromStruct(self->vec + index);
+        return (PyObject *)polypaths_planar_overrideVec2_FromStruct(self->vec + index);
     }
     PyErr_Format(PyExc_IndexError, "index %d out of range", (int)index);
     return NULL;
 }
 
 static int
-Seq2_assitem(PlanarSeq2Object *self, Py_ssize_t index, PyObject *v)
+Seq2_assitem(polypaths_planar_overrideSeq2Object *self, Py_ssize_t index, PyObject *v)
 {
     double x, y;
     Py_ssize_t size = PySequence_Size((PyObject *)self);
@@ -958,7 +958,7 @@ Seq2_assitem(PlanarSeq2Object *self, Py_ssize_t index, PyObject *v)
 		return -1;
     }
     if (index >= 0 && index < size) {
-		if (!PlanarVec2_Parse(v, &x, &y)) {
+		if (!polypaths_planar_overrideVec2_Parse(v, &x, &y)) {
 			if (!PyErr_Occurred()) {
 			PyErr_Format(PyExc_TypeError, 
 				"Cannot assign %.200s into %.200s",
@@ -976,7 +976,7 @@ Seq2_assitem(PlanarSeq2Object *self, Py_ssize_t index, PyObject *v)
 }
 
 static Py_ssize_t
-Seq2_length(PlanarSeq2Object *self)
+Seq2_length(polypaths_planar_overrideSeq2Object *self)
 {
     return Py_SIZE(self);
 }
@@ -993,13 +993,13 @@ static PySequenceMethods Seq2_as_sequence = {
 /* Methods */
 
 static PyObject *
-Seq2_almost_equals(PlanarSeq2Object *self, PlanarSeq2Object *other)
+Seq2_almost_equals(polypaths_planar_overrideSeq2Object *self, polypaths_planar_overrideSeq2Object *other)
 {
     double dx, dy;
     Py_ssize_t size, osize;
-    planar_vec2_t *sv, *ov;
+    polypaths_planar_override_vec2_t *sv, *ov;
 
-    assert(PlanarSeq2_Check(self));
+    assert(polypaths_planar_overrideSeq2_Check(self));
     size = PySequence_Size((PyObject *)self);
     osize = PySequence_Size((PyObject *)other);
     if (Py_TYPE(self) != Py_TYPE(other) || size == -1 || osize == -1) {
@@ -1011,7 +1011,7 @@ Seq2_almost_equals(PlanarSeq2Object *self, PlanarSeq2Object *other)
 	while (size--) {
 	    dx = sv->x - ov->x;
 	    dy = sv->y - ov->y;
-	    if (dx*dx + dy*dy > PLANAR_EPSILON2) {
+	    if (dx*dx + dy*dy > polypaths_planar_override_EPSILON2) {
 		Py_RETURN_FALSE;
 	    }
 	    ++sv;
@@ -1023,18 +1023,18 @@ Seq2_almost_equals(PlanarSeq2Object *self, PlanarSeq2Object *other)
 }
 
 static PyObject *
-Seq2_copy(PlanarSeq2Object *self)
+Seq2_copy(polypaths_planar_overrideSeq2Object *self)
 {
 	PyObject * result;
-    PlanarSeq2Object *varray;
+    polypaths_planar_overrideSeq2Object *varray;
     
-    assert(PlanarSeq2_Check(self));
+    assert(polypaths_planar_overrideSeq2_Check(self));
     varray = Seq2_New(Py_TYPE(self), Py_SIZE(self));
     if (varray == NULL) {
 		return NULL;
     }
-    memcpy(varray->vec, self->vec, sizeof(planar_vec2_t) * Py_SIZE(self));
-	if (PlanarVec2Array_CheckExact(self) || PlanarSeq2_CheckExact(self)) {
+    memcpy(varray->vec, self->vec, sizeof(polypaths_planar_override_vec2_t) * Py_SIZE(self));
+	if (polypaths_planar_overrideVec2Array_CheckExact(self) || polypaths_planar_overrideSeq2_CheckExact(self)) {
 		return (PyObject *)varray;
 	} else {
 		result = call_from_points((PyObject *)self, (PyObject *)varray);
@@ -1058,18 +1058,18 @@ static PyMethodDef Seq2_methods[] = {
 static PyObject *
 Seq2__mul__(PyObject *a, PyObject *b)
 {
-    PlanarSeq2Object *src, *dst;
-    PlanarAffineObject *t;
-    planar_vec2_t *srcv, *dstv;
+    polypaths_planar_overrideSeq2Object *src, *dst;
+    polypaths_planar_overrideAffineObject *t;
+    polypaths_planar_override_vec2_t *srcv, *dstv;
     Py_ssize_t size;
     double ta, tb, tc, td, te, tf;
 
-    if (PlanarSeq2_Check(a) && PlanarAffine_Check(b)) {
-		src = (PlanarSeq2Object *)a;
-		t = (PlanarAffineObject *)b;
-    } else if (PlanarSeq2_Check(b) && PlanarAffine_Check(a)) {
-		src = (PlanarSeq2Object *)b;
-		t = (PlanarAffineObject *)a;
+    if (polypaths_planar_overrideSeq2_Check(a) && polypaths_planar_overrideAffine_Check(b)) {
+		src = (polypaths_planar_overrideSeq2Object *)a;
+		t = (polypaths_planar_overrideAffineObject *)b;
+    } else if (polypaths_planar_overrideSeq2_Check(b) && polypaths_planar_overrideAffine_Check(a)) {
+		src = (polypaths_planar_overrideSeq2Object *)b;
+		t = (polypaths_planar_overrideAffineObject *)a;
     } else {
 		/* We support only transform operations */
 		Py_INCREF(Py_NotImplemented);
@@ -1086,7 +1086,7 @@ Seq2__mul__(PyObject *a, PyObject *b)
     if (size == -1) {
 		return NULL;
     }
-	dst = (PlanarSeq2Object *)PyObject_CallMethod(
+	dst = (polypaths_planar_overrideSeq2Object *)PyObject_CallMethod(
 		(PyObject *)src, "__copy__", NULL);
     if (dst == NULL) {
 		return NULL;
@@ -1105,18 +1105,18 @@ Seq2__mul__(PyObject *a, PyObject *b)
 static PyObject *
 Seq2__imul__(PyObject *a, PyObject *b)
 {
-    PlanarSeq2Object *s;
-    PlanarAffineObject *t;
-    planar_vec2_t *sv;
+    polypaths_planar_overrideSeq2Object *s;
+    polypaths_planar_overrideAffineObject *t;
+    polypaths_planar_override_vec2_t *sv;
     Py_ssize_t size;
     double ta, tb, tc, td, te, tf, x, y;
 
-    if (PlanarSeq2_Check(a) && PlanarAffine_Check(b)) {
-		s = (PlanarSeq2Object *)a;
-		t = (PlanarAffineObject *)b;
-    } else if (PlanarSeq2_Check(b) && PlanarAffine_Check(a)) {
-		s = (PlanarSeq2Object *)b;
-		t = (PlanarAffineObject *)a;
+    if (polypaths_planar_overrideSeq2_Check(a) && polypaths_planar_overrideAffine_Check(b)) {
+		s = (polypaths_planar_overrideSeq2Object *)a;
+		t = (polypaths_planar_overrideAffineObject *)b;
+    } else if (polypaths_planar_overrideSeq2_Check(b) && polypaths_planar_overrideAffine_Check(a)) {
+		s = (polypaths_planar_overrideSeq2Object *)b;
+		t = (polypaths_planar_overrideAffineObject *)a;
     } else {
 		/* We support only transform operations */
 		RETURN_NOT_IMPLEMENTED;
@@ -1200,11 +1200,11 @@ static PyNumberMethods Seq2_as_number = {
 
 PyDoc_STRVAR(Seq2__doc__, "Fixed length vector sequence");
 
-PyTypeObject PlanarSeq2Type = {
+PyTypeObject polypaths_planar_overrideSeq2Type = {
     PyVarObject_HEAD_INIT(NULL, 0)
-	"planar.Seq2",		/*tp_name*/
-	sizeof(PlanarSeq2Object),	/*tp_basicsize*/
-	sizeof(planar_vec2_t),		/*tp_itemsize*/
+	"polypaths_planar_override.Seq2",		/*tp_name*/
+	sizeof(polypaths_planar_overrideSeq2Object),	/*tp_basicsize*/
+	sizeof(polypaths_planar_override_vec2_t),		/*tp_itemsize*/
 	/* methods */
 	(destructor)Seq2_dealloc, /*tp_dealloc*/
 	0,			       /*tp_print*/
@@ -1246,7 +1246,7 @@ PyTypeObject PlanarSeq2Type = {
 
 /***************************************************************************/
 
-static PlanarSeq2Object *
+static polypaths_planar_overrideSeq2Object *
 Vec2Array_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
 {
     if (PyTuple_GET_SIZE(args) == 0) {
@@ -1257,7 +1257,7 @@ Vec2Array_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
 }
 
 static int
-Vec2Array_resize(PlanarSeq2Object *self, Py_ssize_t newsize) 
+Vec2Array_resize(polypaths_planar_overrideSeq2Object *self, Py_ssize_t newsize) 
 {
 	Py_ssize_t new_allocated;
 	Py_ssize_t allocated = self->allocated;
@@ -1289,30 +1289,30 @@ Vec2Array_resize(PlanarSeq2Object *self, Py_ssize_t newsize)
 		new_allocated = 0;
 	}
 	realloc_vec = PyMem_Realloc(
-		self->vec, new_allocated * sizeof(planar_vec2_t));
+		self->vec, new_allocated * sizeof(polypaths_planar_override_vec2_t));
 	if (realloc_vec == NULL) {
 		PyErr_NoMemory();
 		return -1;
 	}
-	self->vec = (planar_vec2_t *)realloc_vec;
+	self->vec = (polypaths_planar_override_vec2_t *)realloc_vec;
 	self->allocated = new_allocated;
 	Py_SIZE(self) = newsize;
 	return 0;
 }
 
 static PyObject *
-Vec2Array_append(PlanarSeq2Object *self, PyObject *vector) 
+Vec2Array_append(polypaths_planar_overrideSeq2Object *self, PyObject *vector) 
 {
 	double x, y;
 	Py_ssize_t i = Py_SIZE(self);
 
-    assert(PlanarVec2Array_Check(self));
+    assert(polypaths_planar_overrideVec2Array_Check(self));
 	if (i == PY_SSIZE_T_MAX) {
 		PyErr_SetString(PyExc_OverflowError,
 			"cannot add more objects to array");
 		return NULL;
 	}
-	if (!PlanarVec2_Parse(vector, &x, &y)) {
+	if (!polypaths_planar_overrideVec2_Parse(vector, &x, &y)) {
 		if (!PyErr_Occurred()) {
 			PyErr_Format(PyExc_TypeError, 
 				"Cannot append %.200s to %.200s",
@@ -1330,14 +1330,14 @@ Vec2Array_append(PlanarSeq2Object *self, PyObject *vector)
 }
 
 static PyObject *
-Vec2Array_insert(PlanarSeq2Object *self, PyObject *args)
+Vec2Array_insert(polypaths_planar_overrideSeq2Object *self, PyObject *args)
 {
 	double x, y;
 	PyObject *vector; 
 	Py_ssize_t where;
 	Py_ssize_t n = Py_SIZE(self);
 
-    assert(PlanarVec2Array_Check(self));
+    assert(polypaths_planar_overrideVec2Array_Check(self));
 	if (!PyArg_ParseTuple(args, "nO:insert", &where, &vector)) {
 		return NULL;
 	}
@@ -1346,7 +1346,7 @@ Vec2Array_insert(PlanarSeq2Object *self, PyObject *args)
 			"cannot add more objects to array");
 		return NULL;
 	}
-	if (!PlanarVec2_Parse(vector, &x, &y)) {
+	if (!polypaths_planar_overrideVec2_Parse(vector, &x, &y)) {
 		if (!PyErr_Occurred()) {
 			PyErr_Format(PyExc_TypeError, 
 				"Cannot insert %.200s into %.200s",
@@ -1367,7 +1367,7 @@ Vec2Array_insert(PlanarSeq2Object *self, PyObject *args)
 		where = n;
 	}
 	memmove(&self->vec[where + 1], &self->vec[where], 
-		(n - where) * sizeof(planar_vec2_t));
+		(n - where) * sizeof(polypaths_planar_override_vec2_t));
 	self->vec[where].x = x;
 	self->vec[where].y = y;
 
@@ -1375,19 +1375,19 @@ Vec2Array_insert(PlanarSeq2Object *self, PyObject *args)
 }
 
 static PyObject *
-Vec2Array_extend(PlanarSeq2Object *self, PyObject *vectors) 
+Vec2Array_extend(polypaths_planar_overrideSeq2Object *self, PyObject *vectors) 
 {
 	Py_ssize_t size, j;
 	Py_ssize_t i = Py_SIZE(self);
 
-    if (PlanarSeq2_Check(vectors)) {
+    if (polypaths_planar_overrideSeq2_Check(vectors)) {
 		/* Concat existing Seq2 (optimized) */
 		size = Py_SIZE(vectors);
 		if (Vec2Array_resize(self, i + size) == -1) {
 			return NULL;
 		}
-		memcpy(&self->vec[i], ((PlanarSeq2Object *)vectors)->vec, 
-			sizeof(planar_vec2_t) * size);
+		memcpy(&self->vec[i], ((polypaths_planar_overrideSeq2Object *)vectors)->vec, 
+			sizeof(polypaths_planar_override_vec2_t) * size);
     } else {
 		/* Generic iterable of points */
 		vectors = PySequence_Fast(vectors, 
@@ -1401,7 +1401,7 @@ Vec2Array_extend(PlanarSeq2Object *self, PyObject *vectors)
 			return NULL;
 		}
 		for (j = 0; j < size; ++j, ++i) {
-			if (!PlanarVec2_Parse(PySequence_Fast_GET_ITEM(vectors, j), 
+			if (!polypaths_planar_overrideVec2_Parse(PySequence_Fast_GET_ITEM(vectors, j), 
 				&self->vec[i].x, &self->vec[i].y)) {
 				PyErr_SetString(PyExc_TypeError,
 					"expected iterable of Vec2 objects");
@@ -1414,10 +1414,10 @@ Vec2Array_extend(PlanarSeq2Object *self, PyObject *vectors)
 	Py_RETURN_NONE;
 }
 
-static PlanarSeq2Object *
-Vec2Array_slice(PlanarSeq2Object *self, Py_ssize_t ilow, Py_ssize_t ihigh)
+static polypaths_planar_overrideSeq2Object *
+Vec2Array_slice(polypaths_planar_overrideSeq2Object *self, Py_ssize_t ilow, Py_ssize_t ihigh)
 {
-	PlanarSeq2Object *result;
+	polypaths_planar_overrideSeq2Object *result;
 	Py_ssize_t len;
 
 	if (ilow < 0) {
@@ -1436,28 +1436,28 @@ Vec2Array_slice(PlanarSeq2Object *self, Py_ssize_t ilow, Py_ssize_t ihigh)
 	if (result == NULL) {
 		return NULL;
 	}
-	memcpy(result->vec, &self->vec[ilow], sizeof(planar_vec2_t) * len);
+	memcpy(result->vec, &self->vec[ilow], sizeof(polypaths_planar_override_vec2_t) * len);
 	return result;
 }
 
 static int
-Vec2Array_ass_slice(PlanarSeq2Object *self, 
+Vec2Array_ass_slice(polypaths_planar_overrideSeq2Object *self, 
 	Py_ssize_t ilow, Py_ssize_t ihigh, PyObject *vectors)
 {
 	Py_ssize_t n; /* # of elements in replacement array */
 	Py_ssize_t norig; /* # of elements in list getting replaced */
 	Py_ssize_t d; /* Change in size */
-	PlanarSeq2Object *seq;
+	polypaths_planar_overrideSeq2Object *seq;
 
 	if (vectors == NULL) {
 		seq = NULL;
 		n = 0;
-	} else if (PlanarSeq2_Check(vectors)) {
-		seq = (PlanarSeq2Object *)vectors;
+	} else if (polypaths_planar_overrideSeq2_Check(vectors)) {
+		seq = (polypaths_planar_overrideSeq2Object *)vectors;
 		Py_INCREF(seq);
 		n = Py_SIZE(seq);
 	} else {
-		seq = Seq2_new_from_points(&PlanarSeq2Type, vectors);
+		seq = Seq2_new_from_points(&polypaths_planar_overrideSeq2Type, vectors);
 		if (seq == NULL) {
 			goto error;
 		}
@@ -1483,17 +1483,17 @@ Vec2Array_ass_slice(PlanarSeq2Object *self,
 	}
 	if (d < 0) { /* Delete -d items */
 		memmove(&self->vec[ihigh + d], &self->vec[ihigh],
-			sizeof(planar_vec2_t) * (Py_SIZE(self) - ihigh));
+			sizeof(polypaths_planar_override_vec2_t) * (Py_SIZE(self) - ihigh));
 	}
 	if (Vec2Array_resize(self, Py_SIZE(self) + d) < 0) {
 		goto error;
 	}
 	if (d > 0) { /* Insert d items */
 		memmove(&self->vec[ihigh + d], &self->vec[ihigh],
-			sizeof(planar_vec2_t) * (Py_SIZE(self) - ihigh));
+			sizeof(polypaths_planar_override_vec2_t) * (Py_SIZE(self) - ihigh));
 	}
 	if (seq != NULL) {
-		memmove(&self->vec[ilow], seq->vec, n * sizeof(planar_vec2_t));
+		memmove(&self->vec[ilow], seq->vec, n * sizeof(polypaths_planar_override_vec2_t));
 		Py_DECREF(seq);
 	}
 	return 0;
@@ -1503,7 +1503,7 @@ Vec2Array_ass_slice(PlanarSeq2Object *self,
 }
 
 static int
-Vec2Array_ass_item(PlanarSeq2Object *self, Py_ssize_t i, PyObject *vector)
+Vec2Array_ass_item(polypaths_planar_overrideSeq2Object *self, Py_ssize_t i, PyObject *vector)
 {
 	double x, y;
 
@@ -1515,7 +1515,7 @@ Vec2Array_ass_item(PlanarSeq2Object *self, Py_ssize_t i, PyObject *vector)
 	if (vector == NULL) {
 		return Vec2Array_ass_slice(self, i, i+1, vector);
 	}
-	if (!PlanarVec2_Parse(vector, &x, &y)) {
+	if (!polypaths_planar_overrideVec2_Parse(vector, &x, &y)) {
 		if (!PyErr_Occurred()) {
 			PyErr_Format(PyExc_TypeError, 
 				"Cannot assign item %.200s into %.200s",
@@ -1529,7 +1529,7 @@ Vec2Array_ass_item(PlanarSeq2Object *self, Py_ssize_t i, PyObject *vector)
 }
 
 static PyObject *
-Vec2Array_subscript(PlanarSeq2Object* self, PyObject* item)
+Vec2Array_subscript(polypaths_planar_overrideSeq2Object* self, PyObject* item)
 {
 	if (PyIndex_Check(item)) {
 		Py_ssize_t i;
@@ -1544,8 +1544,8 @@ Vec2Array_subscript(PlanarSeq2Object* self, PyObject* item)
 	}
 	else if (PySlice_Check(item)) {
 		Py_ssize_t start, stop, step, slicelength, cur, i;
-		PlanarSeq2Object* result;
-		planar_vec2_t *src, *dest;
+		polypaths_planar_overrideSeq2Object* result;
+		polypaths_planar_override_vec2_t *src, *dest;
 
 		if (PySlice_GetIndicesEx((PySliceObject*)item, Py_SIZE(self),
 				 &start, &stop, &step, &slicelength) < 0) {
@@ -1584,7 +1584,7 @@ Vec2Array_subscript(PlanarSeq2Object* self, PyObject* item)
 }
 
 static int
-Vec2Array_ass_subscript(PlanarSeq2Object* self, 
+Vec2Array_ass_subscript(polypaths_planar_overrideSeq2Object* self, 
 	PyObject* item, PyObject* value)
 {
 	if (PyIndex_Check(item)) {
@@ -1632,7 +1632,7 @@ Vec2Array_ass_subscript(PlanarSeq2Object* self,
 			}
 
 			assert((size_t)slicelength <=
-			       PY_SIZE_MAX / sizeof(planar_vec2_t));
+			       PY_SIZE_MAX / sizeof(polypaths_planar_override_vec2_t));
 
 			/* drawing pictures might help understand these for
 			   loops. Basically, we memmove the parts of the
@@ -1649,14 +1649,14 @@ Vec2Array_ass_subscript(PlanarSeq2Object* self,
 
 				memmove(self->vec + cur - i,
 					self->vec + cur + 1,
-					lim * sizeof(planar_vec2_t));
+					lim * sizeof(polypaths_planar_override_vec2_t));
 			}
 			cur = start + slicelength*step;
 			if (cur < (size_t)Py_SIZE(self)) {
 				memmove(self->vec + cur - slicelength,
 					self->vec + cur,
 					(Py_SIZE(self) - cur) * 
-					 sizeof(planar_vec2_t));
+					 sizeof(polypaths_planar_override_vec2_t));
 			}
 
 			Py_SIZE(self) -= slicelength;
@@ -1665,17 +1665,17 @@ Vec2Array_ass_subscript(PlanarSeq2Object* self,
 			return 0;
 		} else {
 			/* assign slice */
-			PlanarSeq2Object *seq;
-			planar_vec2_t *seqitems, *selfitems;
+			polypaths_planar_overrideSeq2Object *seq;
+			polypaths_planar_override_vec2_t *seqitems, *selfitems;
 			Py_ssize_t cur, i;
 
-			if (!PlanarSeq2_Check(value)) {
-				 seq = Seq2_new_from_points(&PlanarSeq2Type, value);
+			if (!polypaths_planar_overrideSeq2_Check(value)) {
+				 seq = Seq2_new_from_points(&polypaths_planar_overrideSeq2Type, value);
 				 if (seq == NULL) {
 				 	return -1;
 				}
 			} else {
-				seq = (PlanarSeq2Object *)value;
+				seq = (polypaths_planar_overrideSeq2Object *)value;
 				Py_INCREF(seq);
 			}
 
@@ -1729,7 +1729,7 @@ static PySequenceMethods Vec2Array_as_sequence = {
 };
 
 static PyObject *
-Vec2Array_longest(PlanarSeq2Object *self)
+Vec2Array_longest(polypaths_planar_overrideSeq2Object *self)
 {
 	double max_len = -1.0;
 	double L;
@@ -1745,14 +1745,14 @@ Vec2Array_longest(PlanarSeq2Object *self)
 		}
 	}
 	if (max_i > -1) {
-		return (PyObject *)PlanarVec2_FromStruct(&self->vec[max_i]);
+		return (PyObject *)polypaths_planar_overrideVec2_FromStruct(&self->vec[max_i]);
 	} else {
 		Py_RETURN_NONE;
 	}
 }
 
 static PyObject *
-Vec2Array_shortest(PlanarSeq2Object *self)
+Vec2Array_shortest(polypaths_planar_overrideSeq2Object *self)
 {
 	double min_len = DBL_MAX;
 	double L;
@@ -1768,7 +1768,7 @@ Vec2Array_shortest(PlanarSeq2Object *self)
 		}
 	}
 	if (min_i > -1) {
-		return (PyObject *)PlanarVec2_FromStruct(&self->vec[min_i]);
+		return (PyObject *)polypaths_planar_overrideVec2_FromStruct(&self->vec[min_i]);
 	} else {
 		Py_RETURN_NONE;
 	}
@@ -1776,7 +1776,7 @@ Vec2Array_shortest(PlanarSeq2Object *self)
 
 
 static PyObject *
-Vec2Array_normalize(PlanarSeq2Object *self)
+Vec2Array_normalize(polypaths_planar_overrideSeq2Object *self)
 {
 	double L;
 	Py_ssize_t i;
@@ -1784,18 +1784,18 @@ Vec2Array_normalize(PlanarSeq2Object *self)
 	for (i = 0; i < Py_SIZE(self); ++i) {
 		L = sqrt(self->vec[i].x * self->vec[i].x + 
 			self->vec[i].y * self->vec[i].y);
-		self->vec[i].x = L > PLANAR_EPSILON ? self->vec[i].x / L : 0.0;
-		self->vec[i].y = L > PLANAR_EPSILON ? self->vec[i].y / L : 0.0;
+		self->vec[i].x = L > polypaths_planar_override_EPSILON ? self->vec[i].x / L : 0.0;
+		self->vec[i].y = L > polypaths_planar_override_EPSILON ? self->vec[i].y / L : 0.0;
 	}
 	Py_RETURN_NONE;
 }
 
-static PlanarSeq2Object *
-Vec2Array_normalized(PlanarSeq2Object *self)
+static polypaths_planar_overrideSeq2Object *
+Vec2Array_normalized(polypaths_planar_overrideSeq2Object *self)
 {
 	double L;
 	Py_ssize_t i;
-	PlanarSeq2Object *varray;
+	polypaths_planar_overrideSeq2Object *varray;
 
 	varray = Seq2_New(Py_TYPE(self), Py_SIZE(self));
 	if (varray == NULL) {
@@ -1804,25 +1804,25 @@ Vec2Array_normalized(PlanarSeq2Object *self)
 	for (i = 0; i < Py_SIZE(self); ++i) {
 		L = sqrt(self->vec[i].x * self->vec[i].x + 
 			self->vec[i].y * self->vec[i].y);
-		varray->vec[i].x = L > PLANAR_EPSILON ? self->vec[i].x / L : 0.0;
-		varray->vec[i].y = L > PLANAR_EPSILON ? self->vec[i].y / L : 0.0;
+		varray->vec[i].x = L > polypaths_planar_override_EPSILON ? self->vec[i].x / L : 0.0;
+		varray->vec[i].y = L > polypaths_planar_override_EPSILON ? self->vec[i].y / L : 0.0;
 	}
 	return varray;
 }
 
-static PlanarSeq2Object *
-Vec2Array_clamped(PlanarSeq2Object *self, PyObject *args, PyObject *kwargs)
+static polypaths_planar_overrideSeq2Object *
+Vec2Array_clamped(polypaths_planar_overrideSeq2Object *self, PyObject *args, PyObject *kwargs)
 {
     double min = 0.0;
     double max = DBL_MAX;
 	double min2, max2;
     double L;
 	Py_ssize_t i;
-	PlanarSeq2Object *varray;
+	polypaths_planar_overrideSeq2Object *varray;
 
     static char *kwlist[] = {"min_length", "max_length", NULL};
 
-    assert(PlanarVec2Array_Check(self));
+    assert(polypaths_planar_overrideVec2Array_Check(self));
     if (!PyArg_ParseTupleAndKeywords(
         args, kwargs, "|dd:Vec2Array.clamped", kwlist, &min, &max)) {
         return NULL;
@@ -1851,7 +1851,7 @@ Vec2Array_clamped(PlanarSeq2Object *self, PyObject *args, PyObject *kwargs)
 			L = max / sqrt(L);
 			varray->vec[i].x = self->vec[i].x * L;
 			varray->vec[i].y = self->vec[i].y * L;
-		} else if (L > PLANAR_EPSILON && L < min2) {
+		} else if (L > polypaths_planar_override_EPSILON && L < min2) {
 			L = min / sqrt(L);
 			varray->vec[i].x = self->vec[i].x * L;
 			varray->vec[i].y = self->vec[i].y * L;
@@ -1864,7 +1864,7 @@ Vec2Array_clamped(PlanarSeq2Object *self, PyObject *args, PyObject *kwargs)
 }
 
 static PyObject *
-Vec2Array_clamp(PlanarSeq2Object *self, PyObject *args, PyObject *kwargs)
+Vec2Array_clamp(polypaths_planar_overrideSeq2Object *self, PyObject *args, PyObject *kwargs)
 {
     double min = 0.0;
     double max = DBL_MAX;
@@ -1874,7 +1874,7 @@ Vec2Array_clamp(PlanarSeq2Object *self, PyObject *args, PyObject *kwargs)
 
     static char *kwlist[] = {"min_length", "max_length", NULL};
 
-    assert(PlanarVec2Array_Check(self));
+    assert(polypaths_planar_overrideVec2Array_Check(self));
     if (!PyArg_ParseTupleAndKeywords(
         args, kwargs, "|dd:Vec2Array.clamped", kwlist, &min, &max)) {
         return NULL;
@@ -1899,7 +1899,7 @@ Vec2Array_clamp(PlanarSeq2Object *self, PyObject *args, PyObject *kwargs)
 			L = max / sqrt(L);
 			self->vec[i].x = self->vec[i].x * L;
 			self->vec[i].y = self->vec[i].y * L;
-		} else if (L > PLANAR_EPSILON && L < min2) {
+		} else if (L > polypaths_planar_override_EPSILON && L < min2) {
 			L = min / sqrt(L);
 			self->vec[i].x = self->vec[i].x * L;
 			self->vec[i].y = self->vec[i].y * L;
@@ -1941,13 +1941,13 @@ static PyMethodDef Vec2Array_methods[] = {
 static PyObject *
 create_result_seq2(PyObject *a, PyObject *b, PyObject *seq)
 {
-	if (!PlanarVec2Array_Check(b) && PlanarSeq2_Check(b)) {
+	if (!polypaths_planar_overrideVec2Array_Check(b) && polypaths_planar_overrideSeq2_Check(b)) {
 		return call_from_points(b, seq);
-	} else if (!PlanarVec2Array_Check(a) && PlanarSeq2_Check(a)) {
+	} else if (!polypaths_planar_overrideVec2Array_Check(a) && polypaths_planar_overrideSeq2_Check(a)) {
 		return call_from_points(a, seq);
-	} else if (!PlanarVec2Array_CheckExact(b) && PlanarSeq2_Check(b)) {
+	} else if (!polypaths_planar_overrideVec2Array_CheckExact(b) && polypaths_planar_overrideSeq2_Check(b)) {
 		return call_from_points(b, seq);
-	} else if (!PlanarVec2Array_CheckExact(a) && PlanarSeq2_Check(a)) {
+	} else if (!polypaths_planar_overrideVec2Array_CheckExact(a) && polypaths_planar_overrideSeq2_Check(a)) {
 		return call_from_points(a, seq);
 	} else {
 		Py_INCREF(seq);
@@ -1956,14 +1956,14 @@ create_result_seq2(PyObject *a, PyObject *b, PyObject *seq)
 }
 
 static PyObject *
-Vec2Array_add(PyObject *a, PyObject *b, PlanarSeq2Object *dst)
+Vec2Array_add(PyObject *a, PyObject *b, polypaths_planar_overrideSeq2Object *dst)
 {
 	Py_ssize_t size, i;
 	double x, y;
-	PlanarSeq2Object *seq2_a, *seq2_b, *varray;
+	polypaths_planar_overrideSeq2Object *seq2_a, *seq2_b, *varray;
 
-	assert(dst == NULL || PlanarSeq2_Check(dst));
-	if (PlanarSeq2_Check(a) && PlanarSeq2_Check(b)) {
+	assert(dst == NULL || polypaths_planar_overrideSeq2_Check(dst));
+	if (polypaths_planar_overrideSeq2_Check(a) && polypaths_planar_overrideSeq2_Check(b)) {
 		size = Py_SIZE(a);
 		if (Py_SIZE(b) != size) {
 			PyErr_SetString(PyExc_ValueError,
@@ -1971,24 +1971,24 @@ Vec2Array_add(PyObject *a, PyObject *b, PlanarSeq2Object *dst)
 			return NULL;
 		}
 		if (dst == NULL) {
-			dst = Seq2_New(&PlanarVec2ArrayType, size);
+			dst = Seq2_New(&polypaths_planar_overrideVec2ArrayType, size);
 			if (dst == NULL) {
 				return NULL;
 			}
 		} else {
 			Py_INCREF(dst);
 		}
-		seq2_a = (PlanarSeq2Object *)a;
-		seq2_b = (PlanarSeq2Object *)b;
+		seq2_a = (polypaths_planar_overrideSeq2Object *)a;
+		seq2_b = (polypaths_planar_overrideSeq2Object *)b;
 		for (i = 0; i < size; ++i) {
 			dst->vec[i].x = seq2_a->vec[i].x + seq2_b->vec[i].x;
 			dst->vec[i].y = seq2_a->vec[i].y + seq2_b->vec[i].y;
 		}
 		return (PyObject *)dst;
-	} else if (PlanarVec2Array_Check(a) && PlanarVec2_Parse(b, &x, &y)) {
-		varray = (PlanarSeq2Object *)a;
-	} else if (PlanarVec2Array_Check(b) && PlanarVec2_Parse(a, &x, &y)) {
-		varray = (PlanarSeq2Object *)b;
+	} else if (polypaths_planar_overrideVec2Array_Check(a) && polypaths_planar_overrideVec2_Parse(b, &x, &y)) {
+		varray = (polypaths_planar_overrideSeq2Object *)a;
+	} else if (polypaths_planar_overrideVec2Array_Check(b) && polypaths_planar_overrideVec2_Parse(a, &x, &y)) {
+		varray = (polypaths_planar_overrideSeq2Object *)b;
 	} else {
         PyErr_Clear();
         Py_INCREF(Py_NotImplemented);
@@ -1997,7 +1997,7 @@ Vec2Array_add(PyObject *a, PyObject *b, PlanarSeq2Object *dst)
 	
 	/* Add vector to sequence */
 	if (dst == NULL) {
-		dst = Seq2_New(&PlanarVec2ArrayType, Py_SIZE(varray));
+		dst = Seq2_New(&polypaths_planar_overrideVec2ArrayType, Py_SIZE(varray));
 		if (dst == NULL) {
 			return NULL;
 		}
@@ -2021,7 +2021,7 @@ Vec2Array__add__(PyObject *a, PyObject *b)
 	if (varray == NULL || varray == Py_NotImplemented) {
 		return varray;
 	}
-	assert(PlanarVec2Array_Check(varray));
+	assert(polypaths_planar_overrideVec2Array_Check(varray));
 	result = create_result_seq2(a, b, varray);
 	Py_DECREF(varray);
 	return result;
@@ -2030,8 +2030,8 @@ Vec2Array__add__(PyObject *a, PyObject *b)
 static PyObject *
 Vec2Array__iadd__(PyObject *a, PyObject *b)
 {
-	if (PlanarVec2Array_Check(a)) {
-		return Vec2Array_add(a, b, (PlanarSeq2Object *)a);
+	if (polypaths_planar_overrideVec2Array_Check(a)) {
+		return Vec2Array_add(a, b, (polypaths_planar_overrideSeq2Object *)a);
 	} else {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
@@ -2040,14 +2040,14 @@ Vec2Array__iadd__(PyObject *a, PyObject *b)
 
 
 static PyObject *
-Vec2Array_sub(PyObject *a, PyObject *b, PlanarSeq2Object *dst)
+Vec2Array_sub(PyObject *a, PyObject *b, polypaths_planar_overrideSeq2Object *dst)
 {
 	Py_ssize_t size, i;
 	double x, y;
-	PlanarSeq2Object *seq2_a, *seq2_b, *varray;
+	polypaths_planar_overrideSeq2Object *seq2_a, *seq2_b, *varray;
 
-	assert(dst == NULL || PlanarSeq2_Check(dst));
-	if (PlanarSeq2_Check(a) && PlanarVec2Array_Check(b)) {
+	assert(dst == NULL || polypaths_planar_overrideSeq2_Check(dst));
+	if (polypaths_planar_overrideSeq2_Check(a) && polypaths_planar_overrideVec2Array_Check(b)) {
 		size = Py_SIZE(a);
 		if (Py_SIZE(b) != size) {
 			PyErr_SetString(PyExc_ValueError,
@@ -2055,25 +2055,25 @@ Vec2Array_sub(PyObject *a, PyObject *b, PlanarSeq2Object *dst)
 			return NULL;
 		}
 		if (dst == NULL) {
-			dst = Seq2_New(&PlanarVec2ArrayType, size);
+			dst = Seq2_New(&polypaths_planar_overrideVec2ArrayType, size);
 			if (dst == NULL) {
 				return NULL;
 			}
 		} else {
 			Py_INCREF(dst);
 		}
-		seq2_a = (PlanarSeq2Object *)a;
-		seq2_b = (PlanarSeq2Object *)b;
+		seq2_a = (polypaths_planar_overrideSeq2Object *)a;
+		seq2_b = (polypaths_planar_overrideSeq2Object *)b;
 		for (i = 0; i < size; ++i) {
 			dst->vec[i].x = seq2_a->vec[i].x - seq2_b->vec[i].x;
 			dst->vec[i].y = seq2_a->vec[i].y - seq2_b->vec[i].y;
 		}
 		return (PyObject *)dst;
-	} else if (PlanarVec2Array_Check(a) && PlanarVec2_Parse(b, &x, &y)) {
-		varray = (PlanarSeq2Object *)a;
+	} else if (polypaths_planar_overrideVec2Array_Check(a) && polypaths_planar_overrideVec2_Parse(b, &x, &y)) {
+		varray = (polypaths_planar_overrideSeq2Object *)a;
 		/* Subtract vector from sequence */
 		if (dst == NULL) {
-			dst = Seq2_New(&PlanarVec2ArrayType, Py_SIZE(varray));
+			dst = Seq2_New(&polypaths_planar_overrideVec2ArrayType, Py_SIZE(varray));
 			if (dst == NULL) {
 				return NULL;
 			}
@@ -2101,7 +2101,7 @@ Vec2Array__sub__(PyObject *a, PyObject *b)
 	if (varray == NULL || varray == Py_NotImplemented) {
 		return varray;
 	}
-	assert(PlanarVec2Array_Check(varray));
+	assert(polypaths_planar_overrideVec2Array_Check(varray));
 	result = create_result_seq2(a, b, varray);
 	Py_DECREF(varray);
 	return result;
@@ -2110,8 +2110,8 @@ Vec2Array__sub__(PyObject *a, PyObject *b)
 static PyObject *
 Vec2Array__isub__(PyObject *a, PyObject *b)
 {
-	if (PlanarVec2Array_Check(a)) {
-		return Vec2Array_sub(a, b, (PlanarSeq2Object *)a);
+	if (polypaths_planar_overrideVec2Array_Check(a)) {
+		return Vec2Array_sub(a, b, (polypaths_planar_overrideSeq2Object *)a);
 	} else {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
@@ -2119,15 +2119,15 @@ Vec2Array__isub__(PyObject *a, PyObject *b)
 }
 
 static PyObject *
-Vec2Array_mul(PyObject *a, PyObject *b, PlanarSeq2Object *dst)
+Vec2Array_mul(PyObject *a, PyObject *b, polypaths_planar_overrideSeq2Object *dst)
 {
 	Py_ssize_t size, i;
 	double x, y;
-	PlanarSeq2Object *seq2_a, *seq2_b, *varray;
+	polypaths_planar_overrideSeq2Object *seq2_a, *seq2_b, *varray;
 	PyObject *scalar;
 
-	assert(dst == NULL || PlanarSeq2_Check(dst));
-	if (PlanarSeq2_Check(a) && PlanarSeq2_Check(b)) {
+	assert(dst == NULL || polypaths_planar_overrideSeq2_Check(dst));
+	if (polypaths_planar_overrideSeq2_Check(a) && polypaths_planar_overrideSeq2_Check(b)) {
 		size = Py_SIZE(a);
 		if (Py_SIZE(b) != size) {
 			PyErr_SetString(PyExc_ValueError,
@@ -2135,32 +2135,32 @@ Vec2Array_mul(PyObject *a, PyObject *b, PlanarSeq2Object *dst)
 			return NULL;
 		}
 		if (dst == NULL) {
-			dst = Seq2_New(&PlanarVec2ArrayType, size);
+			dst = Seq2_New(&polypaths_planar_overrideVec2ArrayType, size);
 			if (dst == NULL) {
 				return NULL;
 			}
 		} else {
 			Py_INCREF(dst);
 		}
-		seq2_a = (PlanarSeq2Object *)a;
-		seq2_b = (PlanarSeq2Object *)b;
+		seq2_a = (polypaths_planar_overrideSeq2Object *)a;
+		seq2_b = (polypaths_planar_overrideSeq2Object *)b;
 		for (i = 0; i < size; ++i) {
 			dst->vec[i].x = seq2_a->vec[i].x * seq2_b->vec[i].x;
 			dst->vec[i].y = seq2_a->vec[i].y * seq2_b->vec[i].y;
 		}
 		return (PyObject *)dst;
-	} else if (PlanarVec2Array_Check(a) && (scalar = PyObject_ToFloat(b))) {
-		varray = (PlanarSeq2Object *)a;
+	} else if (polypaths_planar_overrideVec2Array_Check(a) && (scalar = PyObject_ToFloat(b))) {
+		varray = (polypaths_planar_overrideSeq2Object *)a;
 		x = y = PyFloat_AS_DOUBLE(scalar);
 		Py_DECREF(scalar);
-	} else if (PlanarVec2Array_Check(b) && (scalar = PyObject_ToFloat(a))) {
-		varray = (PlanarSeq2Object *)b;
+	} else if (polypaths_planar_overrideVec2Array_Check(b) && (scalar = PyObject_ToFloat(a))) {
+		varray = (polypaths_planar_overrideSeq2Object *)b;
 		x = y = PyFloat_AS_DOUBLE(scalar);
 		Py_DECREF(scalar);
-	} else if (PlanarVec2Array_Check(a) && PlanarVec2_Parse(b, &x, &y)) {
-		varray = (PlanarSeq2Object *)a;
-	} else if (PlanarVec2Array_Check(b) && PlanarVec2_Parse(a, &x, &y)) {
-		varray = (PlanarSeq2Object *)b;
+	} else if (polypaths_planar_overrideVec2Array_Check(a) && polypaths_planar_overrideVec2_Parse(b, &x, &y)) {
+		varray = (polypaths_planar_overrideSeq2Object *)a;
+	} else if (polypaths_planar_overrideVec2Array_Check(b) && polypaths_planar_overrideVec2_Parse(a, &x, &y)) {
+		varray = (polypaths_planar_overrideSeq2Object *)b;
 	} else {
         PyErr_Clear();
         return NULL;
@@ -2168,7 +2168,7 @@ Vec2Array_mul(PyObject *a, PyObject *b, PlanarSeq2Object *dst)
 	
 	/* Multiply sequence by scalar or vector */
 	if (dst == NULL) {
-		dst = Seq2_New(&PlanarVec2ArrayType, Py_SIZE(varray));
+		dst = Seq2_New(&polypaths_planar_overrideVec2ArrayType, Py_SIZE(varray));
 		if (dst == NULL) {
 			return NULL;
 		}
@@ -2196,7 +2196,7 @@ Vec2Array__mul__(PyObject *a, PyObject *b)
 			return NULL;
 		}
 	}
-	assert(PlanarVec2Array_Check(varray));
+	assert(polypaths_planar_overrideVec2Array_Check(varray));
 	result = create_result_seq2(a, b, varray);
 	Py_DECREF(varray);
 	return result;
@@ -2207,9 +2207,9 @@ Vec2Array__imul__(PyObject *a, PyObject *b)
 {
 	PyObject *varray;
 
-	if (PlanarVec2Array_Check(a) && 
-		(PlanarVec2Array_Check(b) || !PlanarSeq2_Check(b))) {
-		varray = Vec2Array_mul(a, b, (PlanarSeq2Object *)a);
+	if (polypaths_planar_overrideVec2Array_Check(a) && 
+		(polypaths_planar_overrideVec2Array_Check(b) || !polypaths_planar_overrideSeq2_Check(b))) {
+		varray = Vec2Array_mul(a, b, (polypaths_planar_overrideSeq2Object *)a);
 		if (varray == NULL && !PyErr_Occurred()) {
 			varray = Seq2__imul__(a, b);
 		}
@@ -2223,30 +2223,30 @@ Vec2Array__imul__(PyObject *a, PyObject *b)
 }
 
 static PyObject *
-Vec2Array_div(PyObject *a, PyObject *b, PlanarSeq2Object *dst)
+Vec2Array_div(PyObject *a, PyObject *b, polypaths_planar_overrideSeq2Object *dst)
 {
 	Py_ssize_t size, i;
 	double x, y;
-	PlanarSeq2Object *seq2_a, *seq2_b, *varray;
+	polypaths_planar_overrideSeq2Object *seq2_a, *seq2_b, *varray;
 	PyObject *scalar;
 
-	assert(dst == NULL || PlanarSeq2_Check(dst));
-	if (PlanarSeq2_Check(a) && PlanarSeq2_Check(b)) {
+	assert(dst == NULL || polypaths_planar_overrideSeq2_Check(dst));
+	if (polypaths_planar_overrideSeq2_Check(a) && polypaths_planar_overrideSeq2_Check(b)) {
 		size = Py_SIZE(a);
 		if (Py_SIZE(b) != size) {
 			PyErr_SetString(PyExc_ValueError,
 				"cannot divide arrays with different lengths");
 			return NULL;
 		}
-		seq2_a = (PlanarSeq2Object *)a;
-		seq2_b = (PlanarSeq2Object *)b;
+		seq2_a = (polypaths_planar_overrideSeq2Object *)a;
+		seq2_b = (polypaths_planar_overrideSeq2Object *)b;
 		for (i = 0; i < size; ++i) {
 			if (!seq2_b->vec[i].x || !seq2_b->vec[i].y) {
 				goto div_by_zero;
 			}
 		}
 		if (dst == NULL) {
-			dst = Seq2_New(&PlanarVec2ArrayType, size);
+			dst = Seq2_New(&polypaths_planar_overrideVec2ArrayType, size);
 			if (dst == NULL) {
 				return NULL;
 			}
@@ -2258,12 +2258,12 @@ Vec2Array_div(PyObject *a, PyObject *b, PlanarSeq2Object *dst)
 			dst->vec[i].y = seq2_a->vec[i].y / seq2_b->vec[i].y;
 		}
 		return (PyObject *)dst;
-	} else if (PlanarVec2Array_Check(a) && (scalar = PyObject_ToFloat(b))) {
-		varray = (PlanarSeq2Object *)a;
+	} else if (polypaths_planar_overrideVec2Array_Check(a) && (scalar = PyObject_ToFloat(b))) {
+		varray = (polypaths_planar_overrideSeq2Object *)a;
 		x = y = PyFloat_AS_DOUBLE(scalar);
 		Py_DECREF(scalar);
-	} else if (PlanarVec2Array_Check(a) && PlanarVec2_Parse(b, &x, &y)) {
-		varray = (PlanarSeq2Object *)a;
+	} else if (polypaths_planar_overrideVec2Array_Check(a) && polypaths_planar_overrideVec2_Parse(b, &x, &y)) {
+		varray = (polypaths_planar_overrideSeq2Object *)a;
 	} else {
         PyErr_Clear();
         Py_INCREF(Py_NotImplemented);
@@ -2275,7 +2275,7 @@ Vec2Array_div(PyObject *a, PyObject *b, PlanarSeq2Object *dst)
 		goto div_by_zero;
 	}
 	if (dst == NULL) {
-		dst = Seq2_New(&PlanarVec2ArrayType, Py_SIZE(varray));
+		dst = Seq2_New(&polypaths_planar_overrideVec2ArrayType, Py_SIZE(varray));
 		if (dst == NULL) {
 			return NULL;
 		}
@@ -2303,7 +2303,7 @@ Vec2Array__truediv__(PyObject *a, PyObject *b)
 	if (varray == NULL || varray == Py_NotImplemented) {
 		return varray;
 	}
-	assert(PlanarVec2Array_Check(varray));
+	assert(polypaths_planar_overrideVec2Array_Check(varray));
 	result = create_result_seq2(a, b, varray);
 	Py_DECREF(varray);
 	return result;
@@ -2312,9 +2312,9 @@ Vec2Array__truediv__(PyObject *a, PyObject *b)
 static PyObject *
 Vec2Array__itruediv__(PyObject *a, PyObject *b)
 {
-	if (PlanarVec2Array_Check(a) && 
-		(PlanarVec2Array_Check(b) || !PlanarSeq2_Check(b))) {
-		return Vec2Array_div(a, b, (PlanarSeq2Object *)a);
+	if (polypaths_planar_overrideVec2Array_Check(a) && 
+		(polypaths_planar_overrideVec2Array_Check(b) || !polypaths_planar_overrideSeq2_Check(b))) {
+		return Vec2Array_div(a, b, (polypaths_planar_overrideSeq2Object *)a);
 	} else {
 		PyErr_Format(PyExc_TypeError,
 			"Can't divide %.200s and %.200s",
@@ -2324,8 +2324,8 @@ Vec2Array__itruediv__(PyObject *a, PyObject *b)
 	}
 }
 
-static PlanarSeq2Object *
-Vec2Array_floor(PlanarSeq2Object *varray) 
+static polypaths_planar_overrideSeq2Object *
+Vec2Array_floor(polypaths_planar_overrideSeq2Object *varray) 
 {
 	Py_ssize_t i;
 
@@ -2345,9 +2345,9 @@ Vec2Array__floordiv__(PyObject *a, PyObject *b)
 	if (varray == NULL || varray == Py_NotImplemented) {
 		return varray;
 	}
-	assert(PlanarVec2Array_Check(varray));
+	assert(polypaths_planar_overrideVec2Array_Check(varray));
 	result = create_result_seq2(a, b, 
-		(PyObject *)Vec2Array_floor((PlanarSeq2Object *)varray));
+		(PyObject *)Vec2Array_floor((polypaths_planar_overrideSeq2Object *)varray));
 	Py_DECREF(varray);
 	return result;
 }
@@ -2357,11 +2357,11 @@ Vec2Array__ifloordiv__(PyObject *a, PyObject *b)
 {
 	PyObject *varray;
 
-	if (PlanarVec2Array_Check(a) && 
-		(PlanarVec2Array_Check(b) || !PlanarSeq2_Check(b))) {
-		varray = Vec2Array_div(a, b, (PlanarSeq2Object *)a);
+	if (polypaths_planar_overrideVec2Array_Check(a) && 
+		(polypaths_planar_overrideVec2Array_Check(b) || !polypaths_planar_overrideSeq2_Check(b))) {
+		varray = Vec2Array_div(a, b, (polypaths_planar_overrideSeq2Object *)a);
 		if (varray != NULL && varray != Py_NotImplemented) {
-			Vec2Array_floor((PlanarSeq2Object *)varray);
+			Vec2Array_floor((polypaths_planar_overrideSeq2Object *)varray);
 		}
 		return varray;
 	} else {
@@ -2373,13 +2373,13 @@ Vec2Array__ifloordiv__(PyObject *a, PyObject *b)
 }
 
 static PyObject *
-Vec2Array_neg(PlanarSeq2Object *self) 
+Vec2Array_neg(polypaths_planar_overrideSeq2Object *self) 
 {
 	PyObject *result;
-	PlanarSeq2Object *varray;
+	polypaths_planar_overrideSeq2Object *varray;
 	Py_ssize_t i;
 
-	varray = Seq2_New(&PlanarVec2ArrayType, Py_SIZE(self));
+	varray = Seq2_New(&polypaths_planar_overrideVec2ArrayType, Py_SIZE(self));
 	if (varray == NULL) {
 		return NULL;
 	}
@@ -2387,7 +2387,7 @@ Vec2Array_neg(PlanarSeq2Object *self)
 		varray->vec[i].x = -self->vec[i].x;
 		varray->vec[i].y = -self->vec[i].y;
 	}
-	if (PlanarVec2Array_CheckExact(self)) {
+	if (polypaths_planar_overrideVec2Array_CheckExact(self)) {
 		return (PyObject *)varray;
 	} else {
 		result = call_from_points((PyObject *)self, (PyObject *)varray);
@@ -2397,7 +2397,7 @@ Vec2Array_neg(PlanarSeq2Object *self)
 }
 
 static PyObject *
-Vec2Array__repr__(PlanarSeq2Object *self)
+Vec2Array__repr__(polypaths_planar_overrideSeq2Object *self)
 {
 	return Seq2__repr__(self, "Vec2Array", NULL);
 }
@@ -2457,10 +2457,10 @@ static PyNumberMethods Vec2Array_as_number = {
 
 PyDoc_STRVAR(Vec2Array__doc__, "Dynamic vector array");
 
-PyTypeObject PlanarVec2ArrayType = {
+PyTypeObject polypaths_planar_overrideVec2ArrayType = {
     PyVarObject_HEAD_INIT(NULL, 0)
-	"planar.Vec2Array",		/*tp_name*/
-	sizeof(PlanarSeq2Object),	/*tp_basicsize*/
+	"polypaths_planar_override.Vec2Array",		/*tp_name*/
+	sizeof(polypaths_planar_overrideSeq2Object),	/*tp_basicsize*/
 	0,		/*tp_itemsize*/
 	/* methods */
 	(destructor)Seq2_dealloc, /*tp_dealloc*/
@@ -2489,7 +2489,7 @@ PyTypeObject PlanarVec2ArrayType = {
 	Vec2Array_methods,           /*tp_methods*/
 	0,                      /*tp_members*/
 	0,                      /*tp_getset*/
-	&PlanarSeq2Type,        /*tp_base*/
+	&polypaths_planar_overrideSeq2Type,        /*tp_base*/
 	0,                      /*tp_dict*/
 	0,                      /*tp_descr_get*/
 	0,                      /*tp_descr_set*/

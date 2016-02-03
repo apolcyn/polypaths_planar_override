@@ -11,8 +11,8 @@
 #include "Python.h"
 #include <float.h>
 
-#ifndef PY_PLANAR_H
-#define PY_PLANAR_H
+#ifndef PY_polypaths_planar_override_H
+#define PY_polypaths_planar_override_H
 
 /* Python 2/3 compatibility */
 #if PY_MAJOR_VERSION < 3
@@ -50,7 +50,7 @@
 #endif
 #define radians(d) ((d) * M_PI / 180.0)
 #define degrees(d) ((d) * 180.0 / M_PI)
-#define almost_eq(a, b) (fabs((a) - (b)) < PLANAR_EPSILON)
+#define almost_eq(a, b) (fabs((a) - (b)) < polypaths_planar_override_EPSILON)
 #define MIN(a, b) ((a) <= (b) ? (a) : (b))
 #define MAX(a, b) ((a) >= (b) ? (a) : (b))
 
@@ -99,7 +99,7 @@ cos_sin_deg(double deg, double *cosout, double *sinout)
 typedef struct {
     double x;
     double y;
-} planar_vec2_t;
+} polypaths_planar_override_vec2_t;
 
 typedef struct {
     PyObject_HEAD
@@ -107,18 +107,18 @@ typedef struct {
         PyObject *next_free;
         struct {double x; double y;};
     };
-} PlanarVec2Object;
+} polypaths_planar_overrideVec2Object;
 
 typedef struct {
     PyObject_VAR_HEAD
-    planar_vec2_t *vec;
+    polypaths_planar_override_vec2_t *vec;
     /* *vec points to the data[] array, so that it can
        be positioned differently in memory in subtypes */
 	union {
-		planar_vec2_t data[1]; /* Used for fixed-length types */
+		polypaths_planar_override_vec2_t data[1]; /* Used for fixed-length types */
 		Py_ssize_t allocated; /* Used for variable-length types */
 	};
-} PlanarSeq2Object;
+} polypaths_planar_overrideSeq2Object;
 
 typedef struct {
     PyObject_HEAD
@@ -127,27 +127,27 @@ typedef struct {
         double m[6];
         struct {double a, b, c, d, e, f;};
     };
-} PlanarAffineObject;
+} polypaths_planar_overrideAffineObject;
 
 typedef struct {
     PyObject_HEAD
     union {
         PyObject *next_free;
-        struct {planar_vec2_t min, max;};
+        struct {polypaths_planar_override_vec2_t min, max;};
     };
-} PlanarBBoxObject;
+} polypaths_planar_overrideBBoxObject;
 
 typedef struct {
 	PyObject_VAR_HEAD
-    planar_vec2_t *vert;
+    polypaths_planar_override_vec2_t *vert;
 	unsigned long flags;
-	PlanarBBoxObject *bbox;
-	planar_vec2_t centroid;
+	polypaths_planar_overrideBBoxObject *bbox;
+	polypaths_planar_override_vec2_t centroid;
 	double max_r2;
 	double min_r2;
-	planar_vec2_t *lt_y_poly, *rt_y_poly;
-	planar_vec2_t data[1];
-} PlanarPolygonObject;
+	polypaths_planar_override_vec2_t *lt_y_poly, *rt_y_poly;
+	polypaths_planar_override_vec2_t data[1];
+} polypaths_planar_overridePolygonObject;
 
 #define POLY_CONVEX_KNOWN_FLAG 0x1
 #define POLY_CONVEX_FLAG 0x2
@@ -162,21 +162,21 @@ typedef struct {
 
 typedef struct {
     PyObject_HEAD
-	planar_vec2_t normal;
-	planar_vec2_t anchor;
-	planar_vec2_t end;
+	polypaths_planar_override_vec2_t normal;
+	polypaths_planar_override_vec2_t anchor;
+	polypaths_planar_override_vec2_t end;
 	union {
 		double offset;
 		double length;
 	};
-} PlanarLineObject;
+} polypaths_planar_overrideLineObject;
 
 /* Geometry utils */
 
 /* Return 1 if the line segment a->b intersects with line segment c->d */
 static int
-segments_intersect(const planar_vec2_t *a, const planar_vec2_t *b, 
-	const planar_vec2_t *c, const planar_vec2_t *d)
+segments_intersect(const polypaths_planar_override_vec2_t *a, const polypaths_planar_override_vec2_t *b, 
+	const polypaths_planar_override_vec2_t *c, const polypaths_planar_override_vec2_t *d)
 {
 	const double dir1 = (b->x - a->x)*(c->y - a->y)-(c->x - a->x)*(b->y - a->y);
 	const double dir2 = (b->x - a->x)*(d->y - a->y)-(d->x - a->x)*(b->y - a->y);
@@ -190,8 +190,8 @@ segments_intersect(const planar_vec2_t *a, const planar_vec2_t *b,
 static int
 compare_vec_lexi(const void *a, const void *b)
 {
-	const planar_vec2_t *va = *(planar_vec2_t **)a;
-	const planar_vec2_t *vb = *(planar_vec2_t **)b;
+	const polypaths_planar_override_vec2_t *va = *(polypaths_planar_override_vec2_t **)a;
+	const polypaths_planar_override_vec2_t *vb = *(polypaths_planar_override_vec2_t **)b;
 	const int result = (va->x > vb->x) - (va->x < vb->x);
 	return result ? result : (va->y > vb->y) - (va->y < vb->y);
 }
@@ -259,7 +259,7 @@ hash_double(double v)
 
 /* Call the method "from_points(points)" on the Python object
    specified. This is the generic API for instantiating 
-   a planar object from a sequence of points 
+   a polypaths_planar_override object from a sequence of points 
 */
 static PyObject *
 call_from_points(PyObject *obj, PyObject *points) 
@@ -277,32 +277,32 @@ call_from_points(PyObject *obj, PyObject *points)
 
 /***************************************************************************/
 
-extern double PLANAR_EPSILON;
-extern double PLANAR_EPSILON2;
+extern double polypaths_planar_override_EPSILON;
+extern double polypaths_planar_override_EPSILON2;
 
-extern PyTypeObject PlanarVec2Type;
-extern PyTypeObject PlanarSeq2Type;
-extern PyTypeObject PlanarVec2ArrayType;
-extern PyTypeObject PlanarAffineType;
-extern PyTypeObject PlanarLineType;
-extern PyTypeObject PlanarRayType;
-extern PyTypeObject PlanarSegmentType;
-extern PyTypeObject PlanarBBoxType;
-extern PyTypeObject PlanarPolygonType;
+extern PyTypeObject polypaths_planar_overrideVec2Type;
+extern PyTypeObject polypaths_planar_overrideSeq2Type;
+extern PyTypeObject polypaths_planar_overrideVec2ArrayType;
+extern PyTypeObject polypaths_planar_overrideAffineType;
+extern PyTypeObject polypaths_planar_overrideLineType;
+extern PyTypeObject polypaths_planar_overrideRayType;
+extern PyTypeObject polypaths_planar_overrideSegmentType;
+extern PyTypeObject polypaths_planar_overrideBBoxType;
+extern PyTypeObject polypaths_planar_overridePolygonType;
 
-extern PyObject *PlanarTransformNotInvertibleError;
+extern PyObject *polypaths_planar_overrideTransformNotInvertibleError;
 
 /* Vec2 utils */
 
-#define PlanarVec2_Check(op) PyObject_TypeCheck(op, &PlanarVec2Type)
-#define PlanarVec2_CheckExact(op) (Py_TYPE(op) == &PlanarVec2Type)
+#define polypaths_planar_overrideVec2_Check(op) PyObject_TypeCheck(op, &polypaths_planar_overrideVec2Type)
+#define polypaths_planar_overrideVec2_CheckExact(op) (Py_TYPE(op) == &polypaths_planar_overrideVec2Type)
 
-static PlanarVec2Object *
-PlanarVec2_FromDoubles(double x, double y)
+static polypaths_planar_overrideVec2Object *
+polypaths_planar_overrideVec2_FromDoubles(double x, double y)
 {
-    PlanarVec2Object *v;
+    polypaths_planar_overrideVec2Object *v;
 
-    v = (PlanarVec2Object *)PlanarVec2Type.tp_alloc(&PlanarVec2Type, 0);
+    v = (polypaths_planar_overrideVec2Object *)polypaths_planar_overrideVec2Type.tp_alloc(&polypaths_planar_overrideVec2Type, 0);
     if (v == NULL) {
         return NULL;
     }
@@ -311,12 +311,12 @@ PlanarVec2_FromDoubles(double x, double y)
     return v;
 }
 
-static PlanarVec2Object *
-PlanarVec2_FromStruct(planar_vec2_t *vs)
+static polypaths_planar_overrideVec2Object *
+polypaths_planar_overrideVec2_FromStruct(polypaths_planar_override_vec2_t *vs)
 {
-    PlanarVec2Object *v;
+    polypaths_planar_overrideVec2Object *v;
 
-    v = (PlanarVec2Object *)PlanarVec2Type.tp_alloc(&PlanarVec2Type, 0);
+    v = (polypaths_planar_overrideVec2Object *)polypaths_planar_overrideVec2Type.tp_alloc(&polypaths_planar_overrideVec2Type, 0);
     if (v == NULL) {
         return NULL;
     }
@@ -326,16 +326,16 @@ PlanarVec2_FromStruct(planar_vec2_t *vs)
 }
 
 static int 
-PlanarVec2_Parse(PyObject *o, double *x, double *y)
+polypaths_planar_overrideVec2_Parse(PyObject *o, double *x, double *y)
 {
     PyObject *x_obj = NULL;
     PyObject *y_obj = NULL;
     PyObject *item;
 	static char *type_err_msg = "Expected sequence of 2 numbers";
 
-    if (PlanarVec2_Check(o)) {
-        *x = ((PlanarVec2Object *)o)->x;
-        *y = ((PlanarVec2Object *)o)->y;
+    if (polypaths_planar_overrideVec2_Check(o)) {
+        *x = ((polypaths_planar_overrideVec2Object *)o)->x;
+        *y = ((polypaths_planar_overrideVec2Object *)o)->y;
         return 1;
     } else if (PyTuple_Check(o)) {
         /* Use fast tuple access code */
@@ -377,7 +377,7 @@ error:
 
 
 static PyObject *
-Seq2__repr__(PlanarSeq2Object *self, char *class_name, char *extra)
+Seq2__repr__(polypaths_planar_overrideSeq2Object *self, char *class_name, char *extra)
 {
 	PyObject *repr = NULL;
 	PyObject *parts = NULL;
@@ -441,14 +441,14 @@ done:
 
 /* Seq2 utils */
 
-#define PlanarSeq2_Check(op) PyObject_TypeCheck(op, &PlanarSeq2Type)
-#define PlanarSeq2_CheckExact(op) (Py_TYPE(op) == &PlanarSeq2Type)
+#define polypaths_planar_overrideSeq2_Check(op) PyObject_TypeCheck(op, &polypaths_planar_overrideSeq2Type)
+#define polypaths_planar_overrideSeq2_CheckExact(op) (Py_TYPE(op) == &polypaths_planar_overrideSeq2Type)
 
-static PlanarSeq2Object *
+static polypaths_planar_overrideSeq2Object *
 Seq2_New(PyTypeObject *type, Py_ssize_t size)
 {
-    PlanarSeq2Object *varray = 
-		(PlanarSeq2Object *)type->tp_alloc(type, size);
+    polypaths_planar_overrideSeq2Object *varray = 
+		(polypaths_planar_overrideSeq2Object *)type->tp_alloc(type, size);
     if (varray == NULL) {
 		return NULL;
     }
@@ -456,10 +456,10 @@ Seq2_New(PyTypeObject *type, Py_ssize_t size)
 	if (type->tp_itemsize == 0) {
 		/* We assume this means that the items are
 		   externally allocated */
-		varray->vec = PyMem_Malloc(size * sizeof(planar_vec2_t));
+		varray->vec = PyMem_Malloc(size * sizeof(polypaths_planar_override_vec2_t));
 		if (varray->vec == NULL) {
 			Py_DECREF(varray);
-			return (PlanarSeq2Object *)PyErr_NoMemory();
+			return (polypaths_planar_overrideSeq2Object *)PyErr_NoMemory();
 		}
 		varray->allocated = size;
     } else {
@@ -471,22 +471,22 @@ Seq2_New(PyTypeObject *type, Py_ssize_t size)
 
 /* Vec2Array utils */
 
-#define PlanarVec2Array_Check(op) PyObject_TypeCheck(op, &PlanarVec2ArrayType)
-#define PlanarVec2Array_CheckExact(op) (Py_TYPE(op) == &PlanarVec2ArrayType)
+#define polypaths_planar_overrideVec2Array_Check(op) PyObject_TypeCheck(op, &polypaths_planar_overrideVec2ArrayType)
+#define polypaths_planar_overrideVec2Array_CheckExact(op) (Py_TYPE(op) == &polypaths_planar_overrideVec2ArrayType)
 
 /* Affine utils */
 
-#define PlanarAffine_Check(op) PyObject_TypeCheck(op, &PlanarAffineType)
-#define PlanarAffine_CheckExact(op) (Py_TYPE(op) == &PlanarAffineType)
+#define polypaths_planar_overrideAffine_Check(op) PyObject_TypeCheck(op, &polypaths_planar_overrideAffineType)
+#define polypaths_planar_overrideAffine_CheckExact(op) (Py_TYPE(op) == &polypaths_planar_overrideAffineType)
 
-static PlanarAffineObject *
-PlanarAffine_FromDoubles(
+static polypaths_planar_overrideAffineObject *
+polypaths_planar_overrideAffine_FromDoubles(
 	double a, double b, double c, double d, double e, double f) 
 {
-	PlanarAffineObject *t;
+	polypaths_planar_overrideAffineObject *t;
 
-	t = (PlanarAffineObject *)PlanarAffineType.tp_alloc(
-		&PlanarAffineType, 0);
+	t = (polypaths_planar_overrideAffineObject *)polypaths_planar_overrideAffineType.tp_alloc(
+		&polypaths_planar_overrideAffineType, 0);
 	if (t != NULL) {
 		t->a = a;
 		t->b = b;
@@ -500,18 +500,18 @@ PlanarAffine_FromDoubles(
 
 /* BoundingBox utils */
 
-#define PlanarBBox_Check(op) PyObject_TypeCheck(op, &PlanarBBoxType)
-#define PlanarBBox_CheckExact(op) (Py_TYPE(op) == &PlanarBBoxType)
+#define polypaths_planar_overrideBBox_Check(op) PyObject_TypeCheck(op, &polypaths_planar_overrideBBoxType)
+#define polypaths_planar_overrideBBox_CheckExact(op) (Py_TYPE(op) == &polypaths_planar_overrideBBoxType)
 
-static PlanarBBoxObject *
-PlanarBBox_fromSeq2(PlanarSeq2Object *seq)
+static polypaths_planar_overrideBBoxObject *
+polypaths_planar_overrideBBox_fromSeq2(polypaths_planar_overrideSeq2Object *seq)
 {
-	PlanarBBoxObject *b;
-	planar_vec2_t *vec;
+	polypaths_planar_overrideBBoxObject *b;
+	polypaths_planar_override_vec2_t *vec;
 	Py_ssize_t i;
 
-	b = (PlanarBBoxObject *)PlanarBBoxType.tp_alloc(
-		&PlanarBBoxType, 0);
+	b = (polypaths_planar_overrideBBoxObject *)polypaths_planar_overrideBBoxType.tp_alloc(
+		&polypaths_planar_overrideBBoxType, 0);
 	if (b != NULL) {
 		b->min.x = b->min.y = FLT_MAX;
 		b->max.x = b->max.y = -FLT_MAX;
@@ -533,16 +533,16 @@ PlanarBBox_fromSeq2(PlanarSeq2Object *seq)
 	return b;
 }
 
-#define PlanarBBox_contains_point(b, p) \
+#define polypaths_planar_overrideBBox_contains_point(b, p) \
 	(((p)->x >= (b)->min.x) & ((p)->x < (b)->max.x) \
      & ((p)->y > (b)->min.y) && ((p)->y <= (b)->max.y))
 
 /* Polygon utils */
 
-static PlanarPolygonObject *
+static polypaths_planar_overridePolygonObject *
 Poly_new(PyTypeObject *type, Py_ssize_t size)
 {
-	PlanarPolygonObject *poly;
+	polypaths_planar_overridePolygonObject *poly;
 
 	if (size < 3) {
 		PyErr_Format(PyExc_ValueError,
@@ -551,7 +551,7 @@ Poly_new(PyTypeObject *type, Py_ssize_t size)
 	}
 	/* Allocate space for extra verts to duplicate the first
 	 * and last vert at either end to simplify many operations */
-	poly = (PlanarPolygonObject *)type->tp_alloc(type, size + 2);
+	poly = (polypaths_planar_overridePolygonObject *)type->tp_alloc(type, size + 2);
 	if (poly != NULL) {
 		Py_SIZE(poly) = size;
 		poly->vert = poly->data + 1;
@@ -559,16 +559,16 @@ Poly_new(PyTypeObject *type, Py_ssize_t size)
 	return poly;
 }
 
-#define PlanarPolygon_Check(op) PyObject_TypeCheck(op, &PlanarPolygonType)
-#define PlanarPolygon_CheckExact(op) (Py_TYPE(op) == &PlanarPolygonType)
+#define polypaths_planar_overridePolygon_Check(op) PyObject_TypeCheck(op, &polypaths_planar_overridePolygonType)
+#define polypaths_planar_overridePolygon_CheckExact(op) (Py_TYPE(op) == &polypaths_planar_overridePolygonType)
 
 /* Line utils */
 
-#define PlanarLine_Check(op) PyObject_TypeCheck(op, &PlanarLineType)
-#define PlanarLine_CheckExact(op) (Py_TYPE(op) == &PlanarLineType)
-#define PlanarRay_Check(op) PyObject_TypeCheck(op, &PlanarRayType)
-#define PlanarRay_CheckExact(op) (Py_TYPE(op) == &PlanarRayType)
-#define PlanarSegment_Check(op) PyObject_TypeCheck(op, &PlanarSegmentType)
-#define PlanarSegment_CheckExact(op) (Py_TYPE(op) == &PlanarSegmentType)
+#define polypaths_planar_overrideLine_Check(op) PyObject_TypeCheck(op, &polypaths_planar_overrideLineType)
+#define polypaths_planar_overrideLine_CheckExact(op) (Py_TYPE(op) == &polypaths_planar_overrideLineType)
+#define polypaths_planar_overrideRay_Check(op) PyObject_TypeCheck(op, &polypaths_planar_overrideRayType)
+#define polypaths_planar_overrideRay_CheckExact(op) (Py_TYPE(op) == &polypaths_planar_overrideRayType)
+#define polypaths_planar_overrideSegment_Check(op) PyObject_TypeCheck(op, &polypaths_planar_overrideSegmentType)
+#define polypaths_planar_overrideSegment_CheckExact(op) (Py_TYPE(op) == &polypaths_planar_overrideSegmentType)
 
-#endif /* #ifdef PY_PLANAR_H */
+#endif /* #ifdef PY_polypaths_planar_override_H */

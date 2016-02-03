@@ -27,7 +27,7 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 # EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #############################################################################
-"""2d planar geometry library for Python"""
+"""2d polypaths_planar_override geometry library for Python"""
 
 __all__ = ('TransformNotInvertibleError', 'set_epsilon', 
     'Vec2', 'Point', 'Vec2Array', 'Seq2', 
@@ -39,17 +39,17 @@ __version__ = '.'.join(str(n) for n in __versioninfo__)
 
 try: # pragma: no cover
     # Default to C implementation
-    from planar.c import _set_epsilon, Vec2, Vec2Array, Seq2, Affine, \
+    from polypaths_planar_override.c import _set_epsilon, Vec2, Vec2Array, Seq2, Affine, \
         BoundingBox, Polygon, TransformNotInvertibleError
 
     __implementation__ = 'C'
 except ImportError: # pragma: no cover
     # Fall-back to Python implementation
-    from planar.vector import Vec2, Vec2Array, Seq2
-    from planar.transform import Affine
-    from planar.line import Line, Ray, LineSegment
-    from planar.box import BoundingBox
-    from planar.polygon import Polygon
+    from polypaths_planar_override.vector import Vec2, Vec2Array, Seq2
+    from polypaths_planar_override.transform import Affine
+    from polypaths_planar_override.line import Line, Ray, LineSegment
+    from polypaths_planar_override.box import BoundingBox
+    from polypaths_planar_override.polygon import Polygon
 
     class TransformNotInvertibleError(Exception):
         """The transform could not be inverted"""
@@ -66,7 +66,7 @@ Use ``Point`` where desired for clarity in your code.
 def set_epsilon(epsilon):
     """Set the global absolute error value and rounding limit for approximate
     floating point comparison operations. This value is accessible via the
-    :attr:`planar.EPSILON` global variable.
+    :attr:`polypaths_planar_override.EPSILON` global variable.
 
     The default value of ``0.00001`` is suitable for values
     that are in the "countable range". You may need a larger

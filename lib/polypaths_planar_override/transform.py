@@ -29,8 +29,8 @@
 from __future__ import division
 
 import math
-import planar
-from planar.util import cached_property, assert_unorderable, cos_sin_deg
+import polypaths_planar_override
+from polypaths_planar_override.util import cached_property, assert_unorderable, cos_sin_deg
 
 
 class Affine(tuple):
@@ -70,7 +70,7 @@ class Affine(tuple):
         """Create a translation transform from an offset vector.
 
         :param offset: Translation offset.
-        :type offset: :class:`~planar.Vec2`
+        :type offset: :class:`~polypaths_planar_override.Vec2`
         :rtype: Affine
         """
         ox, oy = offset
@@ -86,7 +86,7 @@ class Affine(tuple):
         :param scaling: The scaling factor. A scalar value will
             scale in both dimensions equally. A vector scaling
             value scales the dimensions independently.
-        :type scaling: float or :class:`~planar.Vec2`
+        :type scaling: float or :class:`~polypaths_planar_override.Vec2`
         :rtype: Affine
         """
         try:
@@ -124,7 +124,7 @@ class Affine(tuple):
         :type angle: float
         :param pivot: Point to rotate about, if omitted the
             rotation is about the origin.
-        :type pivot: :class:`~planar.Vec2`
+        :type pivot: :class:`~polypaths_planar_override.Vec2`
         :rtype: Affine
         """
         ca, sa = cos_sin_deg(angle)
@@ -174,8 +174,8 @@ class Affine(tuple):
         transform.
         """
         a, b, c, d, e, f, g, h, i = self
-        return ((abs(a) < planar.EPSILON and abs(e) < planar.EPSILON) 
-            or (abs(d) < planar.EPSILON and abs(b) < planar.EPSILON))
+        return ((abs(a) < polypaths_planar_override.EPSILON and abs(e) < polypaths_planar_override.EPSILON) 
+            or (abs(d) < polypaths_planar_override.EPSILON and abs(b) < polypaths_planar_override.EPSILON))
 
     @cached_property
     def is_conformal(self):
@@ -184,7 +184,7 @@ class Affine(tuple):
         This implies that the transform has no effective shear.
         """
         a, b, c, d, e, f, g, h, i = self
-        return abs(a*b + d*e) < planar.EPSILON
+        return abs(a*b + d*e) < polypaths_planar_override.EPSILON
 
     @cached_property
     def is_orthonormal(self):
@@ -196,8 +196,8 @@ class Affine(tuple):
         """
         a, b, c, d, e, f, g, h, i = self
         return (self.is_conformal 
-            and abs(1.0 - (a*a + d*d)) < planar.EPSILON
-            and abs(1.0 - (b*b + e*e)) < planar.EPSILON)
+            and abs(1.0 - (a*a + d*d)) < polypaths_planar_override.EPSILON
+            and abs(1.0 - (b*b + e*e)) < polypaths_planar_override.EPSILON)
 
     @cached_property
     def is_degenerate(self):
@@ -205,13 +205,13 @@ class Affine(tuple):
         collapse a shape to an effective area of zero. Degenerate transforms
         cannot be inverted.
         """
-        return abs(self.determinant) < planar.EPSILON
+        return abs(self.determinant) < polypaths_planar_override.EPSILON
 
     @property
     def column_vectors(self):
         """The values of the transform as three 2D column vectors"""
         a, b, c, d, e, f, _, _, _ = self
-        return planar.Vec2(a, d), planar.Vec2(b, e), planar.Vec2(c, f)
+        return polypaths_planar_override.Vec2(a, d), polypaths_planar_override.Vec2(b, e), polypaths_planar_override.Vec2(c, f)
 
     def almost_equals(self, other):
         """Compare transforms for approximate equality.
@@ -222,7 +222,7 @@ class Affine(tuple):
             of each respective tranform matrix < ``EPSILON``.
         """
         for i in (0, 1, 2, 3, 4, 5):
-            if abs(self[i] - other[i]) >= planar.EPSILON:
+            if abs(self[i] - other[i]) >= polypaths_planar_override.EPSILON:
                 return False
         return True
 
@@ -246,8 +246,8 @@ class Affine(tuple):
         another transform, a vector, vector array, or shape.
 
         :param other: The object to transform.
-        :type other: Affine, :class:`~planar.Vec2`, 
-            :class:`~planar.Vec2Array`, :class:`~planar.Shape`
+        :type other: Affine, :class:`~polypaths_planar_override.Vec2`, 
+            :class:`~polypaths_planar_override.Vec2Array`, :class:`~polypaths_planar_override.Shape`
         :rtype: Same as ``other``
         """
         sa, sb, sc, sd, se, sf, _, _, _ = self
@@ -259,7 +259,7 @@ class Affine(tuple):
                  0.0, 0.0, 1.0))
         elif hasattr(other, 'from_points'):
             # Point/vector array
-            Point = planar.Point
+            Point = polypaths_planar_override.Point
             points = getattr(other, 'points', other)
             try:
                 return other.from_points(
@@ -272,7 +272,7 @@ class Affine(tuple):
                 vx, vy = other
             except Exception:
                 return NotImplemented
-            return planar.Vec2(vx*sa + vy*sd + sc, vx*sb + vy*se + sf)
+            return polypaths_planar_override.Vec2(vx*sa + vy*sd + sc, vx*sb + vy*se + sf)
     
     def __rmul__(self, other):
         # We should not be called if other is an affine instance
@@ -282,7 +282,7 @@ class Affine(tuple):
         return self.__mul__(other)
 
     def __imul__(self, other):
-        if isinstance(other, Affine) or isinstance(other, planar.Vec2):
+        if isinstance(other, Affine) or isinstance(other, polypaths_planar_override.Vec2):
             return self.__mul__(other)
         else:
             return NotImplemented
@@ -290,13 +290,13 @@ class Affine(tuple):
     def itransform(self, seq):
         """Transform a sequence of points or vectors in place.
 
-        :param seq: Mutable sequence of :class:`~planar.Vec2` to be 
+        :param seq: Mutable sequence of :class:`~polypaths_planar_override.Vec2` to be 
             transformed.
         :returns: None, the input sequence is mutated in place.
         """
         if self is not identity and self != identity:
             sa, sb, sc, sd, se, sf, _, _, _ = self
-            Vec2 = planar.Vec2
+            Vec2 = polypaths_planar_override.Vec2
             for i, (x, y) in enumerate(seq):
                 seq[i] = Vec2(x*sa + y*sd + sc, x*sb + y*se + sf)
 
@@ -307,7 +307,7 @@ class Affine(tuple):
             is degenerate.
         """
         if self.is_degenerate:
-            raise planar.TransformNotInvertibleError(
+            raise polypaths_planar_override.TransformNotInvertibleError(
                 "Cannot invert degenerate transform")
         idet = 1.0 / self.determinant
         sa, sb, sc, sd, se, sf, _, _, _ = self

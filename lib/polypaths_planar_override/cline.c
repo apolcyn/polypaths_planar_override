@@ -12,17 +12,17 @@
 #include <structmember.h>
 #include <float.h>
 #include <string.h>
-#include "planar.h"
+#include "polypaths_planar_override.h"
 
 /* Property descriptors */
 
-static PlanarVec2Object *
-Line_get_direction(PlanarLineObject *self) {
-    return PlanarVec2_FromDoubles(-self->normal.y, self->normal.x);
+static polypaths_planar_overrideVec2Object *
+Line_get_direction(polypaths_planar_overrideLineObject *self) {
+    return polypaths_planar_overrideVec2_FromDoubles(-self->normal.y, self->normal.x);
 }
 
 static int
-Line_set_direction(PlanarLineObject *self, PyObject *value, void *closure)
+Line_set_direction(polypaths_planar_overrideLineObject *self, PyObject *value, void *closure)
 {
     double dx, dy, L;
 
@@ -30,12 +30,12 @@ Line_set_direction(PlanarLineObject *self, PyObject *value, void *closure)
         PyErr_SetString(PyExc_TypeError, "Cannot delete direction attribute");
         return -1;
     }
-    if (!PlanarVec2_Parse(value, &dx, &dy)) {
+    if (!polypaths_planar_overrideVec2_Parse(value, &dx, &dy)) {
         PyErr_SetString(PyExc_TypeError, "Expected Vec2 for direction");
         return -1;
     }
     L = sqrt(dx*dx + dy*dy);
-    if (L < PLANAR_EPSILON) {
+    if (L < polypaths_planar_override_EPSILON) {
         PyErr_SetString(PyExc_ValueError, "Direction vector must not be null");
         return -1;
     }
@@ -44,13 +44,13 @@ Line_set_direction(PlanarLineObject *self, PyObject *value, void *closure)
     return 0;
 }
 
-static PlanarVec2Object *
-Line_get_normal(PlanarLineObject *self) {
-    return PlanarVec2_FromStruct(&self->normal);
+static polypaths_planar_overrideVec2Object *
+Line_get_normal(polypaths_planar_overrideLineObject *self) {
+    return polypaths_planar_overrideVec2_FromStruct(&self->normal);
 }
 
 static int
-Line_set_normal(PlanarLineObject *self, PyObject *value, void *closure)
+Line_set_normal(polypaths_planar_overrideLineObject *self, PyObject *value, void *closure)
 {
     double nx, ny, L;
 
@@ -58,12 +58,12 @@ Line_set_normal(PlanarLineObject *self, PyObject *value, void *closure)
         PyErr_SetString(PyExc_TypeError, "Cannot delete normal attribute");
         return -1;
     }
-    if (!PlanarVec2_Parse(value, &nx, &ny)) {
+    if (!polypaths_planar_overrideVec2_Parse(value, &nx, &ny)) {
         PyErr_SetString(PyExc_TypeError, "Expected Vec2 for normal");
         return -1;
     }
     L = sqrt(nx*nx + ny*ny);
-    if (L < PLANAR_EPSILON) {
+    if (L < polypaths_planar_override_EPSILON) {
         PyErr_SetString(PyExc_ValueError, "Normal vector must not be null");
         return -1;
     }
@@ -72,12 +72,12 @@ Line_set_normal(PlanarLineObject *self, PyObject *value, void *closure)
     return 0;
 }
 
-static PlanarSeq2Object *
-Line_get_points(PlanarLineObject *self) {
-    PlanarSeq2Object *seq;
+static polypaths_planar_overrideSeq2Object *
+Line_get_points(polypaths_planar_overrideLineObject *self) {
+    polypaths_planar_overrideSeq2Object *seq;
     double sx, sy;
 
-    seq = Seq2_New(&PlanarSeq2Type, 2);
+    seq = Seq2_New(&polypaths_planar_overrideSeq2Type, 2);
     if (seq != NULL) {
         seq->vec[0].x = sx = self->normal.x * self->offset;
         seq->vec[0].y = sy = self->normal.y * self->offset;
@@ -88,7 +88,7 @@ Line_get_points(PlanarLineObject *self) {
 }
 
 static int
-Line_set_offset(PlanarLineObject *self, PyObject *value)
+Line_set_offset(polypaths_planar_overrideLineObject *self, PyObject *value)
 {
     value = PyObject_ToFloat(value);
     if (value == NULL) {
@@ -100,7 +100,7 @@ Line_set_offset(PlanarLineObject *self, PyObject *value)
 }
 
 static PyMemberDef Line_members[] = {
-    {"offset", T_DOUBLE, offsetof(PlanarLineObject, offset), 0,
+    {"offset", T_DOUBLE, offsetof(polypaths_planar_overrideLineObject, offset), 0,
         "Direction from the origin to the line."},
     {NULL}
 };
@@ -118,14 +118,14 @@ static PyGetSetDef Line_getset[] = {
 /* Methods */
 
 static int
-Line_init(PlanarLineObject *self, PyObject *args)
+Line_init(polypaths_planar_overrideLineObject *self, PyObject *args)
 {
-    assert(PlanarLine_Check(self) || PlanarRay_Check(self));
+    assert(polypaths_planar_overrideLine_Check(self) || polypaths_planar_overrideRay_Check(self));
     if (PyTuple_GET_SIZE(args) != 2) {
         PyErr_SetString(PyExc_TypeError, "Line: wrong number of arguments");
         return -1;
     }
-    if (!PlanarVec2_Parse(PyTuple_GET_ITEM(args, 0), 
+    if (!polypaths_planar_overrideVec2_Parse(PyTuple_GET_ITEM(args, 0), 
         &self->anchor.x, &self->anchor.y)) {
         return -1;
     }
@@ -138,7 +138,7 @@ Line_init(PlanarLineObject *self, PyObject *args)
 }
 
 static PyObject *
-Line_repr(PlanarLineObject *self)
+Line_repr(polypaths_planar_overrideLineObject *self)
 {
     char buf[255];
 
@@ -152,11 +152,11 @@ Line_repr(PlanarLineObject *self)
 static PyObject *
 Line_compare(PyObject *a, PyObject *b, int op)
 {
-    PlanarLineObject *line1, *line2;
+    polypaths_planar_overrideLineObject *line1, *line2;
 
-	if (PlanarLine_Check(a) && PlanarLine_Check(b)) {
-        line1 = (PlanarLineObject *)a;
-        line2 = (PlanarLineObject *)b;
+	if (polypaths_planar_overrideLine_Check(a) && polypaths_planar_overrideLine_Check(b)) {
+        line1 = (polypaths_planar_overrideLineObject *)a;
+        line2 = (polypaths_planar_overrideLineObject *)b;
 		switch (op) {
 			case Py_EQ:
                 return Py_BOOL(
@@ -186,47 +186,47 @@ Line_compare(PyObject *a, PyObject *b, int op)
 }
 
 static PyObject *
-Line_almost_equals(PlanarLineObject *self, PlanarLineObject *other)
+Line_almost_equals(polypaths_planar_overrideLineObject *self, polypaths_planar_overrideLineObject *other)
 {
     return Py_BOOL(
-		PlanarLine_Check(self) && PlanarLine_Check(other) &&
+		polypaths_planar_overrideLine_Check(self) && polypaths_planar_overrideLine_Check(other) &&
         almost_eq(self->normal.x, other->normal.x) &&
         almost_eq(self->normal.y, other->normal.y) &&
         almost_eq(self->offset, other->offset));
 }
 
-static PlanarLineObject *
+static polypaths_planar_overrideLineObject *
 Line_new_from_points(PyTypeObject *type, PyObject *points) 
 {
-    PlanarLineObject *line;
-    planar_vec2_t *vec;
+    polypaths_planar_overrideLineObject *line;
+    polypaths_planar_override_vec2_t *vec;
     Py_ssize_t size;
     int i;
     double x, y, dx, dy, px, py, d;
     double L = 0.0;
 
-    assert(PyType_IsSubtype(type, &PlanarLineType)
-        || PyType_IsSubtype(type, &PlanarRayType));
-    line = (PlanarLineObject *)type->tp_alloc(type, 0);
+    assert(PyType_IsSubtype(type, &polypaths_planar_overrideLineType)
+        || PyType_IsSubtype(type, &polypaths_planar_overrideRayType));
+    line = (polypaths_planar_overrideLineObject *)type->tp_alloc(type, 0);
     if (line == NULL) {
         return NULL;
     }
 
-    if (PlanarSeq2_Check(points)) {
+    if (polypaths_planar_overrideSeq2_Check(points)) {
         /* Optimized code path for Seq2 objects */
         if (Py_SIZE(points) < 2) {
             goto tooShort;
         }
-        vec = ((PlanarSeq2Object *)points)->vec;
+        vec = ((polypaths_planar_overrideSeq2Object *)points)->vec;
         x = vec[0].x;
         y = vec[0].y;
         for (i = 1; i < Py_SIZE(points); ++i) {
             dx = vec[i].x - x;
             dy = vec[i].y - y;
             L = dx*dx + dy*dy;
-            if (L > PLANAR_EPSILON2) break;
+            if (L > polypaths_planar_override_EPSILON2) break;
         }
-        if (L < PLANAR_EPSILON2) goto tooShort;
+        if (L < polypaths_planar_override_EPSILON2) goto tooShort;
         while (++i < Py_SIZE(points)) {
             d = (vec[i].x - x) * dy + (vec[i].y - y) * -dx;
             if (!almost_eq(d, 0.0)) {
@@ -243,12 +243,12 @@ Line_new_from_points(PyTypeObject *type, PyObject *points)
             Py_DECREF(points);
             goto tooShort;
         }
-        if (!PlanarVec2_Parse(PySequence_Fast_GET_ITEM(points, 0), &x, &y)) {
+        if (!polypaths_planar_overrideVec2_Parse(PySequence_Fast_GET_ITEM(points, 0), &x, &y)) {
             Py_DECREF(points);
             goto wrongType;
         }
         for (i = 1; i < size; ++i) {
-            if (!PlanarVec2_Parse(
+            if (!polypaths_planar_overrideVec2_Parse(
                 PySequence_Fast_GET_ITEM(points, i), &dx, &dy)) {
                 Py_DECREF(points);
                 goto wrongType;
@@ -256,14 +256,14 @@ Line_new_from_points(PyTypeObject *type, PyObject *points)
             dx -= x;
             dy -= y;
             L = dx*dx + dy*dy;
-            if (L > PLANAR_EPSILON2) break;
+            if (L > polypaths_planar_override_EPSILON2) break;
         }
-        if (L < PLANAR_EPSILON2) {
+        if (L < polypaths_planar_override_EPSILON2) {
             Py_DECREF(points);
             goto tooShort;
         }
         while (++i < size) {
-            if (!PlanarVec2_Parse(
+            if (!polypaths_planar_overrideVec2_Parse(
                 PySequence_Fast_GET_ITEM(points, i), &px, &py)) {
                 Py_DECREF(points);
                 goto wrongType;
@@ -299,18 +299,18 @@ notCollinear:
     return NULL;
 }
 
-static PlanarLineObject *
+static polypaths_planar_overrideLineObject *
 Line_new_from_normal(PyTypeObject *type, PyObject *args)
 {
-    PlanarLineObject *line;
+    polypaths_planar_overrideLineObject *line;
 
-    assert(PyType_IsSubtype(type, &PlanarLineType));
+    assert(PyType_IsSubtype(type, &polypaths_planar_overrideLineType));
     if (PyTuple_GET_SIZE(args) != 2) {
         PyErr_SetString(PyExc_TypeError, 
             "Line.from_normal: wrong number of arguments");
         return NULL;
     }
-    line = (PlanarLineObject *)type->tp_alloc(type, 0);
+    line = (polypaths_planar_overrideLineObject *)type->tp_alloc(type, 0);
     if (line != NULL) {
         if (Line_set_normal(line, PyTuple_GET_ITEM(args, 0), NULL) == -1) {
             return NULL;
@@ -323,12 +323,12 @@ Line_new_from_normal(PyTypeObject *type, PyObject *args)
 }
 
 static PyObject *
-Line_distance_to(PlanarLineObject *self, PyObject *pt)
+Line_distance_to(polypaths_planar_overrideLineObject *self, PyObject *pt)
 {
     double px, py;
 
-    assert(PlanarLine_Check(self));
-    if (!PlanarVec2_Parse(pt, &px, &py)) {
+    assert(polypaths_planar_overrideLine_Check(self));
+    if (!polypaths_planar_overrideVec2_Parse(pt, &px, &py)) {
         return NULL;
     }
     return PyFloat_FromDouble(
@@ -336,84 +336,84 @@ Line_distance_to(PlanarLineObject *self, PyObject *pt)
 }
 
 static PyObject *
-Line_point_left(PlanarLineObject *self, PyObject *pt)
+Line_point_left(polypaths_planar_overrideLineObject *self, PyObject *pt)
 {
     double px, py, d;
 
-    assert(PlanarLine_Check(self));
-    if (!PlanarVec2_Parse(pt, &px, &py)) {
+    assert(polypaths_planar_overrideLine_Check(self));
+    if (!polypaths_planar_overrideVec2_Parse(pt, &px, &py)) {
         return NULL;
     }
     d = self->normal.x * px + self->normal.y * py - self->offset;
-    return Py_BOOL(d <= -PLANAR_EPSILON);
+    return Py_BOOL(d <= -polypaths_planar_override_EPSILON);
 }
 
 static PyObject *
-Line_point_right(PlanarLineObject *self, PyObject *pt)
+Line_point_right(polypaths_planar_overrideLineObject *self, PyObject *pt)
 {
     double px, py, d;
 
-    assert(PlanarLine_Check(self));
-    if (!PlanarVec2_Parse(pt, &px, &py)) {
+    assert(polypaths_planar_overrideLine_Check(self));
+    if (!polypaths_planar_overrideVec2_Parse(pt, &px, &py)) {
         return NULL;
     }
     d = self->normal.x * px + self->normal.y * py - self->offset;
-    return Py_BOOL(d >= PLANAR_EPSILON);
+    return Py_BOOL(d >= polypaths_planar_override_EPSILON);
 }
 
 static PyObject *
-Line_contains_point(PlanarLineObject *self, PyObject *pt)
+Line_contains_point(polypaths_planar_overrideLineObject *self, PyObject *pt)
 {
     double px, py, d;
 
-    assert(PlanarLine_Check(self));
-    if (!PlanarVec2_Parse(pt, &px, &py)) {
+    assert(polypaths_planar_overrideLine_Check(self));
+    if (!polypaths_planar_overrideVec2_Parse(pt, &px, &py)) {
         return NULL;
     }
     d = self->normal.x * px + self->normal.y * py - self->offset;
-    return Py_BOOL((d < PLANAR_EPSILON) & (d > -PLANAR_EPSILON));
+    return Py_BOOL((d < polypaths_planar_override_EPSILON) & (d > -polypaths_planar_override_EPSILON));
 }
 
-static PlanarVec2Object *
-Line_project(PlanarLineObject *self, PyObject *pt)
+static polypaths_planar_overrideVec2Object *
+Line_project(polypaths_planar_overrideLineObject *self, PyObject *pt)
 {
     double px, py, s;
 
-    assert(PlanarLine_Check(self));
-    if (!PlanarVec2_Parse(pt, &px, &py)) {
+    assert(polypaths_planar_overrideLine_Check(self));
+    if (!polypaths_planar_overrideVec2_Parse(pt, &px, &py)) {
         return NULL;
     }
     s = -self->normal.y * px + self->normal.x * py;
-    return PlanarVec2_FromDoubles(
+    return polypaths_planar_overrideVec2_FromDoubles(
         -self->normal.y * s + self->normal.x * self->offset,
         self->normal.x * s + self->normal.y * self->offset);
 }
 
-static PlanarVec2Object *
-Line_reflect(PlanarLineObject *self, PyObject *pt)
+static polypaths_planar_overrideVec2Object *
+Line_reflect(polypaths_planar_overrideLineObject *self, PyObject *pt)
 {
     double px, py, d;
 
-    assert(PlanarLine_Check(self));
-    if (!PlanarVec2_Parse(pt, &px, &py)) {
+    assert(polypaths_planar_overrideLine_Check(self));
+    if (!polypaths_planar_overrideVec2_Parse(pt, &px, &py)) {
         return NULL;
     }
     d = (self->normal.x * px + self->normal.y * py - self->offset) * 2.0;
-    return PlanarVec2_FromDoubles(
+    return polypaths_planar_overrideVec2_FromDoubles(
         px - self->normal.x * d, py - self->normal.y * d);
 }
 
-static PlanarLineObject *
-Line_parallel(PlanarLineObject *self, PyObject *pt)
+static polypaths_planar_overrideLineObject *
+Line_parallel(polypaths_planar_overrideLineObject *self, PyObject *pt)
 {
     double px, py;
-    PlanarLineObject *line;
+    polypaths_planar_overrideLineObject *line;
 
-    assert(PlanarLine_Check(self));
-    if (!PlanarVec2_Parse(pt, &px, &py)) {
+    assert(polypaths_planar_overrideLine_Check(self));
+    if (!polypaths_planar_overrideVec2_Parse(pt, &px, &py)) {
         return NULL;
     }
-    line = (PlanarLineObject *)PlanarLineType.tp_alloc(&PlanarLineType, 0);
+    line = (polypaths_planar_overrideLineObject *)polypaths_planar_overrideLineType.tp_alloc(&polypaths_planar_overrideLineType, 0);
     if (line != NULL) {
         line->normal.x = self->normal.x;
         line->normal.y = self->normal.y;
@@ -422,17 +422,17 @@ Line_parallel(PlanarLineObject *self, PyObject *pt)
     return line;
 }
 
-static PlanarLineObject *
-Line_perpendicular(PlanarLineObject *self, PyObject *pt)
+static polypaths_planar_overrideLineObject *
+Line_perpendicular(polypaths_planar_overrideLineObject *self, PyObject *pt)
 {
     double px, py;
-    PlanarLineObject *line;
+    polypaths_planar_overrideLineObject *line;
 
-    assert(PlanarLine_Check(self));
-    if (!PlanarVec2_Parse(pt, &px, &py)) {
+    assert(polypaths_planar_overrideLine_Check(self));
+    if (!polypaths_planar_overrideVec2_Parse(pt, &px, &py)) {
         return NULL;
     }
-    line = (PlanarLineObject *)PlanarLineType.tp_alloc(&PlanarLineType, 0);
+    line = (polypaths_planar_overrideLineObject *)polypaths_planar_overrideLineType.tp_alloc(&polypaths_planar_overrideLineType, 0);
     if (line != NULL) {
         line->normal.x = -self->normal.y;
         line->normal.y = self->normal.x;
@@ -478,10 +478,10 @@ static PyMethodDef Line_methods[] = {
 /* Arithmetic Operations */
 
 static void
-Line_transform(PlanarLineObject *src_line, 
-    PlanarLineObject *dst_line, PlanarAffineObject *t)
+Line_transform(polypaths_planar_overrideLineObject *src_line, 
+    polypaths_planar_overrideLineObject *dst_line, polypaths_planar_overrideAffineObject *t)
 {
-    planar_vec2_t p1, p2, t1, t2;
+    polypaths_planar_override_vec2_t p1, p2, t1, t2;
     double ta, tb, tc, td, te, tf, dx, dy, L;
     ta = t->a;
     tb = t->b;
@@ -501,7 +501,7 @@ Line_transform(PlanarLineObject *src_line,
     dx = t2.x - t1.x;
     dy = t2.y - t1.y;
     L = sqrt(dx*dx + dy*dy);
-    if (L < PLANAR_EPSILON) {
+    if (L < polypaths_planar_override_EPSILON) {
         PyErr_SetString(PyExc_ValueError, 
             "Line direction vector must not be null");
     }
@@ -513,15 +513,15 @@ Line_transform(PlanarLineObject *src_line,
 static PyObject *
 Line__imul__(PyObject *a, PyObject *b)
 {
-    PlanarLineObject *line;
-    PlanarAffineObject *t;
+    polypaths_planar_overrideLineObject *line;
+    polypaths_planar_overrideAffineObject *t;
 
-    if (PlanarLine_Check(a) && PlanarAffine_Check(b)) {
-		line = (PlanarLineObject *)a;
-		t = (PlanarAffineObject *)b;
-    } else if (PlanarLine_Check(b) && PlanarAffine_Check(a)) {
-		line = (PlanarLineObject *)b;
-		t = (PlanarAffineObject *)a;
+    if (polypaths_planar_overrideLine_Check(a) && polypaths_planar_overrideAffine_Check(b)) {
+		line = (polypaths_planar_overrideLineObject *)a;
+		t = (polypaths_planar_overrideAffineObject *)b;
+    } else if (polypaths_planar_overrideLine_Check(b) && polypaths_planar_overrideAffine_Check(a)) {
+		line = (polypaths_planar_overrideLineObject *)b;
+		t = (polypaths_planar_overrideAffineObject *)a;
     } else {
 		/* We support only transform operations */
 		RETURN_NOT_IMPLEMENTED;
@@ -535,21 +535,21 @@ Line__imul__(PyObject *a, PyObject *b)
 static PyObject *
 Line__mul__(PyObject *a, PyObject *b)
 {
-    PlanarLineObject *src_line, *dst_line;
-    PlanarAffineObject *t;
+    polypaths_planar_overrideLineObject *src_line, *dst_line;
+    polypaths_planar_overrideAffineObject *t;
 
-    if (PlanarLine_Check(a) && PlanarAffine_Check(b)) {
-		src_line = (PlanarLineObject *)a;
-		t = (PlanarAffineObject *)b;
-    } else if (PlanarLine_Check(b) && PlanarAffine_Check(a)) {
-		src_line = (PlanarLineObject *)b;
-		t = (PlanarAffineObject *)a;
+    if (polypaths_planar_overrideLine_Check(a) && polypaths_planar_overrideAffine_Check(b)) {
+		src_line = (polypaths_planar_overrideLineObject *)a;
+		t = (polypaths_planar_overrideAffineObject *)b;
+    } else if (polypaths_planar_overrideLine_Check(b) && polypaths_planar_overrideAffine_Check(a)) {
+		src_line = (polypaths_planar_overrideLineObject *)b;
+		t = (polypaths_planar_overrideAffineObject *)a;
     } else {
 		/* We support only transform operations */
 		RETURN_NOT_IMPLEMENTED;
     }
 
-    dst_line = (PlanarLineObject *)Py_TYPE(src_line)->tp_alloc(
+    dst_line = (polypaths_planar_overrideLineObject *)Py_TYPE(src_line)->tp_alloc(
         Py_TYPE(src_line), 0);
     if (dst_line != NULL) {
         Line_transform(src_line, dst_line, t);
@@ -615,10 +615,10 @@ PyDoc_STRVAR(Line_doc,
     "Line(point, direction)"
 );
 
-PyTypeObject PlanarLineType = {
+PyTypeObject polypaths_planar_overrideLineType = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    "planar.Line",     /* tp_name */
-    sizeof(PlanarLineObject), /* tp_basicsize */
+    "polypaths_planar_override.Line",     /* tp_name */
+    sizeof(polypaths_planar_overrideLineObject), /* tp_basicsize */
     0,                    /* tp_itemsize */
     0,                       /* tp_dealloc */
     0,                    /* tp_print */
@@ -660,7 +660,7 @@ PyTypeObject PlanarLineType = {
 /***************************************************************************/
 
 static PyObject *
-Ray_repr(PlanarLineObject *self)
+Ray_repr(polypaths_planar_overrideLineObject *self)
 {
     char buf[255];
 
@@ -673,11 +673,11 @@ Ray_repr(PlanarLineObject *self)
 static PyObject *
 Ray_compare(PyObject *a, PyObject *b, int op)
 {
-    PlanarLineObject *ray1, *ray2;
+    polypaths_planar_overrideLineObject *ray1, *ray2;
 
-	if (PlanarRay_Check(a) && PlanarRay_Check(b)) {
-        ray1 = (PlanarLineObject *)a;
-        ray2 = (PlanarLineObject *)b;
+	if (polypaths_planar_overrideRay_Check(a) && polypaths_planar_overrideRay_Check(b)) {
+        ray1 = (polypaths_planar_overrideLineObject *)a;
+        ray2 = (polypaths_planar_overrideLineObject *)b;
 		switch (op) {
 			case Py_EQ:
                 return Py_BOOL(
@@ -709,29 +709,29 @@ Ray_compare(PyObject *a, PyObject *b, int op)
 }
 
 static PyObject *
-Ray_almost_equals(PlanarLineObject *self, PlanarLineObject *other)
+Ray_almost_equals(polypaths_planar_overrideLineObject *self, polypaths_planar_overrideLineObject *other)
 {
     return Py_BOOL(
-        PlanarRay_Check(self) && PlanarRay_Check(other) &&
+        polypaths_planar_overrideRay_Check(self) && polypaths_planar_overrideRay_Check(other) &&
         almost_eq(self->normal.x, other->normal.x) &&
         almost_eq(self->normal.y, other->normal.y) &&
         almost_eq(self->anchor.x, other->anchor.x) &&
         almost_eq(self->anchor.y, other->anchor.y));
 }
 
-static PlanarVec2Object *
-Ray_get_anchor(PlanarLineObject *self) {
-    return PlanarVec2_FromStruct(&self->anchor);
+static polypaths_planar_overrideVec2Object *
+Ray_get_anchor(polypaths_planar_overrideLineObject *self) {
+    return polypaths_planar_overrideVec2_FromStruct(&self->anchor);
 }
 
 static int
-Ray_set_anchor(PlanarLineObject *self, PyObject *value, void *closure)
+Ray_set_anchor(polypaths_planar_overrideLineObject *self, PyObject *value, void *closure)
 {
     if (value == NULL) {
         PyErr_SetString(PyExc_TypeError, "Cannot delete anchor attribute");
         return -1;
     }
-    if (!PlanarVec2_Parse(value, &self->anchor.x, &self->anchor.y)) {
+    if (!polypaths_planar_overrideVec2_Parse(value, &self->anchor.x, &self->anchor.y)) {
         PyErr_SetString(PyExc_TypeError, "Expected Vec2 for anchor");
         return -1;
     }
@@ -740,11 +740,11 @@ Ray_set_anchor(PlanarLineObject *self, PyObject *value, void *closure)
     return 0;
 }
 
-static PlanarSeq2Object *
-Ray_get_points(PlanarLineObject *self) {
-    PlanarSeq2Object *seq;
+static polypaths_planar_overrideSeq2Object *
+Ray_get_points(polypaths_planar_overrideLineObject *self) {
+    polypaths_planar_overrideSeq2Object *seq;
 
-    seq = Seq2_New(&PlanarSeq2Type, 2);
+    seq = Seq2_New(&polypaths_planar_overrideSeq2Type, 2);
     if (seq != NULL) {
         seq->vec[0].x = self->anchor.x;
         seq->vec[0].y = self->anchor.y;
@@ -754,11 +754,11 @@ Ray_get_points(PlanarLineObject *self) {
     return seq;
 }
 
-static PlanarLineObject *
-Ray_get_line(PlanarLineObject *self) {
-    PlanarLineObject *line;
+static polypaths_planar_overrideLineObject *
+Ray_get_line(polypaths_planar_overrideLineObject *self) {
+    polypaths_planar_overrideLineObject *line;
 
-    line = (PlanarLineObject *)PlanarLineType.tp_alloc(&PlanarLineType, 0);
+    line = (polypaths_planar_overrideLineObject *)polypaths_planar_overrideLineType.tp_alloc(&polypaths_planar_overrideLineType, 0);
     if (line != NULL) {
         line->normal.x = self->normal.x;
         line->normal.y = self->normal.y;
@@ -785,12 +785,12 @@ static PyGetSetDef Ray_getset[] = {
 };
 
 static PyObject *
-Ray_distance_to(PlanarLineObject *self, PyObject *pt)
+Ray_distance_to(polypaths_planar_overrideLineObject *self, PyObject *pt)
 {
     double px, py;
 
-    assert(PlanarRay_Check(self));
-    if (!PlanarVec2_Parse(pt, &px, &py)) {
+    assert(polypaths_planar_overrideRay_Check(self));
+    if (!polypaths_planar_overrideVec2_Parse(pt, &px, &py)) {
         return NULL;
     }
     px -= self->anchor.x;
@@ -806,59 +806,59 @@ Ray_distance_to(PlanarLineObject *self, PyObject *pt)
 }
 
 static PyObject *
-Ray_point_behind(PlanarLineObject *self, PyObject *pt)
+Ray_point_behind(polypaths_planar_overrideLineObject *self, PyObject *pt)
 {
     double px, py, d;
 
-    assert(PlanarRay_Check(self));
-    if (!PlanarVec2_Parse(pt, &px, &py)) {
+    assert(polypaths_planar_overrideRay_Check(self));
+    if (!polypaths_planar_overrideVec2_Parse(pt, &px, &py)) {
         return NULL;
     }
     px -= self->anchor.x;
     py -= self->anchor.y;
     d = px * -self->normal.y + py * self->normal.x;
-    return Py_BOOL(d <= -PLANAR_EPSILON);
+    return Py_BOOL(d <= -polypaths_planar_override_EPSILON);
 }
 
 static PyObject *
-Ray_point_left(PlanarLineObject *self, PyObject *pt)
+Ray_point_left(polypaths_planar_overrideLineObject *self, PyObject *pt)
 {
     double px, py, b, d;
 
-    assert(PlanarRay_Check(self));
-    if (!PlanarVec2_Parse(pt, &px, &py)) {
+    assert(polypaths_planar_overrideRay_Check(self));
+    if (!polypaths_planar_overrideVec2_Parse(pt, &px, &py)) {
         return NULL;
     }
     px -= self->anchor.x;
     py -= self->anchor.y;
     b = px * -self->normal.y + py * self->normal.x;
     d = self->normal.x * px + self->normal.y * py;
-    return Py_BOOL((b > -PLANAR_EPSILON) & (d <= -PLANAR_EPSILON));
+    return Py_BOOL((b > -polypaths_planar_override_EPSILON) & (d <= -polypaths_planar_override_EPSILON));
 }
 
 static PyObject *
-Ray_point_right(PlanarLineObject *self, PyObject *pt)
+Ray_point_right(polypaths_planar_overrideLineObject *self, PyObject *pt)
 {
     double px, py, b, d;
 
-    assert(PlanarRay_Check(self));
-    if (!PlanarVec2_Parse(pt, &px, &py)) {
+    assert(polypaths_planar_overrideRay_Check(self));
+    if (!polypaths_planar_overrideVec2_Parse(pt, &px, &py)) {
         return NULL;
     }
     px -= self->anchor.x;
     py -= self->anchor.y;
     b = px * -self->normal.y + py * self->normal.x;
     d = self->normal.x * px + self->normal.y * py;
-    return Py_BOOL((b > -PLANAR_EPSILON) & (d >= PLANAR_EPSILON));
+    return Py_BOOL((b > -polypaths_planar_override_EPSILON) & (d >= polypaths_planar_override_EPSILON));
 }
 
 static PyObject *
-Ray_contains_point(PlanarLineObject *self, PyObject *pt)
+Ray_contains_point(polypaths_planar_overrideLineObject *self, PyObject *pt)
 {
     double px, py, d;
 
-    assert(PlanarRay_Check(self));
-    if (!PlanarVec2_Parse(pt, &px, &py)) {
+    assert(polypaths_planar_overrideRay_Check(self));
+    if (!polypaths_planar_overrideVec2_Parse(pt, &px, &py)) {
         return NULL;
     }
     px -= self->anchor.x;
@@ -868,24 +868,24 @@ Ray_contains_point(PlanarLineObject *self, PyObject *pt)
     } else {
         d = sqrt(px*px + py*py);
     }
-    return Py_BOOL((d < PLANAR_EPSILON) & (d > -PLANAR_EPSILON));
+    return Py_BOOL((d < polypaths_planar_override_EPSILON) & (d > -polypaths_planar_override_EPSILON));
 
 }
 
-static PlanarVec2Object *
-Ray_project(PlanarLineObject *self, PyObject *pt)
+static polypaths_planar_overrideVec2Object *
+Ray_project(polypaths_planar_overrideLineObject *self, PyObject *pt)
 {
     double px, py, s;
 
-    assert(PlanarRay_Check(self));
-    if (!PlanarVec2_Parse(pt, &px, &py)) {
+    assert(polypaths_planar_overrideRay_Check(self));
+    if (!polypaths_planar_overrideVec2_Parse(pt, &px, &py)) {
         return NULL;
     }
     px -= self->anchor.x;
     py -= self->anchor.y;
     s = -self->normal.y * px + self->normal.x * py;
     s = s > 0.0 ? s : 0.0;
-    return PlanarVec2_FromDoubles(
+    return polypaths_planar_overrideVec2_FromDoubles(
         -self->normal.y * s + self->anchor.x,
         self->normal.x * s + self->anchor.y);
 }
@@ -918,10 +918,10 @@ static PyMethodDef Ray_methods[] = {
 /* Arithmetic Operations */
 
 static void
-Ray_transform(PlanarLineObject *src_ray, 
-    PlanarLineObject *dst_ray, PlanarAffineObject *t)
+Ray_transform(polypaths_planar_overrideLineObject *src_ray, 
+    polypaths_planar_overrideLineObject *dst_ray, polypaths_planar_overrideAffineObject *t)
 {
-    planar_vec2_t p1, p2, t1, t2;
+    polypaths_planar_override_vec2_t p1, p2, t1, t2;
     double ta, tb, tc, td, te, tf, dx, dy, L;
     ta = t->a;
     tb = t->b;
@@ -941,7 +941,7 @@ Ray_transform(PlanarLineObject *src_ray,
     dx = t2.x - t1.x;
     dy = t2.y - t1.y;
     L = sqrt(dx*dx + dy*dy);
-    if (L < PLANAR_EPSILON) {
+    if (L < polypaths_planar_override_EPSILON) {
         PyErr_SetString(PyExc_ValueError, 
             "Ray direction vector must not be null");
     }
@@ -954,15 +954,15 @@ Ray_transform(PlanarLineObject *src_ray,
 static PyObject *
 Ray__imul__(PyObject *a, PyObject *b)
 {
-    PlanarLineObject *ray;
-    PlanarAffineObject *t;
+    polypaths_planar_overrideLineObject *ray;
+    polypaths_planar_overrideAffineObject *t;
 
-    if (PlanarRay_Check(a) && PlanarAffine_Check(b)) {
-		ray = (PlanarLineObject *)a;
-		t = (PlanarAffineObject *)b;
-    } else if (PlanarRay_Check(b) && PlanarAffine_Check(a)) {
-		ray = (PlanarLineObject *)b;
-		t = (PlanarAffineObject *)a;
+    if (polypaths_planar_overrideRay_Check(a) && polypaths_planar_overrideAffine_Check(b)) {
+		ray = (polypaths_planar_overrideLineObject *)a;
+		t = (polypaths_planar_overrideAffineObject *)b;
+    } else if (polypaths_planar_overrideRay_Check(b) && polypaths_planar_overrideAffine_Check(a)) {
+		ray = (polypaths_planar_overrideLineObject *)b;
+		t = (polypaths_planar_overrideAffineObject *)a;
     } else {
 		/* We support only transform operations */
 		RETURN_NOT_IMPLEMENTED;
@@ -976,21 +976,21 @@ Ray__imul__(PyObject *a, PyObject *b)
 static PyObject *
 Ray__mul__(PyObject *a, PyObject *b)
 {
-    PlanarLineObject *src_ray, *dst_ray;
-    PlanarAffineObject *t;
+    polypaths_planar_overrideLineObject *src_ray, *dst_ray;
+    polypaths_planar_overrideAffineObject *t;
 
-    if (PlanarRay_Check(a) && PlanarAffine_Check(b)) {
-		src_ray = (PlanarLineObject *)a;
-		t = (PlanarAffineObject *)b;
-    } else if (PlanarRay_Check(b) && PlanarAffine_Check(a)) {
-		src_ray = (PlanarLineObject *)b;
-		t = (PlanarAffineObject *)a;
+    if (polypaths_planar_overrideRay_Check(a) && polypaths_planar_overrideAffine_Check(b)) {
+		src_ray = (polypaths_planar_overrideLineObject *)a;
+		t = (polypaths_planar_overrideAffineObject *)b;
+    } else if (polypaths_planar_overrideRay_Check(b) && polypaths_planar_overrideAffine_Check(a)) {
+		src_ray = (polypaths_planar_overrideLineObject *)b;
+		t = (polypaths_planar_overrideAffineObject *)a;
     } else {
 		/* We support only transform operations */
 		RETURN_NOT_IMPLEMENTED;
     }
 
-    dst_ray = (PlanarLineObject *)Py_TYPE(src_ray)->tp_alloc(
+    dst_ray = (polypaths_planar_overrideLineObject *)Py_TYPE(src_ray)->tp_alloc(
         Py_TYPE(src_ray), 0);
     if (dst_ray != NULL) {
         Ray_transform(src_ray, dst_ray, t);
@@ -1056,10 +1056,10 @@ PyDoc_STRVAR(Ray_doc,
     "Ray(anchor, direction)"
 );
 
-PyTypeObject PlanarRayType = {
+PyTypeObject polypaths_planar_overrideRayType = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    "planar.Ray",     /* tp_name */
-    sizeof(PlanarLineObject), /* tp_basicsize */
+    "polypaths_planar_override.Ray",     /* tp_name */
+    sizeof(polypaths_planar_overrideLineObject), /* tp_basicsize */
     0,                    /* tp_itemsize */
     0,                    /* tp_dealloc */
     0,                    /* tp_print */
@@ -1100,14 +1100,14 @@ PyTypeObject PlanarRayType = {
 
 /***************************************************************************/
 
-static PlanarVec2Object *
-Segment_get_vector(PlanarLineObject *self) {
-    return PlanarVec2_FromDoubles(
+static polypaths_planar_overrideVec2Object *
+Segment_get_vector(polypaths_planar_overrideLineObject *self) {
+    return polypaths_planar_overrideVec2_FromDoubles(
         -self->normal.y * self->length, self->normal.x * self->length);
 }
 
 static int
-Segment_set_vector(PlanarLineObject *self, PyObject *value, void *closure)
+Segment_set_vector(polypaths_planar_overrideLineObject *self, PyObject *value, void *closure)
 {
     double dx, dy;
 
@@ -1115,7 +1115,7 @@ Segment_set_vector(PlanarLineObject *self, PyObject *value, void *closure)
         PyErr_SetString(PyExc_TypeError, "Cannot delete vector attribute");
         return -1;
     }
-    if (!PlanarVec2_Parse(value, &dx, &dy)) {
+    if (!polypaths_planar_overrideVec2_Parse(value, &dx, &dy)) {
         PyErr_SetString(PyExc_TypeError, "Expected Vec2 for vector");
         return -1;
     }
@@ -1130,34 +1130,34 @@ Segment_set_vector(PlanarLineObject *self, PyObject *value, void *closure)
     return 0;
 }
 
-static PlanarVec2Object *
-Segment_get_anchor(PlanarLineObject *self) {
-    return PlanarVec2_FromStruct(&self->anchor);
+static polypaths_planar_overrideVec2Object *
+Segment_get_anchor(polypaths_planar_overrideLineObject *self) {
+    return polypaths_planar_overrideVec2_FromStruct(&self->anchor);
 }
 
 static int
-Segment_set_anchor(PlanarLineObject *self, PyObject *value, void *closure)
+Segment_set_anchor(polypaths_planar_overrideLineObject *self, PyObject *value, void *closure)
 {
     if (value == NULL) {
         PyErr_SetString(PyExc_TypeError, "Cannot delete anchor attribute");
         return -1;
     }
-    if (!PlanarVec2_Parse(value, &self->anchor.x, &self->anchor.y)) {
+    if (!polypaths_planar_overrideVec2_Parse(value, &self->anchor.x, &self->anchor.y)) {
         PyErr_SetString(PyExc_TypeError, "Expected Vec2 for anchor");
         return -1;
     }
     return 0;
 }
 
-static PlanarVec2Object *
-Segment_get_end(PlanarLineObject *self) {
-    return PlanarVec2_FromDoubles(
+static polypaths_planar_overrideVec2Object *
+Segment_get_end(polypaths_planar_overrideLineObject *self) {
+    return polypaths_planar_overrideVec2_FromDoubles(
         self->anchor.x + -self->normal.y * self->length, 
         self->anchor.y + self->normal.x * self->length);
 }
 
 static int
-Segment_set_end(PlanarLineObject *self, PyObject *value, void *closure)
+Segment_set_end(polypaths_planar_overrideLineObject *self, PyObject *value, void *closure)
 {
     double ex, ey, dx, dy;
 
@@ -1165,7 +1165,7 @@ Segment_set_end(PlanarLineObject *self, PyObject *value, void *closure)
         PyErr_SetString(PyExc_TypeError, "Cannot delete end attribute");
         return -1;
     }
-    if (!PlanarVec2_Parse(value, &ex, &ey)) {
+    if (!polypaths_planar_overrideVec2_Parse(value, &ex, &ey)) {
         PyErr_SetString(PyExc_TypeError, "Expected Vec2 for end");
         return -1;
     }
@@ -1182,23 +1182,23 @@ Segment_set_end(PlanarLineObject *self, PyObject *value, void *closure)
     return 0;
 }
 
-static PlanarVec2Object *
-Segment_get_mid(PlanarLineObject *self) {
-    return PlanarVec2_FromDoubles(
+static polypaths_planar_overrideVec2Object *
+Segment_get_mid(polypaths_planar_overrideLineObject *self) {
+    return polypaths_planar_overrideVec2_FromDoubles(
         self->anchor.x + -self->normal.y * self->length * 0.5, 
         self->anchor.y + self->normal.x * self->length * 0.5);
 }
 
 static int
-Segment_init(PlanarLineObject *self, PyObject *args)
+Segment_init(polypaths_planar_overrideLineObject *self, PyObject *args)
 {
-    assert(PlanarSegment_Check(self));
+    assert(polypaths_planar_overrideSegment_Check(self));
     if (PyTuple_GET_SIZE(args) != 2) {
         PyErr_SetString(PyExc_TypeError, 
             "LineSegment: wrong number of arguments");
         return -1;
     }
-    if (!PlanarVec2_Parse(PyTuple_GET_ITEM(args, 0), 
+    if (!polypaths_planar_overrideVec2_Parse(PyTuple_GET_ITEM(args, 0), 
         &self->anchor.x, &self->anchor.y)) {
         return -1;
     }
@@ -1209,7 +1209,7 @@ Segment_init(PlanarLineObject *self, PyObject *args)
 }
 
 static PyObject *
-Segment_repr(PlanarLineObject *self)
+Segment_repr(polypaths_planar_overrideLineObject *self)
 {
     char buf[255];
 
@@ -1224,11 +1224,11 @@ Segment_repr(PlanarLineObject *self)
 static PyObject *
 Segment_compare(PyObject *a, PyObject *b, int op)
 {
-    PlanarLineObject *seg1, *seg2;
+    polypaths_planar_overrideLineObject *seg1, *seg2;
 
-	if (PlanarSegment_Check(a) && PlanarSegment_Check(b)) {
-        seg1 = (PlanarLineObject *)a;
-        seg2 = (PlanarLineObject *)b;
+	if (polypaths_planar_overrideSegment_Check(a) && polypaths_planar_overrideSegment_Check(b)) {
+        seg1 = (polypaths_planar_overrideLineObject *)a;
+        seg2 = (polypaths_planar_overrideLineObject *)b;
 		switch (op) {
 			case Py_EQ:
                 return Py_BOOL(
@@ -1262,10 +1262,10 @@ Segment_compare(PyObject *a, PyObject *b, int op)
 }
 
 static PyObject *
-Segment_almost_equals(PlanarLineObject *self, PlanarLineObject *other)
+Segment_almost_equals(polypaths_planar_overrideLineObject *self, polypaths_planar_overrideLineObject *other)
 {
     return Py_BOOL(
-        PlanarSegment_Check(self) && PlanarSegment_Check(other) &&
+        polypaths_planar_overrideSegment_Check(self) && polypaths_planar_overrideSegment_Check(other) &&
         almost_eq(self->length, other->length) &&
         almost_eq(self->normal.x, other->normal.x) &&
         almost_eq(self->normal.y, other->normal.y) &&
@@ -1273,11 +1273,11 @@ Segment_almost_equals(PlanarLineObject *self, PlanarLineObject *other)
         almost_eq(self->anchor.y, other->anchor.y));
 }
 
-static PlanarSeq2Object *
-Segment_get_points(PlanarLineObject *self) {
-    PlanarSeq2Object *seq;
+static polypaths_planar_overrideSeq2Object *
+Segment_get_points(polypaths_planar_overrideLineObject *self) {
+    polypaths_planar_overrideSeq2Object *seq;
 
-    seq = Seq2_New(&PlanarSeq2Type, 2);
+    seq = Seq2_New(&polypaths_planar_overrideSeq2Type, 2);
     if (seq != NULL) {
         seq->vec[0].x = self->anchor.x;
         seq->vec[0].y = self->anchor.y;
@@ -1311,26 +1311,26 @@ static PyGetSetDef Segment_getset[] = {
 };
 
 static PyMemberDef Segment_members[] = {
-    {"length", T_DOUBLE, offsetof(PlanarLineObject, length), 0,
+    {"length", T_DOUBLE, offsetof(polypaths_planar_overrideLineObject, length), 0,
         "The distance between the line segments endpoints."},
     {NULL}
 };
 
 /* Methods */
 
-static PlanarLineObject *
+static polypaths_planar_overrideLineObject *
 Segment_new_from_normal(PyTypeObject *type, PyObject *args)
 {
-    PlanarLineObject *line;
+    polypaths_planar_overrideLineObject *line;
     PyObject *normal_arg;
     double offset, start_dist, end_dist;
 
-    assert(PyType_IsSubtype(type, &PlanarSegmentType));
+    assert(PyType_IsSubtype(type, &polypaths_planar_overrideSegmentType));
     if (!PyArg_ParseTuple(args, "Oddd:LineSegment.from_normal", 
         &normal_arg, &offset, &start_dist, &end_dist)) {
         return NULL;
     }
-    line = (PlanarLineObject *)type->tp_alloc(type, 0);
+    line = (polypaths_planar_overrideLineObject *)type->tp_alloc(type, 0);
     if (line == NULL) {
         return NULL;
     }
@@ -1344,11 +1344,11 @@ Segment_new_from_normal(PyTypeObject *type, PyObject *args)
     return line;
 }
 
-static PlanarLineObject *
+static polypaths_planar_overrideLineObject *
 Segment_new_from_points(PyTypeObject *type, PyObject *points) 
 {
-    PlanarLineObject *line;
-    planar_vec2_t *vec;
+    polypaths_planar_overrideLineObject *line;
+    polypaths_planar_override_vec2_t *vec;
     Py_ssize_t size;
     int i;
     double furthest = 0.0;
@@ -1358,18 +1358,18 @@ Segment_new_from_points(PyTypeObject *type, PyObject *points)
     double sx = 0.0;
     double sy = 0.0;
 
-    assert(PyType_IsSubtype(type, &PlanarSegmentType));
-    line = (PlanarLineObject *)type->tp_alloc(type, 0);
+    assert(PyType_IsSubtype(type, &polypaths_planar_overrideSegmentType));
+    line = (polypaths_planar_overrideLineObject *)type->tp_alloc(type, 0);
     if (line == NULL) {
         return NULL;
     }
 
-    if (PlanarSeq2_Check(points)) {
+    if (polypaths_planar_overrideSeq2_Check(points)) {
         /* Optimized code path for Seq2 objects */
         if (Py_SIZE(points) == 0) {
             goto tooShort;
         }
-        vec = ((PlanarSeq2Object *)points)->vec;
+        vec = ((polypaths_planar_overrideSeq2Object *)points)->vec;
         x = vec[0].x;
         y = vec[0].y;
         for (i = 1; i < Py_SIZE(points); ++i) {
@@ -1395,12 +1395,12 @@ Segment_new_from_points(PyTypeObject *type, PyObject *points)
             Py_DECREF(points);
             goto tooShort;
         }
-        if (!PlanarVec2_Parse(PySequence_Fast_GET_ITEM(points, 0), &x, &y)) {
+        if (!polypaths_planar_overrideVec2_Parse(PySequence_Fast_GET_ITEM(points, 0), &x, &y)) {
             Py_DECREF(points);
             goto wrongType;
         }
         for (i = 1; i < size; ++i) {
-            if (!PlanarVec2_Parse(
+            if (!polypaths_planar_overrideVec2_Parse(
                 PySequence_Fast_GET_ITEM(points, i), &dx, &dy)) {
                 Py_DECREF(points);
                 goto wrongType;
@@ -1449,12 +1449,12 @@ notCollinear:
 }
 
 static PyObject *
-Segment_distance_to(PlanarLineObject *self, PyObject *pt)
+Segment_distance_to(polypaths_planar_overrideLineObject *self, PyObject *pt)
 {
     double px, py, dx, dy, along;
 
-    assert(PlanarSegment_Check(self));
-    if (!PlanarVec2_Parse(pt, &px, &py)) {
+    assert(polypaths_planar_overrideSegment_Check(self));
+    if (!polypaths_planar_overrideVec2_Parse(pt, &px, &py)) {
         return NULL;
     }
     dx = px - self->anchor.x;
@@ -1476,76 +1476,76 @@ Segment_distance_to(PlanarLineObject *self, PyObject *pt)
 }
 
 static PyObject *
-Segment_point_ahead(PlanarLineObject *self, PyObject *pt)
+Segment_point_ahead(polypaths_planar_overrideLineObject *self, PyObject *pt)
 {
     double px, py, d;
 
-    assert(PlanarSegment_Check(self));
-    if (!PlanarVec2_Parse(pt, &px, &py)) {
+    assert(polypaths_planar_overrideSegment_Check(self));
+    if (!polypaths_planar_overrideVec2_Parse(pt, &px, &py)) {
         return NULL;
     }
     px -= self->anchor.x;
     py -= self->anchor.y;
     d = px * -self->normal.y + py * self->normal.x;
-    return Py_BOOL(d >= self->length + PLANAR_EPSILON);
+    return Py_BOOL(d >= self->length + polypaths_planar_override_EPSILON);
 }
 
 static PyObject *
-Segment_point_behind(PlanarLineObject *self, PyObject *pt)
+Segment_point_behind(polypaths_planar_overrideLineObject *self, PyObject *pt)
 {
     double px, py, d;
 
-    assert(PlanarSegment_Check(self));
-    if (!PlanarVec2_Parse(pt, &px, &py)) {
+    assert(polypaths_planar_overrideSegment_Check(self));
+    if (!polypaths_planar_overrideVec2_Parse(pt, &px, &py)) {
         return NULL;
     }
     px -= self->anchor.x;
     py -= self->anchor.y;
     d = px * -self->normal.y + py * self->normal.x;
-    return Py_BOOL(d <= -PLANAR_EPSILON);
+    return Py_BOOL(d <= -polypaths_planar_override_EPSILON);
 }
 
 static PyObject *
-Segment_point_left(PlanarLineObject *self, PyObject *pt)
+Segment_point_left(polypaths_planar_overrideLineObject *self, PyObject *pt)
 {
     double px, py, b, d;
 
-    assert(PlanarSegment_Check(self));
-    if (!PlanarVec2_Parse(pt, &px, &py)) {
+    assert(polypaths_planar_overrideSegment_Check(self));
+    if (!polypaths_planar_overrideVec2_Parse(pt, &px, &py)) {
         return NULL;
     }
     px -= self->anchor.x;
     py -= self->anchor.y;
     b = px * -self->normal.y + py * self->normal.x;
     d = self->normal.x * px + self->normal.y * py;
-    return Py_BOOL((b > -PLANAR_EPSILON) & (b < self->length + PLANAR_EPSILON)
-        & (d <= -PLANAR_EPSILON));
+    return Py_BOOL((b > -polypaths_planar_override_EPSILON) & (b < self->length + polypaths_planar_override_EPSILON)
+        & (d <= -polypaths_planar_override_EPSILON));
 }
 
 static PyObject *
-Segment_point_right(PlanarLineObject *self, PyObject *pt)
+Segment_point_right(polypaths_planar_overrideLineObject *self, PyObject *pt)
 {
     double px, py, b, d;
 
-    assert(PlanarSegment_Check(self));
-    if (!PlanarVec2_Parse(pt, &px, &py)) {
+    assert(polypaths_planar_overrideSegment_Check(self));
+    if (!polypaths_planar_overrideVec2_Parse(pt, &px, &py)) {
         return NULL;
     }
     px -= self->anchor.x;
     py -= self->anchor.y;
     b = px * -self->normal.y + py * self->normal.x;
     d = self->normal.x * px + self->normal.y * py;
-    return Py_BOOL((b > -PLANAR_EPSILON) & (b < self->length + PLANAR_EPSILON) 
-        & (d >= PLANAR_EPSILON));
+    return Py_BOOL((b > -polypaths_planar_override_EPSILON) & (b < self->length + polypaths_planar_override_EPSILON) 
+        & (d >= polypaths_planar_override_EPSILON));
 }
 
 static PyObject *
-Segment_contains_point(PlanarLineObject *self, PyObject *pt)
+Segment_contains_point(polypaths_planar_overrideLineObject *self, PyObject *pt)
 {
     double px, py, d;
 
-    assert(PlanarSegment_Check(self));
-    if (!PlanarVec2_Parse(pt, &px, &py)) {
+    assert(polypaths_planar_overrideSegment_Check(self));
+    if (!polypaths_planar_overrideVec2_Parse(pt, &px, &py)) {
         return NULL;
     }
     px -= self->anchor.x;
@@ -1555,17 +1555,17 @@ Segment_contains_point(PlanarLineObject *self, PyObject *pt)
     } else {
         d = sqrt(px*px + py*py);
     }
-    return Py_BOOL((d < PLANAR_EPSILON) & (d > -PLANAR_EPSILON));
+    return Py_BOOL((d < polypaths_planar_override_EPSILON) & (d > -polypaths_planar_override_EPSILON));
 
 }
 
-static PlanarVec2Object *
-Segment_project(PlanarLineObject *self, PyObject *pt)
+static polypaths_planar_overrideVec2Object *
+Segment_project(polypaths_planar_overrideLineObject *self, PyObject *pt)
 {
     double px, py, along;
 
-    assert(PlanarSegment_Check(self));
-    if (!PlanarVec2_Parse(pt, &px, &py)) {
+    assert(polypaths_planar_overrideSegment_Check(self));
+    if (!polypaths_planar_overrideVec2_Parse(pt, &px, &py)) {
         return NULL;
     }
     px -= self->anchor.x;
@@ -1573,15 +1573,15 @@ Segment_project(PlanarLineObject *self, PyObject *pt)
     along = px * -self->normal.y + py * self->normal.x;
     if (along < 0.0) {
         /* point behind */
-        return PlanarVec2_FromStruct(&self->anchor);
+        return polypaths_planar_overrideVec2_FromStruct(&self->anchor);
     } else if (along > self->length) {
         /* point ahead */
-        return PlanarVec2_FromDoubles(
+        return polypaths_planar_overrideVec2_FromDoubles(
             self->anchor.x + -self->normal.y * self->length,
             self->anchor.y + self->normal.x * self->length);
     } else {
         /* point beside */
-        return PlanarVec2_FromDoubles(
+        return polypaths_planar_overrideVec2_FromDoubles(
             self->anchor.x + -self->normal.y * along,
             self->anchor.y + self->normal.x * along);
     }
@@ -1627,10 +1627,10 @@ static PyMethodDef Segment_methods[] = {
 /* Arithmetic Operations */
 
 static void
-Segment_transform(PlanarLineObject *src_line, 
-    PlanarLineObject *dst_line, PlanarAffineObject *t)
+Segment_transform(polypaths_planar_overrideLineObject *src_line, 
+    polypaths_planar_overrideLineObject *dst_line, polypaths_planar_overrideAffineObject *t)
 {
-    planar_vec2_t p1, p2, t1, t2;
+    polypaths_planar_override_vec2_t p1, p2, t1, t2;
     double ta, tb, tc, td, te, tf, dx, dy, L;
     ta = t->a;
     tb = t->b;
@@ -1650,7 +1650,7 @@ Segment_transform(PlanarLineObject *src_line,
     dx = t2.x - t1.x;
     dy = t2.y - t1.y;
     L = sqrt(dx*dx + dy*dy);
-    if (L < PLANAR_EPSILON) {
+    if (L < polypaths_planar_override_EPSILON) {
         PyErr_SetString(PyExc_ValueError, 
             "Segment direction vector must not be null");
     }
@@ -1666,15 +1666,15 @@ Segment_transform(PlanarLineObject *src_line,
 static PyObject *
 Segment__imul__(PyObject *a, PyObject *b)
 {
-    PlanarLineObject *line;
-    PlanarAffineObject *t;
+    polypaths_planar_overrideLineObject *line;
+    polypaths_planar_overrideAffineObject *t;
 
-    if (PlanarSegment_Check(a) && PlanarAffine_Check(b)) {
-		line = (PlanarLineObject *)a;
-		t = (PlanarAffineObject *)b;
-    } else if (PlanarSegment_Check(b) && PlanarAffine_Check(a)) {
-		line = (PlanarLineObject *)b;
-		t = (PlanarAffineObject *)a;
+    if (polypaths_planar_overrideSegment_Check(a) && polypaths_planar_overrideAffine_Check(b)) {
+		line = (polypaths_planar_overrideLineObject *)a;
+		t = (polypaths_planar_overrideAffineObject *)b;
+    } else if (polypaths_planar_overrideSegment_Check(b) && polypaths_planar_overrideAffine_Check(a)) {
+		line = (polypaths_planar_overrideLineObject *)b;
+		t = (polypaths_planar_overrideAffineObject *)a;
     } else {
 		/* We support only transform operations */
 		RETURN_NOT_IMPLEMENTED;
@@ -1688,21 +1688,21 @@ Segment__imul__(PyObject *a, PyObject *b)
 static PyObject *
 Segment__mul__(PyObject *a, PyObject *b)
 {
-    PlanarLineObject *src_line, *dst_line;
-    PlanarAffineObject *t;
+    polypaths_planar_overrideLineObject *src_line, *dst_line;
+    polypaths_planar_overrideAffineObject *t;
 
-    if (PlanarSegment_Check(a) && PlanarAffine_Check(b)) {
-		src_line = (PlanarLineObject *)a;
-		t = (PlanarAffineObject *)b;
-    } else if (PlanarSegment_Check(b) && PlanarAffine_Check(a)) {
-		src_line = (PlanarLineObject *)b;
-		t = (PlanarAffineObject *)a;
+    if (polypaths_planar_overrideSegment_Check(a) && polypaths_planar_overrideAffine_Check(b)) {
+		src_line = (polypaths_planar_overrideLineObject *)a;
+		t = (polypaths_planar_overrideAffineObject *)b;
+    } else if (polypaths_planar_overrideSegment_Check(b) && polypaths_planar_overrideAffine_Check(a)) {
+		src_line = (polypaths_planar_overrideLineObject *)b;
+		t = (polypaths_planar_overrideAffineObject *)a;
     } else {
 		/* We support only transform operations */
 		RETURN_NOT_IMPLEMENTED;
     }
 
-    dst_line = (PlanarLineObject *)Py_TYPE(src_line)->tp_alloc(
+    dst_line = (polypaths_planar_overrideLineObject *)Py_TYPE(src_line)->tp_alloc(
         Py_TYPE(src_line), 0);
     if (dst_line != NULL) {
         Segment_transform(src_line, dst_line, t);
@@ -1768,10 +1768,10 @@ PyDoc_STRVAR(Segment_doc,
     "LineSegment(anchor, vector)"
 );
 
-PyTypeObject PlanarSegmentType = {
+PyTypeObject polypaths_planar_overrideSegmentType = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    "planar.LineSegment",     /* tp_name */
-    sizeof(PlanarLineObject), /* tp_basicsize */
+    "polypaths_planar_override.LineSegment",     /* tp_name */
+    sizeof(polypaths_planar_overrideLineObject), /* tp_basicsize */
     0,                    /* tp_itemsize */
     0,                    /* tp_dealloc */
     0,                    /* tp_print */

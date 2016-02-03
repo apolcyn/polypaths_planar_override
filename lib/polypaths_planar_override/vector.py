@@ -31,8 +31,8 @@
 from __future__ import division
 
 import math
-import planar
-from planar.util import cached_property, assert_unorderable, cos_sin_deg
+import polypaths_planar_override
+from polypaths_planar_override.util import cached_property, assert_unorderable, cos_sin_deg
 
 
 class Vec2(tuple):
@@ -97,7 +97,7 @@ class Vec2(tuple):
         
         :return: True if the vector length < EPSILON.
         """
-        return self.length2 < planar.EPSILON2
+        return self.length2 < polypaths_planar_override.EPSILON2
 
     def __nonzero__(self):
         """A vector is True if it is not the null vector."""
@@ -113,7 +113,7 @@ class Vec2(tuple):
         ox, oy = other
         dx = self[0] - ox
         dy = self[1] - oy
-        return (dx*dx + dy*dy) < planar.EPSILON2
+        return (dx*dx + dy*dy) < polypaths_planar_override.EPSILON2
 
     def normalized(self):
         """Return the vector scaled to unit length. If the vector
@@ -122,7 +122,7 @@ class Vec2(tuple):
         :rtype: Vec2
         """
         L = self.length
-        if L > planar.EPSILON:
+        if L > polypaths_planar_override.EPSILON:
             v = tuple.__new__(Vec2, (self[0] / L, self[1] / L))
             v.__dict__['length'] = v.__dict__['length2'] = 1.0
             return v
@@ -205,7 +205,7 @@ class Vec2(tuple):
         :rtype: Vec2
         """
         L = self.length
-        if L > planar.EPSILON:
+        if L > polypaths_planar_override.EPSILON:
             vx, vy = self
             s = length / L
             v = tuple.__new__(Vec2, (vx * s, vy * s))
@@ -222,7 +222,7 @@ class Vec2(tuple):
         :rtype: Vec2
         """
         L = self.length2
-        if L > planar.EPSILON2:
+        if L > polypaths_planar_override.EPSILON2:
             s = self.dot(other) / L
             return tuple.__new__(Vec2, (self[0] * s, self[1] * s))
         else:
@@ -238,7 +238,7 @@ class Vec2(tuple):
         x1, y1 = self
         x2, y2 = other
         L = (x2 * x2 + y2 * y2)
-        if L > planar.EPSILON2:
+        if L > polypaths_planar_override.EPSILON2:
             temp = 2 * (x1 * x2 + y1 * y2) / L
             return tuple.__new__(Vec2, (x2 * temp - x1, y2 * temp - y1))
         else:
@@ -473,7 +473,7 @@ null = Vec2(0, 0)
 class Seq2(object):
     """Fixed length 2D point/vector sequence
     
-    :param vectors: A sequence of :class:`~planar.Vec2` objects.
+    :param vectors: A sequence of :class:`~polypaths_planar_override.Vec2` objects.
     """
 
     def __init__(self, vectors):

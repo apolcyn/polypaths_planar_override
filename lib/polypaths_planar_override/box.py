@@ -29,8 +29,8 @@
 from __future__ import division
 
 import math
-import planar
-from planar.util import cached_property
+import polypaths_planar_override
+from polypaths_planar_override.util import cached_property
 
 
 class BoundingBox(object):
@@ -38,7 +38,7 @@ class BoundingBox(object):
     by two points that define the minimum and maximum
     corners.
 
-    :param points: Iterable containing one or more :class:`~planar.Vec2` 
+    :param points: Iterable containing one or more :class:`~polypaths_planar_override.Vec2` 
         objects.
     """
 
@@ -60,8 +60,8 @@ class BoundingBox(object):
                 min_y = y * 1.0
             elif y > max_y:
                 max_y = y * 1.0
-        self._min = planar.Vec2(min_x, min_y)
-        self._max = planar.Vec2(max_x, max_y)
+        self._min = polypaths_planar_override.Vec2(min_x, min_y)
+        self._max = polypaths_planar_override.Vec2(max_x, max_y)
     
     @property
     def bounding_box(self):
@@ -139,8 +139,8 @@ class BoundingBox(object):
             if y > max_y:
                 max_y = y
         box = object.__new__(cls)
-        box._min = planar.Vec2(min_x, min_y)
-        box._max = planar.Vec2(max_x, max_y)
+        box._min = polypaths_planar_override.Vec2(min_x, min_y)
+        box._max = polypaths_planar_override.Vec2(max_x, max_y)
         return box
     
     @classmethod
@@ -148,7 +148,7 @@ class BoundingBox(object):
         """Create a bounding box centered at a particular point.
 
         :param center: Center point
-        :type center: :class:`~planar.Vec2`
+        :type center: :class:`~polypaths_planar_override.Vec2`
         :param width: Box width.
         :type width: float
         :param height: Box height.
@@ -172,20 +172,20 @@ class BoundingBox(object):
             both the width and height equally. A vector
             will change the width and height independently.
             Negative values reduce the size accordingly.
-        :type amount: float or :class:`~planar.Vec2`
+        :type amount: float or :class:`~polypaths_planar_override.Vec2`
         """
         try:
             dx, dy = amount
         except (TypeError, ValueError):
             dx = dy = amount * 1.0
-        dv = planar.Vec2(dx, dy) / 2.0
+        dv = polypaths_planar_override.Vec2(dx, dy) / 2.0
         return self.from_points((self._min - dv, self._max + dv))
     
     def contains_point(self, point):
         """Return True if the box contains the specified point.
 
         :param other: A point vector
-        :type other: :class:`~planar.Vec2`
+        :type other: :class:`~polypaths_planar_override.Vec2`
         :rtype: bool
         """
         x, y = point
@@ -205,18 +205,18 @@ class BoundingBox(object):
                 self.center, shape.width * scale, shape.height * scale)
         else:
             shape_bbox = shape.bounding_box
-            offset = planar.Affine.translation(self.center - shape_bbox.center)
-            scale = planar.Affine.scale(min(self.width / shape_bbox.width,
+            offset = polypaths_planar_override.Affine.translation(self.center - shape_bbox.center)
+            scale = polypaths_planar_override.Affine.scale(min(self.width / shape_bbox.width,
                 self.height / shape_bbox.height))
             return shape * (offset * scale)
 
     def to_polygon(self):
-        """Return a rectangular :class:`~planar.Polygon` object with the same
+        """Return a rectangular :class:`~polypaths_planar_override.Polygon` object with the same
         vertices as the bounding box.
 
-        :rtype: :class:`~planar.Polygon`
+        :rtype: :class:`~polypaths_planar_override.Polygon`
         """
-        return planar.Polygon([
+        return polypaths_planar_override.Polygon([
             self._min, (self._min.x, self._max.y), 
             self._max, (self._max.x, self._min.y)],
             is_convex=True)

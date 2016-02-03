@@ -9,10 +9,10 @@
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 ****************************************************************************/
 #include "Python.h"
-#include "planar.h"
+#include "polypaths_planar_override.h"
 
-double PLANAR_EPSILON = 1e-5;
-double PLANAR_EPSILON2 = 1e-5 * 1e-5;
+double polypaths_planar_override_EPSILON = 1e-5;
+double polypaths_planar_override_EPSILON2 = 1e-5 * 1e-5;
 
 static PyObject *
 _set_epsilon_func(PyObject *self, PyObject *epsilon)
@@ -22,14 +22,14 @@ _set_epsilon_func(PyObject *self, PyObject *epsilon)
         return NULL;
     }
 
-    PLANAR_EPSILON = PyFloat_AS_DOUBLE(epsilon);
-    PLANAR_EPSILON2 = PLANAR_EPSILON * PLANAR_EPSILON;
+    polypaths_planar_override_EPSILON = PyFloat_AS_DOUBLE(epsilon);
+    polypaths_planar_override_EPSILON2 = polypaths_planar_override_EPSILON * polypaths_planar_override_EPSILON;
     Py_DECREF(epsilon);
     Py_INCREF(Py_None);
     return Py_None;
 }
 
-PyObject *PlanarTransformNotInvertibleError;
+PyObject *polypaths_planar_overrideTransformNotInvertibleError;
 
 static PyMethodDef module_functions[] = {
     {"_set_epsilon", (PyCFunction) _set_epsilon_func, METH_O,
@@ -37,7 +37,7 @@ static PyMethodDef module_functions[] = {
     {NULL}
 };
 
-PyDoc_STRVAR(module_doc, "Planar native code classes");
+PyDoc_STRVAR(module_doc, "polypaths_planar_override native code classes");
 
 #define INIT_TYPE(type, name) {                                         \
     if ((type).tp_new == 0) {                                           \
@@ -82,37 +82,37 @@ initc(void)
 #else
     PyObject *module = Py_InitModule3("c", module_functions, module_doc);
 #endif
-    Py_INCREF((PyObject *)&PlanarVec2Type);
-    Py_INCREF((PyObject *)&PlanarSeq2Type);
-    Py_INCREF((PyObject *)&PlanarVec2ArrayType);
-    Py_INCREF((PyObject *)&PlanarAffineType);
-    Py_INCREF((PyObject *)&PlanarBBoxType);
-    Py_INCREF((PyObject *)&PlanarLineType);
-    Py_INCREF((PyObject *)&PlanarRayType);
-    Py_INCREF((PyObject *)&PlanarSegmentType);
-    Py_INCREF((PyObject *)&PlanarPolygonType);
+    Py_INCREF((PyObject *)&polypaths_planar_overrideVec2Type);
+    Py_INCREF((PyObject *)&polypaths_planar_overrideSeq2Type);
+    Py_INCREF((PyObject *)&polypaths_planar_overrideVec2ArrayType);
+    Py_INCREF((PyObject *)&polypaths_planar_overrideAffineType);
+    Py_INCREF((PyObject *)&polypaths_planar_overrideBBoxType);
+    Py_INCREF((PyObject *)&polypaths_planar_overrideLineType);
+    Py_INCREF((PyObject *)&polypaths_planar_overrideRayType);
+    Py_INCREF((PyObject *)&polypaths_planar_overrideSegmentType);
+    Py_INCREF((PyObject *)&polypaths_planar_overridePolygonType);
 
-    INIT_TYPE(PlanarVec2Type, "Vec2");
-    INIT_TYPE(PlanarSeq2Type, "Seq2");
-    INIT_TYPE(PlanarVec2ArrayType, "Vec2Array");
+    INIT_TYPE(polypaths_planar_overrideVec2Type, "Vec2");
+    INIT_TYPE(polypaths_planar_overrideSeq2Type, "Seq2");
+    INIT_TYPE(polypaths_planar_overrideVec2ArrayType, "Vec2Array");
 	/* Override inheritance of tp_itemsize, ugly */
-	PlanarVec2ArrayType.tp_itemsize = 0;
-    INIT_TYPE(PlanarAffineType, "Affine");
-    INIT_TYPE(PlanarBBoxType, "BoundingBox");
-    INIT_TYPE(PlanarLineType, "Line");
-    INIT_TYPE(PlanarRayType, "Ray");
-    INIT_TYPE(PlanarSegmentType, "LineSegment");
-    INIT_TYPE(PlanarPolygonType, "Polygon");
+	polypaths_planar_overrideVec2ArrayType.tp_itemsize = 0;
+    INIT_TYPE(polypaths_planar_overrideAffineType, "Affine");
+    INIT_TYPE(polypaths_planar_overrideBBoxType, "BoundingBox");
+    INIT_TYPE(polypaths_planar_overrideLineType, "Line");
+    INIT_TYPE(polypaths_planar_overrideRayType, "Ray");
+    INIT_TYPE(polypaths_planar_overrideSegmentType, "LineSegment");
+    INIT_TYPE(polypaths_planar_overridePolygonType, "Polygon");
 
-	PlanarTransformNotInvertibleError = PyErr_NewException(
-		"planar.TransformNotInvertibleError", NULL, NULL);
-	if (PlanarTransformNotInvertibleError == NULL) {
+	polypaths_planar_overrideTransformNotInvertibleError = PyErr_NewException(
+		"polypaths_planar_override.TransformNotInvertibleError", NULL, NULL);
+	if (polypaths_planar_overrideTransformNotInvertibleError == NULL) {
 		goto fail;
 	}
     if (PyModule_AddObject(
         module, "TransformNotInvertibleError", 
-		PlanarTransformNotInvertibleError) < 0) {
-        Py_DECREF(PlanarTransformNotInvertibleError);
+		polypaths_planar_overrideTransformNotInvertibleError) < 0) {
+        Py_DECREF(polypaths_planar_overrideTransformNotInvertibleError);
         goto fail;
     }
 #if PY_MAJOR_VERSION >= 3
@@ -121,15 +121,15 @@ initc(void)
     return;
 #endif
 fail:
-    Py_DECREF((PyObject *)&PlanarVec2Type);
-    Py_DECREF((PyObject *)&PlanarSeq2Type);
-    Py_DECREF((PyObject *)&PlanarVec2ArrayType);
-    Py_DECREF((PyObject *)&PlanarAffineType);
-    Py_DECREF((PyObject *)&PlanarBBoxType);
-    Py_DECREF((PyObject *)&PlanarLineType);
-    Py_DECREF((PyObject *)&PlanarRayType);
-    Py_DECREF((PyObject *)&PlanarSegmentType);
-    Py_DECREF((PyObject *)&PlanarPolygonType);
+    Py_DECREF((PyObject *)&polypaths_planar_overrideVec2Type);
+    Py_DECREF((PyObject *)&polypaths_planar_overrideSeq2Type);
+    Py_DECREF((PyObject *)&polypaths_planar_overrideVec2ArrayType);
+    Py_DECREF((PyObject *)&polypaths_planar_overrideAffineType);
+    Py_DECREF((PyObject *)&polypaths_planar_overrideBBoxType);
+    Py_DECREF((PyObject *)&polypaths_planar_overrideLineType);
+    Py_DECREF((PyObject *)&polypaths_planar_overrideRayType);
+    Py_DECREF((PyObject *)&polypaths_planar_overrideSegmentType);
+    Py_DECREF((PyObject *)&polypaths_planar_overridePolygonType);
     Py_DECREF(module);
     INITERROR;
 }

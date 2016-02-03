@@ -27,7 +27,7 @@
 #############################################################################
 
 from __future__ import division
-import planar
+import polypaths_planar_override
 import math
 
 
@@ -44,7 +44,7 @@ class _LinearGeometry(object):
     
     @direction.setter
     def direction(self, value):
-        direction = planar.Vec2(*value).normalized()
+        direction = polypaths_planar_override.Vec2(*value).normalized()
         if direction.is_null:
             raise ValueError("Line direction vector must not be null")
         self._direction = direction
@@ -61,7 +61,7 @@ class _LinearGeometry(object):
 
     @normal.setter
     def normal(self, value):
-        normal = planar.Vec2(*value).normalized()
+        normal = polypaths_planar_override.Vec2(*value).normalized()
         if normal.is_null:
             raise ValueError("Line normal vector must not be null")
         self._normal = normal
@@ -79,7 +79,7 @@ class Line(_LinearGeometry):
     """
     def __init__(self, point, direction):
         self.direction = direction
-        self.offset = planar.Vec2(*point).dot(self.normal)
+        self.offset = polypaths_planar_override.Vec2(*point).dot(self.normal)
     
     @classmethod
     def from_points(cls, points):
@@ -91,9 +91,9 @@ class Line(_LinearGeometry):
         """
         points = iter(points)
         try:
-            start = end = planar.Vec2(*points.next())
+            start = end = polypaths_planar_override.Vec2(*points.next())
             while end == start:
-                end = planar.Vec2(*points.next())
+                end = polypaths_planar_override.Vec2(*points.next())
         except StopIteration:
             raise ValueError("Expected iterable of 2 or more distinct points")
         line = _LinearGeometry.__new__(cls)
@@ -141,24 +141,24 @@ class Line(_LinearGeometry):
         :param point: The point to measure the distance to.
         :type point: Vec2
         """
-        point = planar.Vec2(*point)
+        point = polypaths_planar_override.Vec2(*point)
         return point.dot(self._normal) - self.offset
     
     def point_left(self, point):
         """Return True if the specified point is in the half plane
         to the left of the line.
         """
-        return self.distance_to(point) <= -planar.EPSILON
+        return self.distance_to(point) <= -polypaths_planar_override.EPSILON
     
     def point_right(self, point):
         """Return True if the specified point is in the half plane
         to the right of the line.
         """
-        return self.distance_to(point) >= planar.EPSILON
+        return self.distance_to(point) >= polypaths_planar_override.EPSILON
     
     def contains_point(self, point):
         """Return True if the specified point is on the line."""
-        return abs(self.distance_to(point)) < planar.EPSILON
+        return abs(self.distance_to(point)) < polypaths_planar_override.EPSILON
     
     def parallel(self, point):
         """Return a line parallel to this one that passes through the 
@@ -172,7 +172,7 @@ class Line(_LinearGeometry):
     def perpendicular(self, point):
         """Return a line perpendicular to this one that passes through the
         given point. The orientation of this line is consistent with
-        :meth:`planar.Vec2.perpendicular`.
+        :meth:`polypaths_planar_override.Vec2.perpendicular`.
 
         :param point: A point on the perpendicular line.
         :type point: Vec2
@@ -195,7 +195,7 @@ class Line(_LinearGeometry):
         :param point: The point to reflect.
         :type point: Vec2
         """
-        point = planar.Vec2(*point)
+        point = polypaths_planar_override.Vec2(*point)
         offset_distance = point.dot(self._normal) - self.offset
         return point - 2.0 * self._normal * offset_distance
 
@@ -222,7 +222,7 @@ class Line(_LinearGeometry):
         another line, within precision limits.
         """
         return (self.__class__ is other.__class__
-            and abs(self.offset - other.offset) < planar.EPSILON
+            and abs(self.offset - other.offset) < polypaths_planar_override.EPSILON
             and self.direction.almost_equals(other.direction))
 
     def __str__(self):
@@ -246,7 +246,7 @@ class Ray(_LinearGeometry):
     :type direction: Vec2
     """
     def __init__(self, anchor, direction):
-        self.anchor = planar.Vec2(*anchor)
+        self.anchor = polypaths_planar_override.Vec2(*anchor)
         self.direction = direction
 
     @classmethod
@@ -260,9 +260,9 @@ class Ray(_LinearGeometry):
         """
         points = iter(points)
         try:
-            start = end = planar.Vec2(*points.next())
+            start = end = polypaths_planar_override.Vec2(*points.next())
             while end == start:
-                end = planar.Vec2(*points.next())
+                end = polypaths_planar_override.Vec2(*points.next())
         except StopIteration:
             raise ValueError("Expected iterable of 2 or more distinct points")
         ray = _LinearGeometry.__new__(cls)
@@ -288,7 +288,7 @@ class Ray(_LinearGeometry):
 
     @anchor.setter
     def anchor(self, value):
-        self._anchor = planar.Vec2(*value)
+        self._anchor = polypaths_planar_override.Vec2(*value)
 
     start = anchor
     """The starting point of the ray. Alias for ``anchor``"""
@@ -300,7 +300,7 @@ class Ray(_LinearGeometry):
 
     def distance_to(self, point):
         """Return the distance between the given point and the ray."""
-        to_point = planar.Vec2(*point) - self._anchor
+        to_point = polypaths_planar_override.Vec2(*point) - self._anchor
         if self.direction.dot(to_point) >= 0.0:
             # Point "beside" ray
             return abs(to_point.dot(self._normal))
@@ -310,7 +310,7 @@ class Ray(_LinearGeometry):
 
     def contains_point(self, point):
         """Return True if the specified point is on the ray."""
-        return self.distance_to(point) < planar.EPSILON
+        return self.distance_to(point) < polypaths_planar_override.EPSILON
 
     def point_behind(self, point):
         """Return True if the specified point is behind the anchor point with
@@ -318,24 +318,24 @@ class Ray(_LinearGeometry):
         between the ray direction and the vector pointing from the ray's
         anchor to the given point is greater than 90 degrees.
         """
-        to_point = planar.Vec2(*point) - self._anchor
-        return self.direction.dot(to_point) <= -planar.EPSILON
+        to_point = polypaths_planar_override.Vec2(*point) - self._anchor
+        return self.direction.dot(to_point) <= -polypaths_planar_override.EPSILON
 
     def point_left(self, point):
         """Return True if the specified point is in the space
         to the left of, but not behind the ray.
         """
-        to_point = planar.Vec2(*point) - self._anchor
-        return (self._direction.dot(to_point) > -planar.EPSILON
-            and self._normal.dot(to_point) <= -planar.EPSILON)
+        to_point = polypaths_planar_override.Vec2(*point) - self._anchor
+        return (self._direction.dot(to_point) > -polypaths_planar_override.EPSILON
+            and self._normal.dot(to_point) <= -polypaths_planar_override.EPSILON)
     
     def point_right(self, point):
         """Return True if the specified point is in the space
         to the right of, but not behind the ray.
         """
-        to_point = planar.Vec2(*point) - self._anchor
-        return (self._direction.dot(to_point) > -planar.EPSILON
-            and self._normal.dot(to_point) >= planar.EPSILON)
+        to_point = polypaths_planar_override.Vec2(*point) - self._anchor
+        return (self._direction.dot(to_point) > -polypaths_planar_override.EPSILON
+            and self._normal.dot(to_point) >= polypaths_planar_override.EPSILON)
 
     def project(self, point):
         """Compute the projection of a point onto the ray. This
@@ -344,9 +344,9 @@ class Ray(_LinearGeometry):
         :param point: The point to project.
         :type point: Vec2
         """
-        to_point = planar.Vec2(*point) - self._anchor
+        to_point = polypaths_planar_override.Vec2(*point) - self._anchor
         parallel = self.direction.project(to_point)
-        if parallel.dot(self.direction) > -planar.EPSILON:
+        if parallel.dot(self.direction) > -polypaths_planar_override.EPSILON:
             # Point "beside" ray
             return parallel + self._anchor
         else:
@@ -401,7 +401,7 @@ class LineSegment(_LinearGeometry):
     """
     def __init__(self, anchor, vector):
         self.vector = vector
-        self._anchor = planar.Vec2(*anchor)
+        self._anchor = polypaths_planar_override.Vec2(*anchor)
 
     @classmethod
     def from_points(cls, points):
@@ -414,13 +414,13 @@ class LineSegment(_LinearGeometry):
         """
         points = iter(points)
         try:
-            start = end = planar.Vec2(*points.next())
+            start = end = polypaths_planar_override.Vec2(*points.next())
         except StopIteration:
             raise ValueError("Expected iterable of 1 or more points")
         furthest = 0.0
         pt_vectors = []
         for p in points:
-            p = planar.Vec2(*p)
+            p = polypaths_planar_override.Vec2(*p)
             dist = (p - start).length2
             if dist > furthest:
                 furthest = dist
@@ -483,7 +483,7 @@ class LineSegment(_LinearGeometry):
 
     @anchor.setter
     def anchor(self, value):
-        self._anchor = planar.Vec2(*value)
+        self._anchor = polypaths_planar_override.Vec2(*value)
 
     start = anchor
     """The starting point of the line segment. Alias for ``anchor``"""
@@ -497,7 +497,7 @@ class LineSegment(_LinearGeometry):
  
     @vector.setter
     def vector(self, value):
-        vector = planar.Vec2(*value)
+        vector = polypaths_planar_override.Vec2(*value)
         length = vector.length
         if length:
             self.direction = vector
@@ -512,7 +512,7 @@ class LineSegment(_LinearGeometry):
 
     @end.setter
     def end(self, value):
-        end = planar.Vec2(*value)
+        end = polypaths_planar_override.Vec2(*value)
         self.vector = end - self._anchor
 
     @property
@@ -527,7 +527,7 @@ class LineSegment(_LinearGeometry):
 
     def distance_to(self, point):
         """Return the distance between the given point and the line segment."""
-        point = planar.Vec2(*point)
+        point = polypaths_planar_override.Vec2(*point)
         to_point = point - self._anchor
         along = self.direction.dot(to_point)
         if along < 0.0:
@@ -542,39 +542,39 @@ class LineSegment(_LinearGeometry):
 
     def contains_point(self, point):
         """Return True if the specified point is on the line segment."""
-        return self.distance_to(point) < planar.EPSILON
+        return self.distance_to(point) < polypaths_planar_override.EPSILON
 
     def point_ahead(self, point):
         """Return True if the specified point is ahead of the endpoint
         of the line segment with respect to its direction.
         """
-        to_point = planar.Vec2(*point) - self._anchor
-        return self.direction.dot(to_point) >= self.length + planar.EPSILON
+        to_point = polypaths_planar_override.Vec2(*point) - self._anchor
+        return self.direction.dot(to_point) >= self.length + polypaths_planar_override.EPSILON
 
     def point_behind(self, point):
         """Return True if the specified point is behind the anchor point with
         respect to the direction of the line segment.
         """
-        to_point = planar.Vec2(*point) - self._anchor
-        return self.direction.dot(to_point) <= -planar.EPSILON
+        to_point = polypaths_planar_override.Vec2(*point) - self._anchor
+        return self.direction.dot(to_point) <= -polypaths_planar_override.EPSILON
 
     def point_left(self, point):
         """Return True if the specified point is in the space
         to the left of, but not behind the line segment.
         """
-        to_point = planar.Vec2(*point) - self._anchor
+        to_point = polypaths_planar_override.Vec2(*point) - self._anchor
         along = self._direction.dot(to_point)
-        return (self.length + planar.EPSILON > along > -planar.EPSILON
-            and self._normal.dot(to_point) <= -planar.EPSILON)
+        return (self.length + polypaths_planar_override.EPSILON > along > -polypaths_planar_override.EPSILON
+            and self._normal.dot(to_point) <= -polypaths_planar_override.EPSILON)
     
     def point_right(self, point):
         """Return True if the specified point is in the space
         to the right of, but not behind the line segment.
         """
-        to_point = planar.Vec2(*point) - self._anchor
+        to_point = polypaths_planar_override.Vec2(*point) - self._anchor
         along = self._direction.dot(to_point)
-        return (self.length + planar.EPSILON > along > -planar.EPSILON
-            and self._normal.dot(to_point) >= planar.EPSILON)
+        return (self.length + polypaths_planar_override.EPSILON > along > -polypaths_planar_override.EPSILON
+            and self._normal.dot(to_point) >= polypaths_planar_override.EPSILON)
 
     def project(self, point):
         """Compute the projection of a point onto the line segment. This
@@ -583,13 +583,13 @@ class LineSegment(_LinearGeometry):
         :param point: The point to project.
         :type point: Vec2
         """
-        to_point = planar.Vec2(*point) - self._anchor
+        to_point = polypaths_planar_override.Vec2(*point) - self._anchor
         parallel = self.direction.project(to_point)
         along = parallel.dot(self.direction)
-        if along <= -planar.EPSILON:
+        if along <= -polypaths_planar_override.EPSILON:
             # Point "behind"
             return self._anchor
-        elif along >= self.length + planar.EPSILON:
+        elif along >= self.length + polypaths_planar_override.EPSILON:
             # Point "ahead"
             return self.end
         else:
