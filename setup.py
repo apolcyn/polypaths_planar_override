@@ -33,9 +33,8 @@ if 'SETUP_PY_CFLAGS' in os.environ:
 
 setup(
     name='polypaths_planar_override',
-    version='0.1', # *** REMEMBER TO UPDATE __init__.py ***
+    version='0.3', # *** REMEMBER TO UPDATE __init__.py ***
     description='tweaked version of planar for use in app',
-    long_description=read('README.txt'),
     provides=['polypaths_planar_override'],
     author='AP',
     author_email='alexpolcyn65@gmail.com',
@@ -57,9 +56,8 @@ setup(
     ],
     platforms = 'any',
 
-    package_dir={'polypaths_planar_override': 'lib/polypaths_planar_override',
-                 'polypaths_planar_override.test': 'test'},
-    packages=['polypaths_planar_override', 'polypaths_planar_override.test'], 
+    package_dir={'polypaths_planar_override': 'lib/polypaths_planar_override'},
+    packages=['polypaths_planar_override'], 
 	#ext_modules=[
 	#	Extension('planar.c', 
 	#		['lib/planar/cmodule.c', 
