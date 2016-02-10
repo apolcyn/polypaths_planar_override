@@ -46,7 +46,7 @@ class _LinearGeometry(object):
     def direction(self, value):
         direction = polypaths_planar_override.Vec2(*value).normalized()
         if direction.is_null:
-            raise ValueError("Line direction vector must not be null")
+            raise ValueError("Line direction vector must not be null. Epsilon value is " + str(polypaths_planar_override.EPSILON))
         self._direction = direction
         self._normal = -direction.perpendicular()
 
