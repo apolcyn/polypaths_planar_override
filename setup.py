@@ -33,7 +33,7 @@ if 'SETUP_PY_CFLAGS' in os.environ:
 
 setup(
     name='polypaths_planar_override',
-    version='0.3', # *** REMEMBER TO UPDATE __init__.py ***
+    version='0.4', # *** REMEMBER TO UPDATE __init__.py ***
     description='tweaked version of planar for use in app',
     provides=['polypaths_planar_override'],
     author='AP',
